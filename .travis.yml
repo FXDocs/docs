@@ -1,0 +1,8 @@
+{
+  "language": "java",
+  "jdk": "oraclejdk8",
+  "script": "gradle clean run publishGhPages",
+  "group": "stable",
+  "dist": "precise",
+  "os": "linux"
+}
