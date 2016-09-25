@@ -1,0 +1,31 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
+        classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.6'
+    }
+}
+
+apply plugin: 'org.asciidoctor.convert'
+
+asciidoctor {
+    outputDir = file("$buildDir/docs")
+    resources {
+        from ('src/docs/asciidoc') {
+            include '**/*.png'
+            include '**/*.jpg'
+            include '**/*.jpeg'
+        }
+    }
+    options doctype: 'book'
+    attributes 'source-highlighter': 'prettify',
+            'toc': 'left',
+            'toc-title': 'Table of Contents'
+}
+
+defaultTasks 'asciidoctor'
+
+task run(dependsOn:asciidoctor)
