@@ -1,15 +1,23 @@
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
     }
 
     dependencies {
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
-        classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.6'
+        classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.11'
+        classpath 'org.ajoberstar:gradle-git:1.6.0-rc.1'
     }
 }
 
+plugins {
+    id 'org.ajoberstar.grgit' version '1.6.0-rc.1'
+    id 'org.ajoberstar.github-pages' version '1.6.0-rc.1'
+}
+
 apply plugin: 'org.asciidoctor.convert'
+apply plugin: 'org.ajoberstar.github-pages'
 
 asciidoctor {
     outputDir = file("$buildDir/docs")
@@ -29,3 +37,12 @@ asciidoctor {
 defaultTasks 'asciidoctor'
 
 task run(dependsOn:asciidoctor)
+
+githubPages {
+  pages {
+    from "build/docs/html5"
+    // by default this will copy into the root of the gh-pages branch and delete any previous files
+    // customizing the destination will only delete files within that target dir
+    into ""
+  }
+}
