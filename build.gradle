@@ -39,6 +39,7 @@ defaultTasks 'asciidoctor'
 task run(dependsOn:asciidoctor)
 
 githubPages {
+  repoUri = 'https://github.com/FXDocs/docs.git'
   pages {
     from "build/docs/html5"
     // by default this will copy into the root of the gh-pages branch and delete any previous files
