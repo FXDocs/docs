@@ -12,14 +12,20 @@ buildscript {
 }
 
 plugins {
+    // For generating PDF from AsciiDoc content
+    id 'org.asciidoctor.convert' version '1.5.3'
+
+    // For pushing the generated content back up to github for hosting
     id 'org.ajoberstar.grgit' version '1.6.0-rc.1'
     id 'org.ajoberstar.github-pages' version '1.6.0-rc.1'
 }
 
 apply plugin: 'org.asciidoctor.convert'
+apply plugin: 'org.asciidoctor.convert'
 apply plugin: 'org.ajoberstar.github-pages'
 
 asciidoctor {
+    backends 'pdf','html5'
     outputDir = file("$buildDir/docs")
     resources {
         from ('src/docs/asciidoc') {
@@ -41,7 +47,8 @@ task run(dependsOn:asciidoctor)
 githubPages {
   repoUri = 'https://github.com/FXDocs/docs.git'
   pages {
-    from "build/docs/html5"
-    into ""
+    from(file('build/docs')) {
+      into "."
+    }
   }
 }
