@@ -42,8 +42,6 @@ githubPages {
   repoUri = 'https://github.com/FXDocs/docs.git'
   pages {
     from "build/docs/html5"
-    // by default this will copy into the root of the gh-pages branch and delete any previous files
-    // customizing the destination will only delete files within that target dir
     into ""
   }
 }
