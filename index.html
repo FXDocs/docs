@@ -433,7 +433,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_css">4. CSS</a></li>
 <li><a href="#_performance">5. Performance</a></li>
 <li><a href="#_application_structure">6. Application Structure</a></li>
-<li><a href="#_best_practices">7. Best Practices</a></li>
+<li><a href="#_best_practices">7. Best Practices</a>
+<ul class="sectlevel2">
+<li><a href="#_1_styleable_properties">7.1. 1. Styleable Properties</a></li>
+</ul>
+</li>
 <li><a href="#_contributing">8. Contributing</a></li>
 <li><a href="#_license">9. License</a></li>
 </ul>
@@ -494,6 +498,56 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>Placeholder whilst things get built&#8230;&#8203;</p>
 </div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Styleable Properties</p>
+</li>
+</ol>
+</div>
+<div class="sect2">
+<h3 id="_1_styleable_properties">7.1. 1. Styleable Properties</h3>
+<div class="paragraph">
+<p>Author: Gerrit Grunwald</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">/* Member variables for StyleablePropertyFactory
+ * and StyleableProperty
+ */
+private static final StyleablePropertyFactory&lt;MY_CTRL&gt; FACTORY =
+    new StyleablePropertyFactory&lt;&gt;(Control.getClassCssMetaData());
+
+private static final CssMetaData&lt;MY_CTRL, Color&gt; COLOR =
+    FACTORY.createColorCssMetaData("-color", s -&gt; s.color, Color.RED, false); 
+private final StyleableProperty&lt;Color&gt; color = new SimpleStyleableObjectProperty&lt;&gt;(COLOR, this, "color");
+
+
+// Getter, Setter and Property method
+public Color getColor() {
+    return this.color.getValue();
+}
+
+public void setColor(final Color color) {
+    this.color.setValue(COLOR);
+}
+
+public ObjectProperty&lt;Color&gt; colorProperty() {
+    return (ObjectProperty&lt;Color&gt;) this.color;
+}
+
+
+// Return CSS Metadata
+public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssMetaData() {
+    return FACTORY.getCssMetaData();
+}
+
+@Override public List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getControlCssMetaData() {
+    return getClassCssMetaData();
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -515,7 +569,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-09-26 04:22:54 UTC
+Last updated 2016-09-26 08:03:38 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
