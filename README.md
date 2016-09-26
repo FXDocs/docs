@@ -5,4 +5,4 @@ The documentation is written in AsciiDoc. On every commit to this GitHub repo a 
 
 The JavaFX Documentation Project uses Travis CI to perform continuous builds of the AsciiDoc source. The current status of the build is:
 
-<img src="https://travis-ci.org/FXDocs/docs.svg?branch=master"/>
+[![Build Status](https://travis-ci.org/FXDocs/docs.svg?branch=master)](https://travis-ci.org/FXDocs/docs)
