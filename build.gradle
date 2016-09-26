@@ -47,7 +47,16 @@ task run(dependsOn:asciidoctor)
 githubPages {
   repoUri = 'https://github.com/FXDocs/docs.git'
   pages {
-    from(file('build/docs')) {
+    from(file('build/docs/html5')) {
+      include 'index.html'
+      include '**/*.png'
+      include '**/*.jpg'
+      include '**/*.jpeg'
+      into "."
+    }
+    from(file('build/docs/pdf')) {
+      include 'index.pdf'
+      rename ('index.pdf', 'book.pdf')
       into "."
     }
   }
