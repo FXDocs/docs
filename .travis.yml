@@ -4,5 +4,6 @@
   "script": "gradle -Dorg.ajoberstar.grgit.auth.username=${username} -Dorg.ajoberstar.grgit.auth.password=${password} clean run publishGhPages",
   "group": "stable",
   "dist": "precise",
-  "os": "linux"
+  "os": "linux",
+  "cache": "~/.gradle"
 }
