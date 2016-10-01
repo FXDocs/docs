@@ -434,7 +434,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_scenegraph">2. Scenegraph</a></li>
-<li><a href="#_ui_controls">3. UI Controls</a></li>
+<li><a href="#_ui_controls">3. UI Controls</a>
+<ul class="sectlevel2">
+<li><a href="#_listview">3.1. ListView</a></li>
+</ul>
+</li>
 <li><a href="#_css">4. CSS</a></li>
 <li><a href="#_performance">5. Performance</a></li>
 <li><a href="#_application_structure">6. Application Structure</a></li>
@@ -489,8 +493,388 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect1">
 <h2 id="_ui_controls">3. UI Controls</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_listview">3.1. ListView</h3>
+<div class="sect3">
+<h4 id="_listview_filtering_in_javafx">3.1.1. ListView Filtering in JavaFX</h4>
 <div class="paragraph">
-<p>Placeholder whilst things get built&#8230;&#8203;</p>
+<p>(Contributed by Carl Walker, October 1, 2016)</p>
+</div>
+<div class="paragraph">
+<p>This article demonstrates how to filter a ListView in a JavaFX Application.  Two lists are managed by the Application.  One list contains all of the items in the data model.  The second list contains all of the items currently being viewed.  A scrap of comparison logic stored as a filter mediates between the two.</p>
+</div>
+<div class="paragraph">
+<p>Binding is used heavily to keep the data structures in sync with what the user has selected.</p>
+</div>
+<div class="paragraph">
+<p>This screenshot shows the Application which contains a top row of ToggleButtons which set the filter and a ListView containing the objects.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/ui-controls/listview_filtering_screenshot.png" alt="listview filtering screenshot">
+</div>
+<div class="title">Figure 1. Screenshot of ListView Filtering App</div>
+</div>
+<div class="paragraph">
+<p>The complete code&#8201;&#8212;&#8201;a single .java file&#8201;&#8212;&#8201;is listed at the end of the article.</p>
+</div>
+<div class="sect4">
+<h5 id="_data_structures">Data Structures</h5>
+<div class="paragraph">
+<p>The program begins with a domain model Player and an array of Player objects.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">static class Player {
+
+	private final String team;
+	private final String playerName;
+	public Player(String team, String playerName) {
+		this.team = team;
+		this.playerName = playerName;
+	}
+	public String getTeam() {
+		return team;
+	}
+	public String getPlayerName() {
+		return playerName;
+	}
+	@Override
+	public String toString() { return playerName + " (" + team + ")"; }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Player class contains a pair of fields, team and playerName.  A toString() is provided so that when the object is added to the ListView (presented later), a custom ListCell class is not needed.</p>
+</div>
+<div class="paragraph">
+<p>The test data for this example is a list of American baseball players.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Player[] players = {new Player("BOS", "David Ortiz"),
+                    new Player("BOS", "Jackie Bradley Jr."),
+                    new Player("BOS", "Xander Bogarts"),
+                    new Player("BOS", "Mookie Betts"),
+                    new Player("HOU", "Jose Altuve"),
+                    new Player("HOU", "Will Harris"),
+                    new Player("WSH", "Max Scherzer"),
+                    new Player("WSH", "Bryce Harper"),
+                    new Player("WSH", "Daniel Murphy"),
+                    new Player("WSH", "Wilson Ramos") };</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_model">Model</h5>
+<div class="paragraph">
+<p>As mentioned at the start of the article, the ListView filtering is centered around the management of two lists.  All the objects are stored in a wrapped ObservableList playersProperty and the objects that are currently viewable are stored in a wrapped ObservableList, viewablePlayersProperty.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">ReadOnlyObjectProperty&lt;ObservableList&lt;Player&gt;&gt; playersProperty =
+		new SimpleObjectProperty&lt;&gt;(FXCollections.observableArrayList());
+
+ReadOnlyObjectProperty&lt;ObservableList&lt;Player&gt;&gt; viewablePlayersProperty =
+		new SimpleObjectProperty&lt;&gt;(FXCollections.observableArrayList());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Coordinating the model, is a filter objects which is a wrapped Predicate.  A listener is attached to the filter such that when the Predicate changes, a new viewable set of items is available for the ListView.  This is done with the filtered() method of the playersProperty ObservableList.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">ObjectProperty&lt;Predicate&lt;Player&gt;&gt; filterProperty = new SimpleObjectProperty&lt;&gt;((p) -&gt; true);
+
+filterProperty.addListener(
+        (obs,ov,nv) -&gt; {
+            viewablePlayersProperty.get().setAll(
+            		playersProperty.get().filtered( nv )
+            		);
+        });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The UI root is a VBox which contains an HBox of ToggleButtons and a ListView.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">VBox vbox = new VBox();
+vbox.setPadding( new Insets(10));
+vbox.setSpacing(4);
+
+HBox hbox = new HBox();
+hbox.setSpacing( 2 );
+
+ToggleGroup filterTG = new ToggleGroup();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_filtering_action">Filtering Action</h5>
+<div class="paragraph">
+<p>A handler is attached the ToggleButtons which will modify the filter property.  Each ToggleButton is supplied a Predicate in the userData field.  toggleHandler uses this supplied Predicate when setting the filter property.  This code sets the special case "Show All" ToggleButton.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">@SuppressWarnings("unchecked")
+EventHandler&lt;ActionEvent&gt; toggleHandler = (event) -&gt; {
+		ToggleButton tb = (ToggleButton)event.getSource();
+	    Predicate&lt;Player&gt; filter = (Predicate&lt;Player&gt;)tb.getUserData();
+	    filterProperty.set( filter );
+	};
+
+ToggleButton tbShowAll = new ToggleButton("Show All");
+tbShowAll.setSelected(true);
+tbShowAll.setToggleGroup( filterTG );
+tbShowAll.setOnAction(toggleHandler);
+tbShowAll.setUserData( (Predicate&lt;Player&gt;) (Player p) -&gt; true);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The ToggleButtons that filter a specific team are created at runtime based on the Players array.  This Stream does the following.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Distill the list of Players down to a distinct list of team Strings</p>
+</li>
+<li>
+<p>Create a ToggleButton for each team String</p>
+</li>
+<li>
+<p>Set a Predicate for each ToggleButton to be used as a filter</p>
+</li>
+<li>
+<p>Collect the ToggleButtons for addition into the HBox container</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">List&lt;ToggleButton&gt; tbs = Arrays.asList( players)
+		.stream()
+		.map( (p) -&gt; p.getTeam() )
+		.distinct()
+		.map( (team) -&gt; {
+			ToggleButton tb = new ToggleButton( team );
+			tb.setToggleGroup( filterTG );
+			tb.setOnAction( toggleHandler );
+			tb.setUserData( (Predicate&lt;Player&gt;) (Player p) -&gt; team.equals(p.getTeam()) );
+			return tb;
+		})
+		.collect(Collectors.toList());
+
+hbox.getChildren().add( tbShowAll );
+hbox.getChildren().addAll( tbs );</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_listview_2">ListView</h5>
+<div class="paragraph">
+<p>The next step creates the ListView and binds the ListView to the viewablePlayersProperty.  This enables the ListView to receive updates based on the changing filter.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">ListView&lt;Player&gt; lv = new ListView&lt;&gt;();
+lv.itemsProperty().bind( viewablePlayersProperty );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The remainder of the program creates a Scene and shows the Stage.  onShown loads the data set into the playersProperty and the viewablePlayersProperty lists.  Although both lists are in sync in this partcular version of the program, if the stock filter is every different than "no filter", this code would not need to be modified.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">vbox.getChildren().addAll( hbox, lv );
+
+Scene scene = new Scene(vbox);
+
+primaryStage.setScene( scene );
+primaryStage.setOnShown((evt) -&gt; {
+
+	//
+	// Initialize the UI with test data by adding everything to playersProperty
+	// and only those Players that meet the filter criteria to viewablePlayersProperty
+	//
+	// Note that this implementation has the initial filter set to "Show All" so
+	// players==viewablePlayers
+	//
+	Arrays.asList( players ).forEach( (p) -&gt; {
+
+		playersProperty.get().add( p );
+
+		if( filterProperty.get().test(p) ) {
+			viewablePlayersProperty.get().add( p );
+		}
+	});
+});
+
+primaryStage.show();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This article used binding to tie a list of viewable Player objects to a ListView.  The viewable Players were updated when a ToggleButton is selected.  The selection applied a filter to a full set of Players which was maintained separately.  Binding was used to keep the UI in sync and to allow for a separation of concerns in the design.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_further_reading">Further Reading</h5>
+<div class="paragraph">
+<p>To see how such a design would implement basic add and remove functionality, visit the following page <a href="https://courses.bekwam.net/public_tutorials/bkcourse_filterlistapp.php" class="bare">https://courses.bekwam.net/public_tutorials/bkcourse_filterlistapp.php</a>.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_complete_code">Complete Code</h5>
+<div class="paragraph">
+<p>The code can be tested in a single .java file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class FilterListApp extends Application {
+
+	@Override
+	public void start(Stage primaryStage) throws Exception {
+
+		//
+		// Test data
+		//
+		Player[] players = {new Player("BOS", "David Ortiz"),
+		                    new Player("BOS", "Jackie Bradley Jr."),
+		                    new Player("BOS", "Xander Bogarts"),
+		                    new Player("BOS", "Mookie Betts"),
+		                    new Player("HOU", "Jose Altuve"),
+		                    new Player("HOU", "Will Harris"),
+		                    new Player("WSH", "Max Scherzer"),
+		                    new Player("WSH", "Bryce Harper"),
+		                    new Player("WSH", "Daniel Murphy"),
+		                    new Player("WSH", "Wilson Ramos") };
+
+		//
+		// Set up the model which is two lists of Players and a filter criteria
+		//
+		ReadOnlyObjectProperty&lt;ObservableList&lt;Player&gt;&gt; playersProperty =
+				new SimpleObjectProperty&lt;&gt;(FXCollections.observableArrayList());
+
+		ReadOnlyObjectProperty&lt;ObservableList&lt;Player&gt;&gt; viewablePlayersProperty =
+				new SimpleObjectProperty&lt;&gt;(FXCollections.observableArrayList());
+
+		ObjectProperty&lt;Predicate&lt;Player&gt;&gt; filterProperty = new SimpleObjectProperty&lt;&gt;((p) -&gt; true);
+
+		filterProperty.addListener(
+		        (obs,ov,nv) -&gt; {
+		            viewablePlayersProperty.get().setAll(
+		            		playersProperty.get().filtered( nv )
+		            		);
+		        });
+
+		//
+		// Build the UI
+		//
+		VBox vbox = new VBox();
+		vbox.setPadding( new Insets(10));
+		vbox.setSpacing(4);
+
+		HBox hbox = new HBox();
+		hbox.setSpacing( 2 );
+
+		ToggleGroup filterTG = new ToggleGroup();
+
+		//
+		// The toggleHandler action wills set the filter based on the TB selected
+		//
+		@SuppressWarnings("unchecked")
+		EventHandler&lt;ActionEvent&gt; toggleHandler = (event) -&gt; {
+				ToggleButton tb = (ToggleButton)event.getSource();
+			    Predicate&lt;Player&gt; filter = (Predicate&lt;Player&gt;)tb.getUserData();
+			    filterProperty.set( filter );
+			};
+
+		ToggleButton tbShowAll = new ToggleButton("Show All");
+		tbShowAll.setSelected(true);
+		tbShowAll.setToggleGroup( filterTG );
+		tbShowAll.setOnAction(toggleHandler);
+		tbShowAll.setUserData( (Predicate&lt;Player&gt;) (Player p) -&gt; true);
+
+		//
+		// Create a distinct list of teams from the Player objects, then create
+		// ToggleButtons
+		//
+		List&lt;ToggleButton&gt; tbs = Arrays.asList( players)
+				.stream()
+				.map( (p) -&gt; p.getTeam() )
+				.distinct()
+				.map( (team) -&gt; {
+					ToggleButton tb = new ToggleButton( team );
+					tb.setToggleGroup( filterTG );
+					tb.setOnAction( toggleHandler );
+					tb.setUserData( (Predicate&lt;Player&gt;) (Player p) -&gt; team.equals(p.getTeam()) );
+					return tb;
+				})
+				.collect(Collectors.toList());
+
+		hbox.getChildren().add( tbShowAll );
+		hbox.getChildren().addAll( tbs );
+
+		//
+		// Create a ListView bound to the viewablePlayers property
+		//
+		ListView&lt;Player&gt; lv = new ListView&lt;&gt;();
+		lv.itemsProperty().bind( viewablePlayersProperty );
+
+		vbox.getChildren().addAll( hbox, lv );
+
+		Scene scene = new Scene(vbox);
+
+		primaryStage.setScene( scene );
+		primaryStage.setOnShown((evt) -&gt; {
+
+			//
+			// Initialize the UI with test data by adding everything to playersProperty
+			// and only those Players that meet the filter criteria to viewablePlayersProperty
+			//
+			// Note that this implementation has the initial filter set to "Show All" so
+			// players==viewablePlayers
+			//
+			Arrays.asList( players ).forEach( (p) -&gt; {
+
+				playersProperty.get().add( p );
+
+				if( filterProperty.get().test(p) ) {
+					viewablePlayersProperty.get().add( p );
+				}
+			});
+		});
+
+		primaryStage.show();
+
+	}
+
+	public static void main(String args[]) {
+		launch(args);
+	}
+
+	static class Player {
+
+		private final String team;
+		private final String playerName;
+		public Player(String team, String playerName) {
+			this.team = team;
+			this.playerName = playerName;
+		}
+		public String getTeam() {
+			return team;
+		}
+		public String getPlayerName() {
+			return playerName;
+		}
+		@Override
+		public String toString() { return playerName + " (" + team + ")"; }
+	}
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -600,7 +984,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-10-01 19:24:03 UTC
+Last updated 2016-10-01 19:35:38 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
