@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Published 2016-10-02">
+<meta name="author" content="Published 2016-10-10">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2016-10-02</span><br>
+<span id="author" class="author">Published 2016-10-10</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -437,12 +437,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_ui_controls">3. UI Controls</a>
 <ul class="sectlevel2">
 <li><a href="#_listview">3.1. ListView</a></li>
-<li><a href="#_data_structures">3.2. Data Structures</a></li>
-<li><a href="#_model">3.3. Model</a></li>
-<li><a href="#_filtering_action">3.4. Filtering Action</a></li>
-<li><a href="#_listview_2">3.5. ListView</a></li>
-<li><a href="#_further_reading">3.6. Further Reading</a></li>
-<li><a href="#_complete_code">3.7. Complete Code</a></li>
 </ul>
 </li>
 <li><a href="#_css">4. CSS</a></li>
@@ -524,10 +518,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="paragraph">
 <p>The complete code&#8201;&#8212;&#8201;a single .java file&#8201;&#8212;&#8201;is listed at the end of the article.</p>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_data_structures">3.2. Data Structures</h3>
+<div class="sect4">
+<h5 id="_data_structures">Data Structures</h5>
 <div class="paragraph">
 <p>The program begins with a domain model Player and an array of Player objects.</p>
 </div>
@@ -573,8 +565,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_model">3.3. Model</h3>
+<div class="sect4">
+<h5 id="_model">Model</h5>
 <div class="paragraph">
 <p>As mentioned at the start of the article, the ListView filtering is centered around the management of two lists.  All the objects are stored in a wrapped ObservableList playersProperty and the objects that are currently viewable are stored in a wrapped FilteredList, viewablePlayersProperty.  viewablePlayersProperty is built off of playersProperty so updates made to players that meet the FilteredList criteria will also be made to viewablePlayers.</p>
 </div>
@@ -614,8 +606,8 @@ ToggleGroup filterTG = new ToggleGroup();</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_filtering_action">3.4. Filtering Action</h3>
+<div class="sect4">
+<h5 id="_filtering_action">Filtering Action</h5>
 <div class="paragraph">
 <p>A handler is attached the ToggleButtons which will modify filterProperty.  Each ToggleButton is supplied a Predicate in the userData field.  toggleHandler uses this supplied Predicate when setting the filter property.  This code sets the special case "Show All" ToggleButton.</p>
 </div>
@@ -674,8 +666,8 @@ hbox.getChildren().addAll( tbs );</code></pre>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_listview_2">3.5. ListView</h3>
+<div class="sect4">
+<h5 id="_listview_2">ListView</h5>
 <div class="paragraph">
 <p>The next step creates the ListView and binds the ListView to the viewablePlayersProperty.  This enables the ListView to receive updates based on the changing filter.</p>
 </div>
@@ -706,14 +698,14 @@ primaryStage.show();</code></pre>
 <p>This article used binding to tie a list of viewable Player objects to a ListView.  The viewable Players were updated when a ToggleButton is selected.  The selection applied a filter to a full set of Players which was maintained separately as a FilteredList (thanks @kleopatra_jx).  Binding was used to keep the UI in sync and to allow for a separation of concerns in the design.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_further_reading">3.6. Further Reading</h3>
+<div class="sect4">
+<h5 id="_further_reading">Further Reading</h5>
 <div class="paragraph">
 <p>To see how such a design would implement basic add and remove functionality, visit the following page <a href="https://courses.bekwam.net/public_tutorials/bkcourse_filterlistapp.php" class="bare">https://courses.bekwam.net/public_tutorials/bkcourse_filterlistapp.php</a>.</p>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_complete_code">3.7. Complete Code</h3>
+<div class="sect4">
+<h5 id="_complete_code">Complete Code</h5>
 <div class="paragraph">
 <p>The code can be tested in a single .java file.</p>
 </div>
@@ -847,6 +839,8 @@ primaryStage.show();</code></pre>
 </div>
 </div>
 </div>
+</div>
+</div>
 <div class="sect1">
 <h2 id="_css">4. CSS</h2>
 <div class="sectionbody">
@@ -953,7 +947,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-10-02 19:34:54 UTC
+Last updated 2016-10-10 19:57:27 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
