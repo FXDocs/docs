@@ -22,6 +22,9 @@ asciidoctorj {
 asciidoctor {
     backends 'pdf','html5'
     outputDir = file("$buildDir/docs")
+    sources {
+        include 'index.asc'
+    }
     resources {
         from ('src/docs/asciidoc') {
             include '**/*.png'
