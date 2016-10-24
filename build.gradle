@@ -4,6 +4,7 @@ buildscript {
     }
 
     dependencies {
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.13.0'
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
         classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.11'
         classpath 'org.ajoberstar:gradle-git:1.6.0-rc.1'
@@ -12,6 +13,11 @@ buildscript {
 
 apply plugin: 'org.asciidoctor.convert'
 apply plugin: 'org.ajoberstar.github-pages'
+apply plugin: 'com.github.ben-manes.versions'
+
+asciidoctorj {
+    version = '1.5.4.1'
+}
 
 asciidoctor {
     backends 'pdf','html5'
