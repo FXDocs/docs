@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Published 2016-10-10">
+<meta name="author" content="Published 2016-10-24">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2016-10-10</span><br>
+<span id="author" class="author">Published 2016-10-24</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -445,6 +445,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_best_practices">7. Best Practices</a>
 <ul class="sectlevel2">
 <li><a href="#_1_styleable_properties">7.1. 1. Styleable Properties</a></li>
+<li><a href="#_2_tasks">7.2. 2. Tasks</a></li>
+<li><a href="#_demonstration">7.3. Demonstration</a></li>
+<li><a href="#_code">7.4. Code</a></li>
+<li><a href="#_complete_code_2">7.5. Complete Code</a></li>
 </ul>
 </li>
 <li><a href="#_contributing_2">8. Contributing</a></li>
@@ -921,6 +925,291 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_2_tasks">7.2. 2. Tasks</h3>
+<div class="paragraph">
+<p>Author: Carl Walker</p>
+</div>
+<div class="paragraph">
+<p>This article demonstrates how to use a JavaFX Task to keep the UI responsive.  It is imperative that any operation taking more than a few hundred milliseconds be executed on a separate Thread to avoid locking up the UI.  A Task wraps up the sequence of steps in a long-running operation and provides callbacks for the possible outcomes.</p>
+</div>
+<div class="paragraph">
+<p>The <strong>Task</strong> class also keeps the user aware of the operation through properties which can be bound to UI controls like ProgressBars and Labels.  The binding dynamically updates the UI.  These properties include</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>runningProperty</strong> - Whether or not the Task is running</p>
+</li>
+<li>
+<p><strong>progressProperty</strong> - The percent complete of an operation</p>
+</li>
+<li>
+<p><strong>messageProperty</strong> - Text describing a step in the operation</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_demonstration">7.3. Demonstration</h3>
+<div class="paragraph">
+<p>The following screenshots show the operation of an HTML retrieval application.</p>
+</div>
+<div class="paragraph">
+<p>Entering a URL and pressing "Go" will start a JavaFX Task.  When running, the Task will make an HBox visible that contains a ProgressBar and a Label.  The ProgressBar and Label are updated throughout the operation.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/best-practices/tasks_pb.png" alt="tasks pb">
+</div>
+<div class="title">Figure 2. Screenshot of App Showing ProgressBar and Label</div>
+</div>
+<div class="paragraph">
+<p>When the retrieval is finished, a succeeded() callback is invoked and the UI is updated.  Note that the succeeded() callback takes place on the FX Thread, so it is safe to manipuplate controls.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/best-practices/tasks_contents.png" alt="tasks contents">
+</div>
+<div class="title">Figure 3. Screenshot of App Showing Successful Retrieval</div>
+</div>
+<div class="paragraph">
+<p>If there was an error retrieving the HTML, a failed() callback is invoked and an error Alert is shown.  failed() also takes place on the FX Thread.  This screenshot shows invalid input. An "h" is used in the URL instead of the correct "http".</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/best-practices/tasks_error.png" alt="tasks error">
+</div>
+<div class="title">Figure 4. Screenshot of App Showing Failure</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_code">7.4. Code</h3>
+<div class="paragraph">
+<p>An event handler is placed on the Get HTML Button which creates the Task.  The entry point of the Task is the call() method which starts by calling updateMessage() and updateProgress().  These methods are executed on the FX Thread and will result in updates to any bound properties.</p>
+</div>
+<div class="paragraph">
+<p>The program proceeds by issuing an HTTP GET using standard java.net classes.  A String "retval" is built up from the retrieved characters.  The message and progress properties are updated with more calls to updateMessage() and updateProgress().  The call() method ends with a return of the String containing the HTML text.</p>
+</div>
+<div class="paragraph">
+<p>On a successful operation, the succeeded() callback is invoked.  getValue() is a Task method that will return the value accrued in the Task (recall "retval").  The type of the value is what is provided in the generic argument, in this case "String".  This could be a complex type like a domain object or a Collection.  The succeeded() operation runs on the FX Thread, so the getValue() String is directly set on the TextArea.</p>
+</div>
+<div class="paragraph">
+<p>If the operation failed, an Exception is thrown.  The Exception is caught by the Task and converted to a failed() call.  failed() is also FX Thread-safe and it displays an Alert.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">String url = tfURL.getText();
+
+Task&lt;String&gt; task = new Task&lt;String&gt;() {
+
+    @Override
+    protected String call() throws Exception {
+
+        updateMessage("Getting HTML from " + url );
+        updateProgress( 0.5d, 1.0d );
+
+        HttpURLConnection c = null;
+        InputStream is = null;
+        String retval = "";
+
+        try {
+
+            c = (HttpURLConnection) new URL(url).openConnection();
+
+            updateProgress( 0.6d, 1.0d );
+            is = c.getInputStream();
+            int ch;
+            while( (ch=is.read()) != -1 ) {
+                retval += (char)ch;
+            }
+
+        } finally {
+            if( is != null ) {
+                is.close();
+            }
+            if( c != null ) {
+                c.disconnect();
+            }
+        }
+
+        updateMessage("HTML retrieved");
+        updateProgress( 1.0d, 1.0d );
+
+        return retval;
+    }
+
+    @Override
+    protected void succeeded() {
+        contents.setText( getValue() );
+    }
+
+    @Override
+    protected void failed() {
+        Alert alert = new Alert(Alert.AlertType.ERROR, getException().getMessage() );
+        alert.showAndWait();
+    }
+};</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notice that the Task does not update the ProgressBar and status Label directly.  Instead, the Task makes safe calls to updateMessage() and updateProgress().  To update the UI, JavaFX binding is used in the following statements.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">bottomControls.visibleProperty().bind( task.runningProperty() );
+pb.progressProperty().bind( task.progressProperty() );
+messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Task.runningProperty is a boolean that can be bound to the bottomControls HBox visibleProperty.  Task.progressProperty is a double that can be bound to the ProgressBar progressProperty.  Task.messageProperty is a String that can be bound to the status Label textProperty.</p>
+</div>
+<div class="paragraph">
+<p>To run the Task, create a Thread providing the Task as a constructor argument and invoke start().</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">new Thread(task).start();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For any long-running operation&#8201;&#8212;&#8201;File IO, the Network&#8201;&#8212;&#8201;use a JavaFX Task to keep your application responsive.  The JavaFX Task gives your application a consistent way of handling asynchronous operations and exposes several properties that can be used to eliminate boilerplate and programming logic.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_complete_code_2">7.5. Complete Code</h3>
+<div class="paragraph">
+<p>The code can be tested in a single .java file.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class ProgressBarApp extends Application {
+
+    private HBox bottomControls;
+    private ProgressBar pb;
+    private Label messageLabel;
+
+    private TextField tfURL;
+
+    private TextArea contents;
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        Parent p = createMainView();
+
+        Scene scene = new Scene(p);
+
+        primaryStage.setTitle("ProgressBarApp");
+        primaryStage.setWidth( 667 );
+        primaryStage.setHeight( 376 );
+        primaryStage.setScene( scene );
+        primaryStage.show();
+    }
+
+    private Parent createMainView() {
+
+        VBox vbox = new VBox();
+        vbox.setPadding( new Insets(10) );
+        vbox.setSpacing( 10 );
+
+        HBox topControls = new HBox();
+        topControls.setAlignment(Pos.CENTER_LEFT);
+        topControls.setSpacing( 4 );
+
+        Label label = new Label("URL");
+        tfURL = new TextField();
+        HBox.setHgrow( tfURL, Priority.ALWAYS );
+        Button btnGetHTML = new Button("Get HTML");
+        btnGetHTML.setOnAction( this::getHTML );
+        topControls.getChildren().addAll(label, tfURL, btnGetHTML);
+
+        contents = new TextArea();
+        VBox.setVgrow( contents, Priority.ALWAYS );
+
+        bottomControls = new HBox();
+        bottomControls.setVisible(false);
+        bottomControls.setSpacing( 4 );
+        HBox.setMargin( bottomControls, new Insets(4));
+
+        pb = new ProgressBar();
+        messageLabel = new Label("");
+        bottomControls.getChildren().addAll(pb, messageLabel);
+
+        vbox.getChildren().addAll(topControls, contents, bottomControls);
+
+        return vbox;
+    }
+
+    public void getHTML(ActionEvent evt) {
+
+        String url = tfURL.getText();
+
+        Task&lt;String&gt; task = new Task&lt;String&gt;() {
+
+            @Override
+            protected String call() throws Exception {
+
+                updateMessage("Getting HTML from " + url );
+                updateProgress( 0.5d, 1.0d );
+
+                HttpURLConnection c = null;
+                InputStream is = null;
+                String retval = "";
+
+                try {
+
+                    c = (HttpURLConnection) new URL(url).openConnection();
+
+                    updateProgress( 0.6d, 1.0d );
+                    is = c.getInputStream();
+                    int ch;
+                    while( (ch=is.read()) != -1 ) {
+                        retval += (char)ch;
+                    }
+
+                } finally {
+                    if( is != null ) {
+                        is.close();
+                    }
+                    if( c != null ) {
+                        c.disconnect();
+                    }
+                }
+
+                updateMessage("HTML retrieved");
+                updateProgress( 1.0d, 1.0d );
+
+                return retval;
+            }
+
+            @Override
+            protected void succeeded() {
+                contents.setText( getValue() );
+            }
+
+            @Override
+            protected void failed() {
+                Alert alert = new Alert(Alert.AlertType.ERROR, getException().getMessage() );
+                alert.showAndWait();
+            }
+        };
+
+        bottomControls.visibleProperty().bind( task.runningProperty() );
+        pb.progressProperty().bind( task.progressProperty() );
+        messageLabel.textProperty().bind( task.messageProperty() );
+
+        new Thread(task).start();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -947,7 +1236,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-10-10 19:57:27 UTC
+Last updated 2016-10-24 08:33:24 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
