@@ -1,32 +1,30 @@
 buildscript {
     repositories {
         jcenter()
-        mavenCentral()
     }
 
     dependencies {
+        classpath 'com.github.ben-manes:gradle-versions-plugin:0.13.0'
         classpath 'org.asciidoctor:asciidoctor-gradle-plugin:1.5.3'
         classpath 'org.asciidoctor:asciidoctorj-pdf:1.5.0-alpha.11'
         classpath 'org.ajoberstar:gradle-git:1.6.0-rc.1'
     }
 }
 
-plugins {
-    // For generating PDF from AsciiDoc content
-    id 'org.asciidoctor.convert' version '1.5.3'
-
-    // For pushing the generated content back up to github for hosting
-    id 'org.ajoberstar.grgit' version '1.6.0-rc.1'
-    id 'org.ajoberstar.github-pages' version '1.6.0-rc.1'
-}
-
-apply plugin: 'org.asciidoctor.convert'
 apply plugin: 'org.asciidoctor.convert'
 apply plugin: 'org.ajoberstar.github-pages'
+apply plugin: 'com.github.ben-manes.versions'
+
+asciidoctorj {
+    version = '1.5.4.1'
+}
 
 asciidoctor {
     backends 'pdf','html5'
     outputDir = file("$buildDir/docs")
+    sources {
+        include 'index.asc'
+    }
     resources {
         from ('src/docs/asciidoc') {
             include '**/*.png'
@@ -52,12 +50,12 @@ githubPages {
       include '**/*.png'
       include '**/*.jpg'
       include '**/*.jpeg'
-      into "."
+      into '.'
     }
     from(file('build/docs/pdf')) {
       include 'index.pdf'
       rename ('index.pdf', 'book.pdf')
-      into "."
+      into '.'
     }
   }
 }

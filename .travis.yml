@@ -14,5 +14,8 @@ cache:
   directories:
   - $HOME/.gradle
 
+before_script:
+  - ./gradlew --version
+
 script:
-  - gradle -Dorg.ajoberstar.grgit.auth.username=${username} -Dorg.ajoberstar.grgit.auth.password=${password} clean run publishGhPages
+  - ./gradlew -Dorg.ajoberstar.grgit.auth.username=${username} -Dorg.ajoberstar.grgit.auth.password=${password} clean run publishGhPages
