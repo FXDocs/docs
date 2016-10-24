@@ -1,7 +1,6 @@
 buildscript {
     repositories {
         jcenter()
-        mavenCentral()
     }
 
     dependencies {
@@ -11,16 +10,6 @@ buildscript {
     }
 }
 
-plugins {
-    // For generating PDF from AsciiDoc content
-    id 'org.asciidoctor.convert' version '1.5.3'
-
-    // For pushing the generated content back up to github for hosting
-    id 'org.ajoberstar.grgit' version '1.6.0-rc.1'
-    id 'org.ajoberstar.github-pages' version '1.6.0-rc.1'
-}
-
-apply plugin: 'org.asciidoctor.convert'
 apply plugin: 'org.asciidoctor.convert'
 apply plugin: 'org.ajoberstar.github-pages'
 
@@ -52,12 +41,12 @@ githubPages {
       include '**/*.png'
       include '**/*.jpg'
       include '**/*.jpeg'
-      into "."
+      into '.'
     }
     from(file('build/docs/pdf')) {
       include 'index.pdf'
       rename ('index.pdf', 'book.pdf')
-      into "."
+      into '.'
     }
   }
 }
