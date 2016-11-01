@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Published 2016-10-26">
+<meta name="author" content="Published 2016-11-01">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2016-10-26</span><br>
+<span id="author" class="author">Published 2016-11-01</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -439,17 +439,22 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_listview">3.1. ListView</a></li>
 </ul>
 </li>
-<li><a href="#_css">4. CSS</a></li>
-<li><a href="#_performance">5. Performance</a></li>
-<li><a href="#_application_structure">6. Application Structure</a></li>
-<li><a href="#_best_practices">7. Best Practices</a>
+<li><a href="#_layout">4. Layout</a>
 <ul class="sectlevel2">
-<li><a href="#_1_styleable_properties">7.1. 1. Styleable Properties</a></li>
-<li><a href="#_2_tasks">7.2. 2. Tasks</a></li>
+<li><a href="#_vbox_and_hbox">4.1. VBox and HBox</a></li>
 </ul>
 </li>
-<li><a href="#_contributing_2">8. Contributing</a></li>
-<li><a href="#_license">9. License</a></li>
+<li><a href="#_css">5. CSS</a></li>
+<li><a href="#_performance">6. Performance</a></li>
+<li><a href="#_application_structure">7. Application Structure</a></li>
+<li><a href="#_best_practices">8. Best Practices</a>
+<ul class="sectlevel2">
+<li><a href="#_1_styleable_properties">8.1. 1. Styleable Properties</a></li>
+<li><a href="#_2_tasks">8.2. 2. Tasks</a></li>
+</ul>
+</li>
+<li><a href="#_contributing_2">9. Contributing</a></li>
+<li><a href="#_license">10. License</a></li>
 </ul>
 </div>
 </div>
@@ -843,7 +848,288 @@ primaryStage.show();</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_css">4. CSS</h2>
+<h2 id="_layout">4. Layout</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_vbox_and_hbox">4.1. VBox and HBox</h3>
+<div class="paragraph">
+<p>Author: Carl Walker</p>
+</div>
+<div class="paragraph">
+<p>Layout in JavaFX begins with selecting the right container controls.  The two layout controls I use most often are VBox and HBox.  VBox is a container that arranges its children in a vertical stack.  HBox arranges its children in a horizontal row.  The power of these two controls comes from wrapping them and setting a few key properties: alignment, hgrow, and vrgow.</p>
+</div>
+<div class="paragraph">
+<p>This article will demonstrate these controls by through a sample project.   A mockup of the project shows a UI with the following:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>A row of top controls containing a Refresh Button and a Sign Out Hyperlink,</p>
+</li>
+<li>
+<p>A TableView that will grow to take up the extra vertical space, and</p>
+</li>
+<li>
+<p>A Close Button.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The UI also features a Separator which divides the top part of the screen with what may become a standard lower panel (Save Button, Cancel Button, etc) for the application.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/vboxandhboxapp_mockup.png" alt="vboxandhboxapp mockup">
+</div>
+<div class="title">Figure 2. Mockup</div>
+</div>
+<div class="sect3">
+<h4 id="_structure">4.1.1. Structure</h4>
+<div class="paragraph">
+<p>A VBox is the outermost container "vbox".  This will be the Parent provided to the Scene.  Simply putting UI controls in this VBox will allow the controls&#8201;&#8212;&#8201;most notably the TableView&#8201;&#8212;&#8201;to stretch to fit the available horizontal space.  For the top controls, the Refresh Button and the Sign Out Link, I wrap those in an HBox.  Similary, I wrap the bottom Close Button in an HBox, allowing for additional Buttons.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">VBox vbox = new VBox();
+
+Button btnRefresh = new Button("Refresh");
+
+HBox topRightControls = new HBox();
+topRightControls.getChildren().add( signOutLink );
+
+topControls.getChildren().addAll( btnRefresh, topRightControls );
+
+TableView&lt;Customer&gt; tblCustomers = new TableView&lt;&gt;();
+Separator sep = new Separator();
+
+HBox bottomControls = new HBox();
+
+Button btnClose = new Button("Close");
+
+bottomControls.getChildren().add( btnClose );
+
+vbox.getChildren().addAll(
+        topControls,
+        tblCustomers,
+        sep,
+        bottomControls
+);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This picture shows the mockup broken down by container.  The Parent VBox is the outermost blue rectangle.  The HBoxes are the inner rectangles (red and green).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/vboxandhboxapp_brokendown.png" alt="vboxandhboxapp brokendown">
+</div>
+<div class="title">Figure 3. Mockup Broken Down</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_alignment_and_hgrow">4.1.2. Alignment and Hgrow</h4>
+<div class="paragraph">
+<p>The Refresh Button is aligned to the left while the Sign Out Hyperlink is aligned to the right.  This is accomplished using two HBoxes.  topControls is an HBox that contains the Refresh Button and also contains an HBox with the Sign Out Hyperlink.  As the screen grows wider, the Sign Out Hyperlink will be pulled to the right while the Refresh Button will retain its left alignment.</p>
+</div>
+<div class="paragraph">
+<p>Alignment is the property that tells a container where to position a control.  topControls sets alignment to the BOTTOM_LEFT.  topRightControls sets alignment to the BOTTOM_RIGHT.  "BOTTOM" makes sure that the baseline of the text "Refresh" matches the baseline of the text "Sign Out".</p>
+</div>
+<div class="paragraph">
+<p>In order to make the Sign Out Hyperlink move to the right when the screen gets wider, Priority.ALWAYS is needed.  This is a cue to the JavaFX to widen topRightControls.  Otherwise, topControls will keep the space and topRightControls will appear to the left.  Sign Out Hyperlink still would be right-aligned but in a narrower container.</p>
+</div>
+<div class="paragraph">
+<p>Notice that setHgrow() is a static method and neither invoked on the topControls HBox nor on itself, topRightControls.  This is a facet of the JavaFX API that can be confusing because most of the API sets properties via setters on objects.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">topControls.setAlignment( Pos.BOTTOM_LEFT );
+
+HBox.setHgrow(topRightControls, Priority.ALWAYS );
+topRightControls.setAlignment( Pos.BOTTOM_RIGHT );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Close Button is wrapped in an HBox and positioned using the BOTTOM_RIGHT priority.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">bottomControls.setAlignment(Pos.BOTTOM_RIGHT );</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_vgrow">4.1.3. Vgrow</h4>
+<div class="paragraph">
+<p>Since the outermost containiner is VBox, the child TableView will expand to take up extra horizontal space when the window is widened.  However, vertically reisizing the window will produce a gap at the bottom of the screen.  The VBox does not automatically resize any of its children.  As with the topRightControls HBox, a grow indicator can be set.  In the case of the HBox, this was a horizontal resizing instruction setHgrow().  For the TableView container VBox, this will be setVgrow().</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">VBox.setVgrow( tblCustomers, Priority.ALWAYS );</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_margin">4.1.4. Margin</h4>
+<div class="paragraph">
+<p>There are a few ways to space out UI controls.  This article uses the margin property on several of the containers to add whitespace around the controls.  These are set individually rather than using a spacing on the VBox so that the Separator will span the entire width.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">VBox.setMargin( topControls, new Insets(10.0d) );
+VBox.setMargin( tblCustomers, new Insets(0.0d, 10.0d, 10.0d, 10.0d) );
+VBox.setMargin( bottomControls, new Insets(10.0d) );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Insets used by tblCustomers omits any top spacing to keep the spacing even.  JavaFX does not consolidate whitespace as in web design.  If the top Inset were set to 10.0d for the TableView, the distance between the top controls and the TableView would be twice as wide as the distance between any of the other controls.</p>
+</div>
+<div class="paragraph">
+<p>Notice that these are static methods like the Priority.</p>
+</div>
+<div class="paragraph">
+<p>This picture shows the application when run in its initial 800x600 size.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/vboxandhboxapp_screenshot.png" alt="vboxandhboxapp screenshot">
+</div>
+<div class="title">Figure 4. Screenshot</div>
+</div>
+<div class="paragraph">
+<p>This image shows the application resized to a smaller height and width.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/vboxandhboxapp_screenshot_sm.png" alt="vboxandhboxapp screenshot sm">
+</div>
+<div class="title">Figure 5. Screenshot (Small)</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_select_the_right_containers">4.1.5. Select the Right Containers</h4>
+<div class="paragraph">
+<p>The philosophy of JavaFX layout is the same as the philosophy of Swing.  Select the right container for the task at hand.  This article presented the two most versatile containers: VBox and HBox.  By setting properties like alignment, hgrow, and vgrow, you can build incredibly complex layouts through nesting.  These are the containers I use the most and often are the only containers that I need.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_complete_code_2">4.1.6. Complete Code</h4>
+<div class="paragraph">
+<p>The code can be tested in a pair of .java files.  There is a POJO for the Customer object used by the TableView</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class Customer {
+
+    private String firstName;
+    private String lastName;
+
+    public Customer(String firstName,
+                    String lastName) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+    }
+
+    public String getFirstName() {
+        return firstName;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public String getLastName() {
+        return lastName;
+    }
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is the completed JavaFX Application subclass and main.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class VBoxAndHBoxApp extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        VBox vbox = new VBox();
+
+        HBox topControls = new HBox();
+        VBox.setMargin( topControls, new Insets(10.0d) );
+        topControls.setAlignment( Pos.BOTTOM_LEFT );
+
+        Button btnRefresh = new Button("Refresh");
+
+        HBox topRightControls = new HBox();
+        HBox.setHgrow(topRightControls, Priority.ALWAYS );
+        topRightControls.setAlignment( Pos.BOTTOM_RIGHT );
+        Hyperlink signOutLink = new Hyperlink("Sign Out");
+        topRightControls.getChildren().add( signOutLink );
+
+        topControls.getChildren().addAll( btnRefresh, topRightControls );
+
+        TableView&lt;Customer&gt; tblCustomers = new TableView&lt;&gt;();
+        tblCustomers.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        VBox.setMargin( tblCustomers, new Insets(0.0d, 10.0d, 10.0d, 10.0d) );
+        VBox.setVgrow( tblCustomers, Priority.ALWAYS );
+
+        TableColumn&lt;Customer, String&gt; lastNameCol = new TableColumn&lt;&gt;("Last Name");
+        lastNameCol.setCellValueFactory(new PropertyValueFactory&lt;&gt;("lastName"));
+
+        TableColumn&lt;Customer, String&gt; firstNameCol = new TableColumn&lt;&gt;("First Name");
+        firstNameCol.setCellValueFactory(new PropertyValueFactory&lt;&gt;("firstName"));
+
+        tblCustomers.getColumns().addAll( lastNameCol, firstNameCol );
+
+        Separator sep = new Separator();
+
+        HBox bottomControls = new HBox();
+        bottomControls.setAlignment(Pos.BOTTOM_RIGHT );
+        VBox.setMargin( bottomControls, new Insets(10.0d) );
+
+        Button btnClose = new Button("Close");
+
+        bottomControls.getChildren().add( btnClose );
+
+        vbox.getChildren().addAll(
+                topControls,
+                tblCustomers,
+                sep,
+                bottomControls
+        );
+
+        Scene scene = new Scene(vbox );
+
+        primaryStage.setScene( scene );
+        primaryStage.setWidth( 800 );
+        primaryStage.setHeight( 600 );
+        primaryStage.setTitle("VBox and HBox App");
+        primaryStage.setOnShown( (evt) -&gt; loadTable(tblCustomers) );
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    private void loadTable(TableView&lt;Customer&gt; tblCustomers) {
+        tblCustomers.getItems().add(new Customer("George", "Washington"));
+        tblCustomers.getItems().add(new Customer("Abe", "Lincoln"));
+        tblCustomers.getItems().add(new Customer("Thomas", "Jefferson"));
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_css">5. CSS</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Placeholder whilst things get built&#8230;&#8203;</p>
@@ -851,7 +1137,7 @@ primaryStage.show();</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_performance">5. Performance</h2>
+<h2 id="_performance">6. Performance</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Placeholder whilst things get built&#8230;&#8203;</p>
@@ -859,7 +1145,7 @@ primaryStage.show();</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_application_structure">6. Application Structure</h2>
+<h2 id="_application_structure">7. Application Structure</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Placeholder whilst things get built&#8230;&#8203;</p>
@@ -867,7 +1153,7 @@ primaryStage.show();</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_best_practices">7. Best Practices</h2>
+<h2 id="_best_practices">8. Best Practices</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Placeholder whilst things get built&#8230;&#8203;</p>
@@ -880,7 +1166,7 @@ primaryStage.show();</code></pre>
 </ol>
 </div>
 <div class="sect2">
-<h3 id="_1_styleable_properties">7.1. 1. Styleable Properties</h3>
+<h3 id="_1_styleable_properties">8.1. 1. Styleable Properties</h3>
 <div class="paragraph">
 <p>Author: Gerrit Grunwald</p>
 </div>
@@ -923,7 +1209,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 </div>
 </div>
 <div class="sect2">
-<h3 id="_2_tasks">7.2. 2. Tasks</h3>
+<h3 id="_2_tasks">8.2. 2. Tasks</h3>
 <div class="paragraph">
 <p>Author: Carl Walker</p>
 </div>
@@ -947,7 +1233,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 </ol>
 </div>
 <div class="sect3">
-<h4 id="_demonstration">7.2.1. Demonstration</h4>
+<h4 id="_demonstration">8.2.1. Demonstration</h4>
 <div class="paragraph">
 <p>The following screenshots show the operation of an HTML retrieval application.</p>
 </div>
@@ -958,7 +1244,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_pb.png" alt="tasks pb">
 </div>
-<div class="title">Figure 2. Screenshot of App Showing ProgressBar and Label</div>
+<div class="title">Figure 6. Screenshot of App Showing ProgressBar and Label</div>
 </div>
 <div class="paragraph">
 <p>When the retrieval is finished, a succeeded() callback is invoked and the UI is updated.  Note that the succeeded() callback takes place on the FX Thread, so it is safe to manipuplate controls.</p>
@@ -967,7 +1253,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_contents.png" alt="tasks contents">
 </div>
-<div class="title">Figure 3. Screenshot of App Showing Successful Retrieval</div>
+<div class="title">Figure 7. Screenshot of App Showing Successful Retrieval</div>
 </div>
 <div class="paragraph">
 <p>If there was an error retrieving the HTML, a failed() callback is invoked and an error Alert is shown.  failed() also takes place on the FX Thread.  This screenshot shows invalid input. An "h" is used in the URL instead of the correct "http".</p>
@@ -976,11 +1262,11 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_error.png" alt="tasks error">
 </div>
-<div class="title">Figure 4. Screenshot of App Showing Failure</div>
+<div class="title">Figure 8. Screenshot of App Showing Failure</div>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_code">7.2.2. Code</h4>
+<h4 id="_code">8.2.2. Code</h4>
 <div class="paragraph">
 <p>An event handler is placed on the Get HTML Button which creates the Task.  The entry point of the Task is the call() method which starts by calling updateMessage() and updateProgress().  These methods are executed on the FX Thread and will result in updates to any bound properties.</p>
 </div>
@@ -1074,7 +1360,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_complete_code_2">7.2.3. Complete Code</h4>
+<h4 id="_complete_code_3">8.2.3. Complete Code</h4>
 <div class="paragraph">
 <p>The code can be tested in a single .java file.</p>
 </div>
@@ -1210,7 +1496,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_contributing_2">8. Contributing</h2>
+<h2 id="_contributing_2">9. Contributing</h2>
 <div class="sectionbody">
 <div class="paragraph">
 <p>Placeholder whilst things get built&#8230;&#8203;</p>
@@ -1218,7 +1504,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_license">9. License</h2>
+<h2 id="_license">10. License</h2>
 <div class="sectionbody">
 <div class="imageblock">
 <div class="content">
@@ -1233,7 +1519,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-10-26 00:50:15 UTC
+Last updated 2016-11-01 20:27:41 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
