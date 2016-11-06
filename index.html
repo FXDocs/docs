@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Published 2016-11-02">
+<meta name="author" content="Published 2016-11-06">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2016-11-02</span><br>
+<span id="author" class="author">Published 2016-11-06</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -442,6 +442,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_layout">4. Layout</a>
 <ul class="sectlevel2">
 <li><a href="#_vbox_and_hbox">4.1. VBox and HBox</a></li>
+<li><a href="#_absolute_positioning_with_pane">4.2. Absolute Positioning with Pane</a></li>
+<li><a href="#_clipping">4.3. Clipping</a></li>
+<li><a href="#_gridpane">4.4. GridPane</a></li>
+<li><a href="#_gridpane_spanning">4.5. GridPane Spanning</a></li>
+<li><a href="#_gridpane_columnconstraints_and_rowconstraints">4.6. GridPane ColumnConstraints and RowConstraints</a></li>
 </ul>
 </li>
 <li><a href="#_css">5. CSS</a></li>
@@ -504,7 +509,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="sect3">
 <h4 id="_listview_filtering_in_javafx">3.1.1. ListView Filtering in JavaFX</h4>
 <div class="paragraph">
-<p>(Contributed by Carl Walker, October 1, 2016)</p>
+<p>Author: Carl Walker</p>
 </div>
 <div class="paragraph">
 <p>This article demonstrates how to filter a ListView in a JavaFX Application.  Two lists are managed by the Application.  One list contains all of the items in the data model.  The second list contains the items currently being viewed.  A scrap of comparison logic stored as a filter mediates between the two.</p>
@@ -856,26 +861,26 @@ primaryStage.show();</code></pre>
 <p>Author: Carl Walker</p>
 </div>
 <div class="paragraph">
-<p>Layout in JavaFX begins with selecting the right container controls.  The two layout controls I use most often are VBox and HBox.  VBox is a container that arranges its children in a vertical stack.  HBox arranges its children in a horizontal row.  The power of these two controls comes from wrapping them and setting a few key properties: alignment, hgrow, and vgrow.</p>
+<p>Layout in JavaFX begins with selecting the right container controls.  The two layout controls I use most often are <code>VBox</code> and <code>HBox</code>.  <code>VBox</code> is a container that arranges its children in a vertical stack.  <code>HBox</code> arranges its children in a horizontal row.  The power of these two controls comes from wrapping them and setting a few key properties: alignment, hgrow, and vgrow.</p>
 </div>
 <div class="paragraph">
-<p>This article will demonstrate these controls by through a sample project.   A mockup of the project shows a UI with the following:</p>
+<p>This article will demonstrate these controls through a sample project.   A mockup of the project shows a UI with the following:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>A row of top controls containing a Refresh Button and a Sign Out Hyperlink,</p>
+<p>A row of top controls containing a Refresh <code>Button</code> and a Sign Out <code>Hyperlink</code>,</p>
 </li>
 <li>
-<p>A TableView that will grow to take up the extra vertical space, and</p>
+<p>A <code>TableView</code> that will grow to take up the extra vertical space, and</p>
 </li>
 <li>
-<p>A Close Button.</p>
+<p>A Close <code>Button</code>.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The UI also features a Separator which divides the top part of the screen with what may become a standard lower panel (Save Button, Cancel Button, etc) for the application.</p>
+<p>The UI also features a <code>Separator</code> which divides the top part of the screen with what may become a standard lower panel (Save <code>Button</code>, Cancel <code>Button</code>, etc) for the application.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -886,7 +891,7 @@ primaryStage.show();</code></pre>
 <div class="sect3">
 <h4 id="_structure">4.1.1. Structure</h4>
 <div class="paragraph">
-<p>A VBox is the outermost container "vbox".  This will be the Parent provided to the Scene.  Simply putting UI controls in this VBox will allow the controls&#8201;&#8212;&#8201;most notably the TableView&#8201;&#8212;&#8201;to stretch to fit the available horizontal space.  For the top controls, the Refresh Button and the Sign Out Link, I wrap those in an HBox.  Similary, I wrap the bottom Close Button in an HBox, allowing for additional Buttons.</p>
+<p>A <code>VBox</code> is the outermost container "vbox".  This will be the <code>Parent</code> provided to the Scene.  Simply putting UI controls in this <code>VBox</code> will allow the controls&#8201;&#8212;&#8201;most notably the <code>TableView</code>&#8201;&#8212;&#8201;to stretch to fit the available horizontal space.  The top controls, the Refresh <code>Button</code> and the Sign Out <code>Hyperlink</code>, are wrapped in an <code>HBox</code>.  Similarly, I wrap the bottom Close <code>Button</code> in an <code>HBox</code>, allowing for additional Buttons.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -917,7 +922,7 @@ vbox.getChildren().addAll(
 </div>
 </div>
 <div class="paragraph">
-<p>This picture shows the mockup broken down by container.  The Parent VBox is the outermost blue rectangle.  The HBoxes are the inner rectangles (red and green).</p>
+<p>This picture shows the mockup broken down by container.  The parent <code>VBox</code> is the outermost blue rectangle.  The HBoxes are the inner rectangles (red and green).</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -929,16 +934,16 @@ vbox.getChildren().addAll(
 <div class="sect3">
 <h4 id="_alignment_and_hgrow">4.1.2. Alignment and Hgrow</h4>
 <div class="paragraph">
-<p>The Refresh Button is aligned to the left while the Sign Out Hyperlink is aligned to the right.  This is accomplished using two HBoxes.  topControls is an HBox that contains the Refresh Button and also contains an HBox with the Sign Out Hyperlink.  As the screen grows wider, the Sign Out Hyperlink will be pulled to the right while the Refresh Button will retain its left alignment.</p>
+<p>The Refresh <code>Button</code> is aligned to the left while the Sign Out <code>Hyperlink</code> is aligned to the right.  This is accomplished using two HBoxes.  topControls is an <code>HBox</code> that contains the Refresh <code>Button</code> and also contains an <code>HBox</code> with the Sign Out <code>Hyperlink</code>.  As the screen grows wider, the Sign Out <code>Hyperlink</code> will be pulled to the right while the Refresh <code>Button</code> will retain its left alignment.</p>
 </div>
 <div class="paragraph">
 <p>Alignment is the property that tells a container where to position a control.  topControls sets alignment to the BOTTOM_LEFT.  topRightControls sets alignment to the BOTTOM_RIGHT.  "BOTTOM" makes sure that the baseline of the text "Refresh" matches the baseline of the text "Sign Out".</p>
 </div>
 <div class="paragraph">
-<p>In order to make the Sign Out Hyperlink move to the right when the screen gets wider, Priority.ALWAYS is needed.  This is a cue to the JavaFX to widen topRightControls.  Otherwise, topControls will keep the space and topRightControls will appear to the left.  Sign Out Hyperlink still would be right-aligned but in a narrower container.</p>
+<p>In order to make the Sign Out <code>Hyperlink</code> move to the right when the screen gets wider, <code>Priority.ALWAYS</code> is needed.  This is a cue to the JavaFX to widen topRightControls.  Otherwise, topControls will keep the space and topRightControls will appear to the left.  Sign Out <code>Hyperlink</code> still would be right-aligned but in a narrower container.</p>
 </div>
 <div class="paragraph">
-<p>Notice that setHgrow() is a static method and neither invoked on the topControls HBox nor on itself, topRightControls.  This is a facet of the JavaFX API that can be confusing because most of the API sets properties via setters on objects.</p>
+<p>Notice that <code>setHgrow()</code> is a static method and neither invoked on the topControls <code>HBox</code> nor on itself, topRightControls.  This is a facet of the JavaFX API that can be confusing because most of the API sets properties via setters on objects.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -949,7 +954,7 @@ topRightControls.setAlignment( Pos.BOTTOM_RIGHT );</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Close Button is wrapped in an HBox and positioned using the BOTTOM_RIGHT priority.</p>
+<p>Close <code>Button</code> is wrapped in an <code>HBox</code> and positioned using the BOTTOM_RIGHT priority.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -960,7 +965,7 @@ topRightControls.setAlignment( Pos.BOTTOM_RIGHT );</code></pre>
 <div class="sect3">
 <h4 id="_vgrow">4.1.3. Vgrow</h4>
 <div class="paragraph">
-<p>Since the outermost containiner is VBox, the child TableView will expand to take up extra horizontal space when the window is widened.  However, vertically reisizing the window will produce a gap at the bottom of the screen.  The VBox does not automatically resize any of its children.  As with the topRightControls HBox, a grow indicator can be set.  In the case of the HBox, this was a horizontal resizing instruction setHgrow().  For the TableView container VBox, this will be setVgrow().</p>
+<p>Since the outermost container is <code>VBox</code>, the child <code>TableView</code> will expand to take up extra horizontal space when the window is widened.  However, vertically resizing the window will produce a gap at the bottom of the screen.  The <code>VBox</code> does not automatically resize any of its children.  As with the topRightControls <code>HBox</code>, a grow indicator can be set.  In the case of the <code>HBox</code>, this was a horizontal resizing instruction setHgrow().  For the <code>TableView</code> container <code>VBox</code>, this will be setVgrow().</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -971,7 +976,7 @@ topRightControls.setAlignment( Pos.BOTTOM_RIGHT );</code></pre>
 <div class="sect3">
 <h4 id="_margin">4.1.4. Margin</h4>
 <div class="paragraph">
-<p>There are a few ways to space out UI controls.  This article uses the margin property on several of the containers to add whitespace around the controls.  These are set individually rather than using a spacing on the VBox so that the Separator will span the entire width.</p>
+<p>There are a few ways to space out UI controls.  This article uses the margin property on several of the containers to add whitespace around the controls.  These are set individually rather than using a spacing on the <code>VBox</code> so that the Separator will span the entire width.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -981,10 +986,10 @@ VBox.setMargin( bottomControls, new Insets(10.0d) );</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The Insets used by tblCustomers omits any top spacing to keep the spacing even.  JavaFX does not consolidate whitespace as in web design.  If the top Inset were set to 10.0d for the TableView, the distance between the top controls and the TableView would be twice as wide as the distance between any of the other controls.</p>
+<p>The <code>Insets</code> used by tblCustomers omits any top spacing to keep the spacing even.  JavaFX does not consolidate whitespace as in web design.  If the top Inset were set to 10.0d for the <code>TableView</code>, the distance between the top controls and the <code>TableView</code> would be twice as wide as the distance between any of the other controls.</p>
 </div>
 <div class="paragraph">
-<p>Notice that these are static methods like the Priority.</p>
+<p>Notice that these are static methods like the <code>Priority</code>.</p>
 </div>
 <div class="paragraph">
 <p>This picture shows the application when run in its initial 800x600 size.</p>
@@ -1008,13 +1013,13 @@ VBox.setMargin( bottomControls, new Insets(10.0d) );</code></pre>
 <div class="sect3">
 <h4 id="_select_the_right_containers">4.1.5. Select the Right Containers</h4>
 <div class="paragraph">
-<p>The philosophy of JavaFX layout is the same as the philosophy of Swing.  Select the right container for the task at hand.  This article presented the two most versatile containers: VBox and HBox.  By setting properties like alignment, hgrow, and vgrow, you can build incredibly complex layouts through nesting.  These are the containers I use the most and often are the only containers that I need.</p>
+<p>The philosophy of JavaFX layout is the same as the philosophy of Swing.  Select the right container for the task at hand.  This article presented the two most versatile containers: <code>VBox</code> and HBox.  By setting properties like alignment, hgrow, and vgrow, you can build incredibly complex layouts through nesting.  These are the containers I use the most and often are the only containers that I need.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_complete_code_2">4.1.6. Complete Code</h4>
 <div class="paragraph">
-<p>The code can be tested in a pair of .java files.  There is a POJO for the Customer object used by the TableView</p>
+<p>The code can be tested in a pair of .java files.  There is a POJO for the Customer object used by the <code>TableView</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1047,7 +1052,7 @@ VBox.setMargin( bottomControls, new Insets(10.0d) );</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>This is the completed JavaFX Application subclass and main.</p>
+<p>This is the completed JavaFX <code>Application</code> subclass and main.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -1120,6 +1125,1058 @@ VBox.setMargin( bottomControls, new Insets(10.0d) );</code></pre>
         tblCustomers.getItems().add(new Customer("George", "Washington"));
         tblCustomers.getItems().add(new Customer("Abe", "Lincoln"));
         tblCustomers.getItems().add(new Customer("Thomas", "Jefferson"));
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_absolute_positioning_with_pane">4.2. Absolute Positioning with Pane</h3>
+<div class="paragraph">
+<p>Author: Carl Walker</p>
+</div>
+<div class="paragraph">
+<p>Containers like <code>VBox</code> or <code>BorderPane</code> align and distribute their children.  The superclass <code>Pane</code> is also a container, but does not impose an order on its children.  The children position themselves through properties like x, centerX, and layoutX.  This is called absolute positioning and it is a technique to place a <code>Shape</code> or a <code>Node</code> at a certain location on the screen.</p>
+</div>
+<div class="paragraph">
+<p>This screenshot shows an About View.  The About View contains a <code>Hyperlink</code> in the middle of the screen "About this App".  The About View uses several JavaFX shapes to form a design which is cropped to appear like a business card.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/paneapp_about_view.png" alt="paneapp about view">
+</div>
+<div class="title">Figure 6. Screenshot of About View in PaneApp</div>
+</div>
+<div class="sect3">
+<h4 id="_pane_size">4.2.1. Pane Size</h4>
+<div class="paragraph">
+<p>Unlike most containers, <code>Pane</code> resizes to fit its contents and not the other way around.  This picture is a screenshot from Scenic View taken prior to adding the lower-right Arc.  The <code>Pane</code> is the yellow highlighted area.  Notice that it does not take up the full <code>Stage</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/paneapp_pane_size_scenicview.png" alt="paneapp pane size scenicview">
+</div>
+<div class="title">Figure 7. Scenic View Highlighting Partially Built Screen</div>
+</div>
+<div class="paragraph">
+<p>This is a screenshot taken after the lower-right <code>Arc</code> was added.  This <code>Arc</code> was placed closer to the bottom-right edge of the <code>Stage</code>.  This forces the Pane to stretch to accommodate the expanded contents.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/paneapp_scenicview_full_stage.png" alt="paneapp scenicview full stage">
+</div>
+<div class="title">Figure 8. Scenic View Highlighting Expanded Pane</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_pane">4.2.2. The Pane</h4>
+<div class="paragraph">
+<p>The outermost container of the About View is a <code>VBox</code> whose sole contents are the <code>Pane</code>.  The <code>VBox</code> is used to fit the entire <code>Stage</code> and provides a background.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">VBox vbox = new VBox();
+vbox.setPadding( new Insets( 10 ) );
+vbox.setBackground(
+    new Background(
+        new BackgroundFill(Color.BLACK, new CornerRadii(0), new Insets(0))
+        ));
+
+Pane p = new Pane();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_shapes">4.2.3. The Shapes</h4>
+<div class="paragraph">
+<p>In the upper left of the screen, there is a group of 4 'Arcs' and 1 'Circle'.  This code positions largeArc at (0,0) through the centerX and centerY arguments in the <code>Arc</code> constructor.  Notice that backgroundArc is also positioned at (0,0) and appears underneath largeArc.  <code>Pane</code> does not attempt to deconflict overlapping shapes and in this case, overlapping is what is wanted.  smArc1 is placed at (0,160) which is down on the Y axis.  smArc2 is positioned at (160,0) which is right on the X axis.  smCircle is positioned at the same distance as smArc1 and smArc2, but at a 45 degree angle.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Arc largeArc = new Arc(0, 0, 100, 100, 270, 90);
+largeArc.setType(ArcType.ROUND);
+
+Arc backgroundArc = new Arc(0, 0, 160, 160, 270, 90 );
+backgroundArc.setType( ArcType.ROUND );
+
+Arc smArc1 = new Arc( 0, 160, 30, 30, 270, 180);
+smArc1.setType(ArcType.ROUND);
+
+Circle smCircle = new Circle(160/Math.sqrt(2.0), 160/Math.sqrt(2.0), 30,Color.web("0xF2A444"));
+
+Arc smArc2 = new Arc( 160, 0, 30, 30, 180, 180);
+smArc2.setType(ArcType.ROUND);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The lower-right <code>Arc</code> is positioned based on the overall height of the <code>Stage</code>.  The 20 subtracted from the height is the 10 pixel <code>Insets</code> from the <code>VBox</code> (10 for left + 10 for right).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Arc medArc = new Arc(568-20, 320-20, 60, 60, 90, 90);
+medArc.setType(ArcType.ROUND);
+
+primaryStage.setWidth( 568 );
+primaryStage.setHeight( 320 );</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_hyperlink">4.2.4. The Hyperlink</h4>
+<div class="paragraph">
+<p>The <code>Hyperlink</code> is positioned offset the center (284,160) which is the width and height of the <code>Stage</code> both divided by two.  This positions the text of the <code>Hyperlink</code> in the lower-right quadrant of the screen, so an offset is needed based on the <code>Hyperlink</code> width and height.  The dimensions are not available for the <code>Hyperlink</code> until the screen is shown, so I make a post-shown adjustment to the position.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Hyperlink hyperlink = new Hyperlink("About this App");
+
+primaryStage.setOnShown( (evt) -&gt; {
+     hyperlink.setLayoutX( 284 - (hyperlink.getWidth()/3) );
+     hyperlink.setLayoutY( 160 - hyperlink.getHeight() );
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>Hyperlink</code> is not placed in the true center of the screen.  The layoutX value is based on a divide-by-three operation that moves it away from the upper-left design.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_z_order">4.2.5. Z-Order</h4>
+<div class="paragraph">
+<p>As mentioned earlier, <code>Pane</code> supports overlapping children.  This picture shows the About View with depth added to the upper-left design.  The smaller <code>Arcs</code> and <code>Circle</code> hover over backgroundArc as does largeArc.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/paneapp_zorder.png" alt="paneapp zorder">
+</div>
+<div class="title">Figure 9. About View Showing Depth</div>
+</div>
+<div class="paragraph">
+<p>The z-order in this example is determined by the order in which the children are added to the <code>Pane</code>.  backgroundArc is obscured by items added later, most notably largeArc.  To rearrange the children, use the toFront() and toBack() methods after the items have been added to the <code>Pane</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">p.getChildren().addAll( backgroundArc, largeArc, smArc1, smCircle, smArc2, hyperlink, medArc );
+
+vbox.getChildren().add( p );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When starting JavaFX, it is tempting to build an absolute layout.  Be aware that absolute layouts are brittle, often breaking when the screen is resized or when items are added during the software maintenance phase.  Yet, there are good reasons for using absolute positioning.  Gaming is one such usage.  In a game, you can adjust the (x,y) coordinate of a 'Shape' to move a game piece around the screen.  This article demonstrated the JavaFX class <code>Pane</code> which provides absolute positioning to any shape-driven UI.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_completed_code">4.2.6. Completed Code</h4>
+<div class="paragraph">
+<p>This is the completed JavaFX <code>Application</code> subclass and main.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class PaneApp extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        VBox vbox = new VBox();
+        vbox.setPadding( new Insets( 10 ) );
+        vbox.setBackground(
+            new Background(
+                new BackgroundFill(Color.BLACK, new CornerRadii(0), new Insets(0))
+                ));
+
+        Pane p = new Pane();
+
+        Arc largeArc = new Arc(0, 0, 100, 100, 270, 90);
+        largeArc.setFill(Color.web("0x59291E"));
+        largeArc.setType(ArcType.ROUND);
+
+        Arc backgroundArc = new Arc(0, 0, 160, 160, 270, 90 );
+        backgroundArc.setFill( Color.web("0xD96F32") );
+        backgroundArc.setType( ArcType.ROUND );
+
+        Arc smArc1 = new Arc( 0, 160, 30, 30, 270, 180);
+        smArc1.setFill(Color.web("0xF2A444"));
+        smArc1.setType(ArcType.ROUND);
+
+        Circle smCircle = new Circle(
+            160/Math.sqrt(2.0), 160/Math.sqrt(2.0), 30,Color.web("0xF2A444")
+            );
+
+        Arc smArc2 = new Arc( 160, 0, 30, 30, 180, 180);
+        smArc2.setFill(Color.web("0xF2A444"));
+        smArc2.setType(ArcType.ROUND);
+
+        Hyperlink hyperlink = new Hyperlink("About this App");
+        hyperlink.setFont( Font.font(36) );
+        hyperlink.setTextFill( Color.web("0x3E6C93") );
+        hyperlink.setBorder( Border.EMPTY );
+
+        Arc medArc = new Arc(568-20, 320-20, 60, 60, 90, 90);
+        medArc.setFill(Color.web("0xD9583B"));
+        medArc.setType(ArcType.ROUND);
+
+        p.getChildren().addAll( backgroundArc, largeArc, smArc1, smCircle,
+            smArc2, hyperlink, medArc );
+
+        vbox.getChildren().add( p );
+
+        Scene scene = new Scene(vbox);
+        scene.setFill(Color.BLACK);
+
+        primaryStage.setTitle("Pane App");
+        primaryStage.setScene( scene );
+        primaryStage.setWidth( 568 );
+        primaryStage.setHeight( 320 );
+        primaryStage.setOnShown( (evt) -&gt; {
+             hyperlink.setLayoutX( 284 - (hyperlink.getWidth()/3) );
+             hyperlink.setLayoutY( 160 - hyperlink.getHeight() );
+        });
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_clipping">4.3. Clipping</h3>
+<div class="paragraph">
+<p>Author: Christoph Nahr</p>
+</div>
+<div class="paragraph">
+<p>Most JavaFX layout containers (base class <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/layout/Region.html">Region</a>) automatically position and size their children, so clipping any child contents that might protrude beyond the container’s layout bounds is never an issue. The big exception is <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/layout/Pane.html">Pane</a>, a direct subclass of <code>Region</code> and the base class for all layout containers with publicly accessible children. Unlike its subclasses Pane does not attempt to arrange its children but simply accepts explicit user positioning and sizing.</p>
+</div>
+<div class="paragraph">
+<p>This makes <code>Pane</code> suitable as a drawing surface, similar to <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/canvas/Canvas.html">Canvas</a> but rendering user-defined <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/shape/Shape.html">Shape</a> children rather than direct drawing commands. The problem is that drawing surfaces are usually expected to automatically clip their contents at their bounds. <code>Canvas</code> does this by default but <code>Pane</code> does not. From the last paragraph of the Javadoc entry for <code>Pane</code>:</p>
+</div>
+<div class="quoteblock">
+<blockquote>
+Pane does not clip its content by default, so it is possible that children’s bounds may extend outside its own bounds, either if children are positioned at negative coordinates or the pane is resized smaller than its preferred size.
+</blockquote>
+</div>
+<div class="paragraph">
+<p>This quote is somewhat misleading. Children are rendered (wholly or partially) outside their parent <code>Pane</code> 'whenever' their combination of position and size extends beyond the parent’s bounds, regardless of whether the position is negative or the <code>Pane</code> is ever resized. Quite simply, <code>Pane</code> only provides a coordinate shift to its children, based on its upper-left corner – but its layout bounds are completely ignored while rendering children. Note that the Javadoc for all <code>Pane</code> subclasses (that I checked) includes a similar warning. They don’t clip their contents either, but as mentioned above this is not usually a problem for them because they automatically arrange their children.</p>
+</div>
+<div class="paragraph">
+<p>So to properly use <code>Pane</code> as a drawing surface for <code>Shapes</code>, we need to manually clip its contents. This is somewhat complex, especially when a visible border is involved. I wrote a small demo application to illustrate the default behavior and various steps to fix it. You can download it as <a href="http://kynosarges.org/misc/PaneDemo.zip">PaneDemo.zip</a> which contains a project for NetBeans 8.2 and Java SE 8u112. The following sections explain each step with screenshots and pertinent code snippets.</p>
+</div>
+<div class="sect3">
+<h4 id="_default_behavior">4.3.1. Default Behavior</h4>
+<div class="paragraph">
+<p>Starting up, PaneDemo shows what happens when you put an <code>Ellipse</code> shape into a <code>Pane</code> that’s too small to contain it entirely. The <code>Pane</code> has a nice thick rounded <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/layout/Border.html">Border</a> to visualize its area. The application window is resizable, with the <code>Pane</code> size following the window size. The three buttons on the left are used to switch to the other steps in the demo; click Default (Alt+D) to revert to the default output from a later step.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/clipping_extends.png" alt="clipping extends">
+</div>
+<div class="title">Figure 10. Child Extending Outside Pane Bounds</div>
+</div>
+<div class="paragraph">
+<p>As you can see, the <code>Ellipse</code> overwrites its parent’s <code>Border</code> and protrudes well beyond it. The following code is used to generate the default view. It’s split into several smaller methods, and a constant for the <code>Border</code> corner radius, because they will be referenced in the next steps.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">static final double BORDER_RADIUS = 4;
+
+static Border createBorder() {
+    return new Border(
+            new BorderStroke(Color.BLACK, BorderStrokeStyle.SOLID,
+            new CornerRadii(BORDER_RADIUS), BorderStroke.THICK));
+}
+
+static Shape createShape() {
+    final Ellipse shape = new Ellipse(50, 50);
+    shape.setCenterX(80);
+    shape.setCenterY(80);
+    shape.setFill(Color.LIGHTCORAL);
+    shape.setStroke(Color.LIGHTCORAL);
+    return shape;
+}
+
+static Region createDefault() {
+    final Pane pane = new Pane(createShape());
+    pane.setBorder(createBorder());
+    pane.setPrefSize(100, 100);
+    return pane;
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_simple_clipping">4.3.2. Simple Clipping</h4>
+<div class="paragraph">
+<p>Surprisingly, there is no predefined option to have a resizable <code>Region</code> automatically clip its children to its current size. Instead, you need to use the basic <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/scene/Node.html#clipProperty">clipProperty</a> defined on <code>Node</code> and keep it updated manually to reflect changing layout bounds. Method <code>clipChildren</code> below show how this works (with Javadoc because you may want to reuse it in your own code):</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">/**
+ * Clips the children of the specified {@link Region} to its current size.
+ * This requires attaching a change listener to the region’s layout bounds,
+ * as JavaFX does not currently provide any built-in way to clip children.
+ *
+ * @param region the {@link Region} whose children to clip
+ * @param arc the {@link Rectangle#arcWidth} and {@link Rectangle#arcHeight}
+ *            of the clipping {@link Rectangle}
+ * @throws NullPointerException if {@code region} is {@code null}
+ */
+static void clipChildren(Region region, double arc) {
+
+    final Rectangle outputClip = new Rectangle();
+    outputClip.setArcWidth(arc);
+    outputClip.setArcHeight(arc);
+    region.setClip(outputClip);
+
+    region.layoutBoundsProperty().addListener((ov, oldValue, newValue) -&gt; {
+        outputClip.setWidth(newValue.getWidth());
+        outputClip.setHeight(newValue.getHeight());
+    });
+}
+
+static Region createClipped() {
+    final Pane pane = new Pane(createShape());
+    pane.setBorder(createBorder());
+    pane.setPrefSize(100, 100);
+
+    // clipped children still overwrite Border!
+    clipChildren(pane, 3 * BORDER_RADIUS);
+
+    return pane;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Choose Clipped (Alt+C) in PaneDemo to render the corresponding output. Here’s how that looks:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/clipping_clipped.png" alt="clipping clipped">
+</div>
+<div class="title">Figure 11. Pane with Clip Applied</div>
+</div>
+<div class="paragraph">
+<p>That’s better. The <code>Ellipse</code> no longer protrudes beyond the <code>Pane</code> – but still overwrites its Border. Also note that we had to manually specify an estimated corner rounding for the clipping <code>Rectangle</code> in order to reflect the rounded <code>Border</code> corners. This estimate is 3 * BORDER_RADIUS because the corner radius specified on <code>Border</code> actually defines its inner radius, and the outer radius (which we need here) will be greater depending on the <code>Border</code> thickness. (You could compute the outer radius exactly if you really wanted to, but I skipped that for the demo application.)</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_nested_panes">4.3.3. Nested Panes</h4>
+<div class="paragraph">
+<p>Can we somehow specify a clipping region that excludes a visible` Border`? Not on the drawing <code>Pane</code> itself, as far as I can tell. The clipping region affects the <code>Border</code> as well as other contents, so if you were to shrink the clipping region to exclude it you would no longer see any <code>Border</code> at all. Instead, the solution is to create two nested panes: one inner drawing <code>Pane</code> without <code>Border</code> that clips exactly to its bounds, and one outer <code>StackPane</code> that defines the visible <code>Border</code> and also resizes the drawing <code>Pane</code>. Here is the final code:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">static Region createNested() {
+    // create drawing Pane without Border or size
+    final Pane pane = new Pane(createShape());
+    clipChildren(pane, BORDER_RADIUS);
+
+    // create sized enclosing Region with Border
+    final Region container = new StackPane(pane);
+    container.setBorder(createBorder());
+    container.setPrefSize(100, 100);
+    return container;
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Choose Nested (Alt+N) in PaneDemo to render the corresponding output. Now everything looks as it should:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/clipping_nested.png" alt="clipping nested">
+</div>
+<div class="title">Figure 12. Nesting Pane in StackPane</div>
+</div>
+<div class="paragraph">
+<p>As an added bonus, we no longer need to guesstimate a correct corner radius for the clipping <code>Rectangle</code>. We now clip to the inner rather than outer circumference of our visible <code>Border</code>, so we can directly reuse its inner corner radius. Should you specify multiple different corner radii or an otherwise more complex <code>Border</code> you’d have to define a correspondingly more complex clipping <code>Shape</code>.</p>
+</div>
+<div class="paragraph">
+<p>There is one small caveat. The top-left corner of the drawing <code>Pane</code> to which all child coordinates are relative now starts <em>within</em> the visible <code>Border</code>. If you retroactively change a single <code>Pane</code> with visible <code>Border</code> to nested panes as shown here, all children will exhibit a slight positioning shift corresponding to the <code>Border</code> thickness.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gridpane">4.4. GridPane</h3>
+<div class="paragraph">
+<p>Author: Carl Walker</p>
+</div>
+<div class="paragraph">
+<p>Forms in business applications often use a layout that mimics a database record.  For each column in a table, a header is added on the left-hand side which is matched with a row value on the right-hand side. JavaFX has a special purpose control called <code>GridPane</code> for this type of layout that keeps contents aligned by row and column.  <code>GridPane</code> also supports spanning for more complex layouts.</p>
+</div>
+<div class="paragraph">
+<p>This screenshot shows a basic <code>GridPane</code> layout.  On the left-hand side of the form, there is a column of field names: Email, Priority, Problem, Description.  On the right-hand side of the form, there is a column of controls which will display the value of the corresponding field.  The field names are of type <code>Label</code> and the value controls are a mixture including <code>TextField</code>, <code>TextArea</code>, and <code>ComboBox</code>.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/gridpaneapp.png" alt="gridpaneapp">
+</div>
+<div class="title">Figure 13. Field Name / Value Pairs in a GridPane</div>
+</div>
+<div class="paragraph">
+<p>The following code shows the objects created for the form. "vbox" is the root of the <code>Scene</code> and will also contain the <code>ButtonBar</code> at the base of the form.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">VBox vbox = new VBox();
+
+GridPane gp = new GridPane();
+
+Label lblTitle = new Label("Support Ticket");
+
+Label lblEmail = new Label("Email");
+TextField tfEmail = new TextField();
+
+Label lblPriority = new Label("Priority");
+ObservableList&lt;String&gt; priorities = FXCollections.observableArrayList("Medium", "High", "Low");
+ComboBox&lt;String&gt; cbPriority = new ComboBox&lt;&gt;(priorities);
+
+Label lblProblem = new Label("Problem");
+TextField tfProblem = new TextField();
+
+Label lblDescription = new Label("Description");
+TextArea taDescription = new TextArea();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>GridPane has a handy method <code>setGridLinesVisible()</code> which shows the grid structure and gutters.  It is especially useful in more complex layouts where spanning is involved because gaps in the row/col assignments can cause shifts in the layout.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/gridpaneapp_lines.png" alt="gridpaneapp lines">
+</div>
+<div class="title">Figure 14. Grid Structure and Gutters</div>
+</div>
+<div class="sect3">
+<h4 id="_spacing">4.4.1. Spacing</h4>
+<div class="paragraph">
+<p>As a container, <code>GridPane</code> has a padding property that can be set to surround the <code>GridPane</code> contents with whitespace.  "padding" will take an <code>Inset</code> object as a parameter.  In this example, 10 pixels of whitespace is applied to all sides so a short form constructor is used for <code>Inset</code>.</p>
+</div>
+<div class="paragraph">
+<p>Within the <code>GridPane</code>, vgap and hgap control the gutters.  The hgap is set to 4 to keep the fields close to their values.  vgap is slightly larger to help with mouse navigation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">gp.setPadding( new Insets(10) );
+gp.setHgap( 4 );
+gp.setVgap( 8 );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In order to keep the lower part of the form consistent, a <code>Priority</code> is set on the VBox.  This will <em>not resize</em> the individual rows however.  For individual resize specifications, use <code>ColumnConstraints</code> and <code>RowConstraints</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">VBox.setVgrow(gp, Priority.ALWAYS );</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_adding_items">4.4.2. Adding Items</h4>
+<div class="paragraph">
+<p>Unlike containers like <code>BorderPane</code> or <code>HBox</code>, Nodes need to specify their position within the <code>GridPane</code>.  This is done with the <code>add()</code> method on the <code>GridPane</code> and not the add method on a container children property.  This form of the <code>GridPane</code> <code>add()</code> method takes a zero-based column position and a zero-based row position.  This code puts two statements on the same line for readability.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">gp.add( lblTitle,       1, 1);  // empty item at 0,0
+gp.add( lblEmail,       0, 2); gp.add(tfEmail,        1, 2);
+gp.add( lblPriority,    0, 3); gp.add( cbPriority,    1, 3);
+gp.add( lblProblem,     0, 4); gp.add( tfProblem,     1, 4);
+gp.add( lblDescription, 0, 5); gp.add( taDescription, 1, 5);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>lblTitle is put in the second column of the first row.  There is no entry in the first column of the first row.</p>
+</div>
+<div class="paragraph">
+<p>Subsequent additions are presented in pairs.  Field name <code>Label</code> objects are put in the first column (column index=0) and value controls are put in the second column (column index=1).  The rows are added by the incremented second value.  For example, lblPriority is put in the fourth row along with its <code>ComboBox</code>.</p>
+</div>
+<div class="paragraph">
+<p><code>GridPane</code> is an important container in JavaFX business application design.  When you have a requirement for name / value pairs, <code>GridPane</code> will be an easy way to support the strong column orientation of a traditional form.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_completed_code_2">4.4.3. Completed Code</h4>
+<div class="paragraph">
+<p>The following class is the complete code form the example.  This include the definition of the <code>ButtonBar</code> which was not presented in the preceding sections focused on <code>GridPane</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class GridPaneApp extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        VBox vbox = new VBox();
+
+        GridPane gp = new GridPane();
+        gp.setPadding( new Insets(10) );
+        gp.setHgap( 4 );
+        gp.setVgap( 8 );
+
+        VBox.setVgrow(gp, Priority.ALWAYS );
+
+        Label lblTitle = new Label("Support Ticket");
+
+        Label lblEmail = new Label("Email");
+        TextField tfEmail = new TextField();
+
+        Label lblPriority = new Label("Priority");
+        ObservableList&lt;String&gt; priorities =
+            FXCollections.observableArrayList("Medium", "High", "Low");
+        ComboBox&lt;String&gt; cbPriority = new ComboBox&lt;&gt;(priorities);
+
+        Label lblProblem = new Label("Problem");
+        TextField tfProblem = new TextField();
+
+        Label lblDescription = new Label("Description");
+        TextArea taDescription = new TextArea();
+
+        gp.add( lblTitle,       1, 1);  // empty item at 0,0
+        gp.add( lblEmail,       0, 2); gp.add(tfEmail,        1, 2);
+        gp.add( lblPriority,    0, 3); gp.add( cbPriority,    1, 3);
+        gp.add( lblProblem,     0, 4); gp.add( tfProblem,     1, 4);
+        gp.add( lblDescription, 0, 5); gp.add( taDescription, 1, 5);
+
+        Separator sep = new Separator(); // hr
+
+        ButtonBar buttonBar = new ButtonBar();
+        buttonBar.setPadding( new Insets(10) );
+
+        Button saveButton = new Button("Save");
+        Button cancelButton = new Button("Cancel");
+
+        buttonBar.setButtonData(saveButton, ButtonBar.ButtonData.OK_DONE);
+        buttonBar.setButtonData(cancelButton, ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        buttonBar.getButtons().addAll(saveButton, cancelButton);
+
+        vbox.getChildren().addAll( gp, sep, buttonBar );
+
+        Scene scene = new Scene(vbox);
+
+        primaryStage.setTitle("Grid Pane App");
+        primaryStage.setScene(scene);
+        primaryStage.setWidth( 736 );
+        primaryStage.setHeight( 414  );
+        primaryStage.show();
+
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gridpane_spanning">4.5. GridPane Spanning</h3>
+<div class="paragraph">
+<p>Author: Carl Walker</p>
+</div>
+<div class="paragraph">
+<p>For more complex forms implemented with <code>GridPane</code>, spanning is supported.  Spanning allows a control to claim the space of neighboring columns (colspan) and neighboring rows (rowspan).  This screenshot shows a form that extends the example in the previous section.  The two-column layout of the earlier version has been replaced with a multiple-column layout.  Fields like Problem and Description retain the original structure.  But controls were added to the rows that formerly held only Email and Priority.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/complexgridpaneapp.png" alt="complexgridpaneapp">
+</div>
+<div class="title">Figure 15. Spanning Columns</div>
+</div>
+<div class="paragraph">
+<p>Turing the grid lines on, notice that the former two column grid is replaced with a six column grid.  The third row containing six items&#8201;&#8212;&#8201;3 field name / value pairs&#8201;&#8212;&#8201;dictates the structure.  The rest of the form will use spanning in order to fill in the whitespace.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/complexgridpaneapp_lines.png" alt="complexgridpaneapp lines">
+</div>
+<div class="title">Figure 16. Lines Highlighting Spanning</div>
+</div>
+<div class="paragraph">
+<p>The <code>VBox</code> and <code>GridPane</code> container objects used in this update follow.  There is a little more Vgap to help the user select the <code>ComboBox</code> controls.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">GridPane gp = new GridPane();
+gp.setPadding( new Insets(10) );
+gp.setHgap( 4 );
+gp.setVgap( 10 );
+
+VBox.setVgrow(gp, Priority.ALWAYS );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>These are control creation statements from the updated example.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Label lblTitle = new Label("Support Ticket");
+
+Label lblEmail = new Label("Email");
+TextField tfEmail = new TextField();
+
+Label lblContract = new Label("Contract");
+TextField tfContract = new TextField();
+
+Label lblPriority = new Label("Priority");
+ObservableList&lt;String&gt; priorities =
+    FXCollections.observableArrayList("Medium", "High", "Low");
+ComboBox&lt;String&gt; cbPriority = new ComboBox&lt;&gt;(priorities);
+
+Label lblSeverity = new Label("Severity");
+ObservableList&lt;String&gt; severities =
+    FXCollections.observableArrayList("Blocker", "Workaround", "N/A");
+ComboBox&lt;String&gt; cbSeverity = new ComboBox&lt;&gt;(severities);
+
+Label lblCategory = new Label("Category");
+ObservableList&lt;String&gt; categories =
+    FXCollections.observableArrayList("Bug", "Feature");
+ComboBox&lt;String&gt; cbCategory = new ComboBox&lt;&gt;(categories);
+
+Label lblProblem = new Label("Problem");
+TextField tfProblem = new TextField();
+
+Label lblDescription = new Label("Description");
+TextArea taDescription = new TextArea();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As in the earlier version, the controls are added to the <code>GridPane</code> using the <code>add()</code> method.  A column and row are specified.  In this snippet, the indexing it not straightforward as there are gaps expected to be filled in by spanning content.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">gp.add( lblTitle,       1, 0);  // empty item at 0,0
+
+gp.add( lblEmail,       0, 1);
+gp.add(tfEmail,         1, 1);
+gp.add( lblContract,    4, 1 );
+gp.add( tfContract,     5, 1 );
+
+gp.add( lblPriority,    0, 2);
+gp.add( cbPriority,     1, 2);
+gp.add( lblSeverity,    2, 2);
+gp.add( cbSeverity,     3, 2);
+gp.add( lblCategory,    4, 2);
+gp.add( cbCategory,     5, 2);
+
+gp.add( lblProblem,     0, 3); gp.add( tfProblem,     1, 3);
+gp.add( lblDescription, 0, 4); gp.add( taDescription, 1, 4);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, the spanning definitions are set using a static method on <code>GridPane</code>.  There is a similar method to do row spanning.  Title will take up 5 columns as will Problem and Description.  Email shares a row with Contract, but will take up more columns.  The third row of ComboBoxes is a set of three field/value pairs each taking up one column.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">GridPane.setColumnSpan( lblTitle, 5 );
+GridPane.setColumnSpan( tfEmail, 3 );
+GridPane.setColumnSpan( tfProblem, 5 );
+GridPane.setColumnSpan( taDescription, 5 );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, a variation of the add() method will columnSpan and rowSpan arguments to avoid the subsequent static method call.</p>
+</div>
+<div class="paragraph">
+<p>This expanded <code>GridPane</code> example demonstrated column spanning.  The same capability is available for row spanning which would allow a control to claim additional vertical space.  Spanning keeps controls aligned even in cases where the number of items in a given row (or column) varies.  To keep the focus on the spanning topic, this grid allowed the column widths to vary.  The article on <code>ColumnConstraints</code> and <code>RowConstraints</code> will focus on building true modular and column typographical grids by better controlling the columns (and rows).</p>
+</div>
+<div class="sect3">
+<h4 id="_completed_code_3">4.5.1. Completed Code</h4>
+<div class="paragraph">
+<p>The following is the completed code for the spanning GridPane example.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class ComplexGridPaneApp extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        VBox vbox = new VBox();
+
+        GridPane gp = new GridPane();
+        gp.setPadding( new Insets(10) );
+        gp.setHgap( 4 );
+        gp.setVgap( 10 );
+
+        VBox.setVgrow(gp, Priority.ALWAYS );
+
+        Label lblTitle = new Label("Support Ticket");
+
+        Label lblEmail = new Label("Email");
+        TextField tfEmail = new TextField();
+
+        Label lblContract = new Label("Contract");
+        TextField tfContract = new TextField();
+
+        Label lblPriority = new Label("Priority");
+        ObservableList&lt;String&gt; priorities =
+            FXCollections.observableArrayList("Medium", "High", "Low");
+        ComboBox&lt;String&gt; cbPriority = new ComboBox&lt;&gt;(priorities);
+
+        Label lblSeverity = new Label("Severity");
+        ObservableList&lt;String&gt; severities = FXCollections.observableArrayList("Blocker", "Workaround", "N/A");
+        ComboBox&lt;String&gt; cbSeverity = new ComboBox&lt;&gt;(severities);
+
+        Label lblCategory = new Label("Category");
+        ObservableList&lt;String&gt; categories = FXCollections.observableArrayList("Bug", "Feature");
+        ComboBox&lt;String&gt; cbCategory = new ComboBox&lt;&gt;(categories);
+
+        Label lblProblem = new Label("Problem");
+        TextField tfProblem = new TextField();
+
+        Label lblDescription = new Label("Description");
+        TextArea taDescription = new TextArea();
+
+        gp.add( lblTitle,       1, 0);  // empty item at 0,0
+
+        gp.add( lblEmail,       0, 1);
+        gp.add(tfEmail,         1, 1);
+        gp.add( lblContract,    4, 1 );
+        gp.add( tfContract,     5, 1 );
+
+        gp.add( lblPriority,    0, 2);
+        gp.add( cbPriority,     1, 2);
+        gp.add( lblSeverity,    2, 2);
+        gp.add( cbSeverity,     3, 2);
+        gp.add( lblCategory,    4, 2);
+        gp.add( cbCategory,     5, 2);
+
+        gp.add( lblProblem,     0, 3); gp.add( tfProblem,     1, 3);
+        gp.add( lblDescription, 0, 4); gp.add( taDescription, 1, 4);
+
+        GridPane.setColumnSpan( lblTitle, 5 );
+        GridPane.setColumnSpan( tfEmail, 3 );
+        GridPane.setColumnSpan( tfProblem, 5 );
+        GridPane.setColumnSpan( taDescription, 5 );
+
+        Separator sep = new Separator(); // hr
+
+        ButtonBar buttonBar = new ButtonBar();
+        buttonBar.setPadding( new Insets(10) );
+
+        Button saveButton = new Button("Save");
+        Button cancelButton = new Button("Cancel");
+
+        buttonBar.setButtonData(saveButton, ButtonBar.ButtonData.OK_DONE);
+        buttonBar.setButtonData(cancelButton, ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        buttonBar.getButtons().addAll(saveButton, cancelButton);
+
+        vbox.getChildren().addAll( gp, sep, buttonBar );
+
+        Scene scene = new Scene(vbox);
+
+        primaryStage.setTitle("Grid Pane App");
+        primaryStage.setScene(scene);
+        primaryStage.setWidth( 736 );
+        primaryStage.setHeight( 414  );
+        primaryStage.show();
+
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_gridpane_columnconstraints_and_rowconstraints">4.6. GridPane ColumnConstraints and RowConstraints</h3>
+<div class="paragraph">
+<p>Author: Carl Walker</p>
+</div>
+<div class="paragraph">
+<p>Previous articles on <code>GridPane</code> showed how to create a two-column layout with field names on the left-hand side and field values on the right-hand side.  That example was expanded to add more controls to a given row and to use spanning handle gaps in content.  This article introduces a pair of JavaFX classes <code>ColumnConstraints</code> and <code>RowConstraints</code>.  These classes give additional specification to a row or column.  In this example, a row containing a <code>TextArea</code> will be given all extra space when the window is resized.  The two columns will be set to equals widths.</p>
+</div>
+<div class="paragraph">
+<p>This screenshot shows an example modified from previous articles.  The demo program for this article has a rotated feel whereby the field names are paired with the field values vertically (on top of the values) rather than horizontally.  Row spanning and column spanning is used to align items that are larger than a single cell.</p>
+</div>
+<div id="initial_image" class="imageblock">
+<div class="content">
+<img src="images/layout/constraintsgridpaneapp_1_annotated.png" alt="constraintsgridpaneapp 1 annotated">
+</div>
+<div class="title">Figure 17. Example App Using Row and Column Spanning</div>
+</div>
+<div class="paragraph">
+<p>The red rectangles and text are not part of the UI.  They are identifying sections of the screen that will be addressed later with ColumnConstraints and RowConstaints.</p>
+</div>
+<div class="paragraph">
+<p>This code is the creation of the <code>Scene</code> root and <code>GridPane</code> objects.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">VBox vbox = new VBox();
+
+GridPane gp = new GridPane();
+gp.setPadding( new Insets(10) );
+gp.setHgap( 4 );
+gp.setVgap( 10 );
+
+VBox.setVgrow(gp, Priority.ALWAYS );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This code creates the UI controls objects used in the article.  Notice that Priority is now implemented as a <code>VBox</code> containing RadioButtons.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Label lblTitle = new Label("Support Ticket");
+
+Label lblEmail = new Label("Email");
+TextField tfEmail = new TextField();
+
+Label lblContract = new Label("Contract");
+TextField tfContract = new TextField();
+
+Label lblPriority = new Label("Priority");
+RadioButton rbMedium = new RadioButton("Medium");
+RadioButton rbHigh = new RadioButton("High");
+RadioButton rbLow = new RadioButton("Low");
+VBox priorityVBox = new VBox();
+priorityVBox.setSpacing( 2 );
+GridPane.setVgrow(priorityVBox, Priority.SOMETIMES);
+priorityVBox.getChildren().addAll( lblPriority, rbMedium, rbHigh, rbLow );
+
+Label lblSeverity = new Label("Severity");
+ObservableList&lt;String&gt; severities =
+    FXCollections.observableArrayList("Blocker", "Workaround", "N/A");
+ComboBox&lt;String&gt; cbSeverity = new ComboBox&lt;&gt;(severities);
+
+Label lblCategory = new Label("Category");
+ObservableList&lt;String&gt; categories =
+    FXCollections.observableArrayList("Bug", "Feature");
+ComboBox&lt;String&gt; cbCategory = new ComboBox&lt;&gt;(categories);
+
+Label lblProblem = new Label("Problem");
+TextField tfProblem = new TextField();
+
+Label lblDescription = new Label("Description");
+TextArea taDescription = new TextArea();</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Label and value control pairings of Email, Contract, Problem, and Description are put in a single column.  They should take the full width of the <code>GridPane</code> so each has its columnSpan set to 2.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">GridPane.setColumnSpan( tfEmail, 2 );
+GridPane.setColumnSpan( tfContract, 2 );
+GridPane.setColumnSpan( tfProblem, 2 );
+GridPane.setColumnSpan( taDescription, 2 );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The new Priority RadioButtons are matched horizontally with four controls for Severity and Category.  This rowSpan setting instructs JavaFX to put the VBox containing the RadioButton in a merged cell that is four rows in height.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">GridPane.setRowSpan( priorityVBox, 4 );</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_row_constraints">4.6.1. Row Constraints</h4>
+<div class="paragraph">
+<p>At this point, the code reflects the UI screenshot presented in <a href="#initial_image">Example App Using Row and Column Spanning</a>.  To reallocate the extra space at the base of the form, use a RowConstraints object to set a Priority.ALWAYS on the row of the <code>TextArea</code>.  This will result in the <code>TextArea</code> growing to fill the available space with something usable.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/constraintsgridpaneapp_description.png" alt="constraintsgridpaneapp description">
+</div>
+<div class="title">Figure 18. TextArea Grows to Fill Extra Space</div>
+</div>
+<div class="paragraph">
+<p>This code is a <code>RowConstraints</code> object to the <code>GridPane</code> for the <code>TextArea</code>.  Prior to the setter, <code>RowConstraints</code> objects are allocated for all of the other rows.  The set method of <code>getRowConstraints()</code> will throw an index exception when you specify row 12 without first allocating an object.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">RowConstraints taDescriptionRowConstraints = new RowConstraints();
+taDescriptionRowConstraints.setVgrow(Priority.ALWAYS);
+
+for( int i=0; i&lt;13; i++ ) {
+    gp.getRowConstraints().add( new RowConstraints() );
+}
+
+gp.getRowConstraints().set( 12, taDescriptionRowConstraints );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As an alternative syntax, there is a setConstraints() method available from the <code>GridPane</code>.  This will pass in several values and obviates the need for the dedicated columnSpan set call for the <code>TextArea</code>.  The <code>RowConstraints</code> code from the previous listing will not appear in the finished program.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">gp.setConstraints(taDescription,
+                  0, 12,
+                  2, 1,
+                  HPos.LEFT, VPos.TOP,
+                  Priority.SOMETIMES, Priority.ALWAYS);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This code identifies the <code>Node</code> at (0,12) which is the <code>TextArea</code>.  The <code>TextArea</code> will span 2 columns but only 1 row.  The HPos and Vpos are set to the TOP LEFT.  Finally, the <code>Priority</code> of the hgrow is SOMETIMES and the vgrow is ALWAYS.  Since the <code>TextArea</code> is the only row with "ALWAYS", it will get the additional space.  If there were other ALWAYS settings, the space would be shared among multiple rows.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_column_constraints">4.6.2. Column Constraints</h4>
+<div class="paragraph">
+<p>To properly allocate the space surrounding the Severity and Category controls, ColumnConstraints will be specified.  The default behavior allocates less space to the first column because of the smaller Priority RadioButtons.  The following wireframe shows the desired layout which has equal columns separated by a gutter of 4 pixels (Hgap).</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/constraintsgridpaneapp_wireframe.png" alt="constraintsgridpaneapp wireframe">
+</div>
+<div class="title">Figure 19. Wireframe of the Demo App</div>
+</div>
+<div class="paragraph">
+<p>To make the column widths equal, define two <code>ColumnConstraint</code> objects and use a percentage specifier.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">ColumnConstraints col1 = new ColumnConstraints();
+col1.setPercentWidth( 50 );
+ColumnConstraints col2 = new ColumnConstraints();
+col2.setPercentWidth( 50 );
+gp.getColumnConstraints().addAll( col1, col2 );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is a screenshot of the finished example.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/constraintsgridpaneapp_finished.png" alt="constraintsgridpaneapp finished">
+</div>
+<div class="title">Figure 20. App With Extra Space Properly Allocated</div>
+</div>
+<div class="paragraph">
+<p><code>GridPane</code> is an important control in developing JavaFX business applications.  When working on a requirement involving name / value pairs and a single record view, use <code>GridPane</code>.  While <code>GridPane</code> is easier to use than the <code>GridBagLayout</code> from Swing, I still find that the API is a little inconvenient (assigning own indexes, disassociated constraints).  Fortunately, there is Scene Builder which simplifies the construction of this form greatly.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_completed_code_4">4.6.3. Completed Code</h4>
+<div class="paragraph">
+<p>The following is the completed code for the constraints GridPane example.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class ConstraintsGridPaneApp extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        VBox vbox = new VBox();
+
+        GridPane gp = new GridPane();
+        gp.setPadding( new Insets(10) );
+        gp.setHgap( 4 );
+        gp.setVgap( 10 );
+
+        VBox.setVgrow(gp, Priority.ALWAYS );
+
+        Label lblTitle = new Label("Support Ticket");
+
+        Label lblEmail = new Label("Email");
+        TextField tfEmail = new TextField();
+
+        Label lblContract = new Label("Contract");
+        TextField tfContract = new TextField();
+
+        Label lblPriority = new Label("Priority");
+        RadioButton rbMedium = new RadioButton("Medium");
+        RadioButton rbHigh = new RadioButton("High");
+        RadioButton rbLow = new RadioButton("Low");
+        VBox priorityVBox = new VBox();
+        priorityVBox.setSpacing( 2 );
+        GridPane.setVgrow(priorityVBox, Priority.SOMETIMES);
+        priorityVBox.getChildren().addAll( lblPriority, rbMedium, rbHigh, rbLow );
+
+        Label lblSeverity = new Label("Severity");
+        ObservableList&lt;String&gt; severities = FXCollections.observableArrayList("Blocker", "Workaround", "N/A");
+        ComboBox&lt;String&gt; cbSeverity = new ComboBox&lt;&gt;(severities);
+
+        Label lblCategory = new Label("Category");
+        ObservableList&lt;String&gt; categories = FXCollections.observableArrayList("Bug", "Feature");
+        ComboBox&lt;String&gt; cbCategory = new ComboBox&lt;&gt;(categories);
+
+        Label lblProblem = new Label("Problem");
+        TextField tfProblem = new TextField();
+
+        Label lblDescription = new Label("Description");
+        TextArea taDescription = new TextArea();
+
+        gp.add( lblTitle,       0, 0);
+
+        gp.add( lblEmail,       0, 1);
+        gp.add(tfEmail,         0, 2);
+
+        gp.add( lblContract,    0, 3 );
+        gp.add( tfContract,     0, 4 );
+
+        gp.add( priorityVBox,   0, 5);
+
+        gp.add( lblSeverity,    1, 5);
+        gp.add( cbSeverity,     1, 6);
+        gp.add( lblCategory,    1, 7);
+        gp.add( cbCategory,     1, 8);
+
+        gp.add( lblProblem,     0, 9);
+        gp.add( tfProblem,      0, 10);
+
+        gp.add( lblDescription, 0, 11);
+        gp.add( taDescription,  0, 12);
+
+        GridPane.setColumnSpan( tfEmail, 2 );
+        GridPane.setColumnSpan( tfContract, 2 );
+        GridPane.setColumnSpan( tfProblem, 2 );
+
+        GridPane.setRowSpan( priorityVBox, 4 );
+
+        gp.setConstraints(taDescription,
+                          0, 12,
+                          2, 1,
+                          HPos.LEFT, VPos.TOP,
+                          Priority.SOMETIMES, Priority.ALWAYS);
+
+        ColumnConstraints col1 = new ColumnConstraints();
+        col1.setPercentWidth( 50 );
+        ColumnConstraints col2 = new ColumnConstraints();
+        col2.setPercentWidth( 50 );
+        gp.getColumnConstraints().addAll( col1, col2 );
+
+        Separator sep = new Separator(); // hr
+
+        ButtonBar buttonBar = new ButtonBar();
+        buttonBar.setPadding( new Insets(10) );
+
+        Button saveButton = new Button("Save");
+        Button cancelButton = new Button("Cancel");
+
+        buttonBar.setButtonData(saveButton, ButtonBar.ButtonData.OK_DONE);
+        buttonBar.setButtonData(cancelButton, ButtonBar.ButtonData.CANCEL_CLOSE);
+
+        buttonBar.getButtons().addAll(saveButton, cancelButton);
+
+        vbox.getChildren().addAll( gp, sep, buttonBar );
+
+        Scene scene = new Scene(vbox);
+
+        primaryStage.setTitle("Grid Pane App");
+        primaryStage.setScene(scene);
+        primaryStage.setWidth( 414 );
+        primaryStage.setHeight( 736  );
+        primaryStage.show();
+
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }</code></pre>
 </div>
@@ -1244,7 +2301,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_pb.png" alt="tasks pb">
 </div>
-<div class="title">Figure 6. Screenshot of App Showing ProgressBar and Label</div>
+<div class="title">Figure 21. Screenshot of App Showing ProgressBar and Label</div>
 </div>
 <div class="paragraph">
 <p>When the retrieval is finished, a succeeded() callback is invoked and the UI is updated.  Note that the succeeded() callback takes place on the FX Thread, so it is safe to manipuplate controls.</p>
@@ -1253,7 +2310,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_contents.png" alt="tasks contents">
 </div>
-<div class="title">Figure 7. Screenshot of App Showing Successful Retrieval</div>
+<div class="title">Figure 22. Screenshot of App Showing Successful Retrieval</div>
 </div>
 <div class="paragraph">
 <p>If there was an error retrieving the HTML, a failed() callback is invoked and an error Alert is shown.  failed() also takes place on the FX Thread.  This screenshot shows invalid input. An "h" is used in the URL instead of the correct "http".</p>
@@ -1262,7 +2319,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_error.png" alt="tasks error">
 </div>
-<div class="title">Figure 8. Screenshot of App Showing Failure</div>
+<div class="title">Figure 23. Screenshot of App Showing Failure</div>
 </div>
 </div>
 <div class="sect3">
@@ -1519,7 +2576,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-11-02 20:14:52 UTC
+Last updated 2016-11-06 21:52:41 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
