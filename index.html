@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Published 2016-11-06">
+<meta name="author" content="Published 2016-11-10">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2016-11-06</span><br>
+<span id="author" class="author">Published 2016-11-10</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -447,6 +447,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_gridpane">4.4. GridPane</a></li>
 <li><a href="#_gridpane_spanning">4.5. GridPane Spanning</a></li>
 <li><a href="#_gridpane_columnconstraints_and_rowconstraints">4.6. GridPane ColumnConstraints and RowConstraints</a></li>
+<li><a href="#_anchorpane">4.7. AnchorPane</a></li>
 </ul>
 </li>
 <li><a href="#_css">5. CSS</a></li>
@@ -2183,6 +2184,205 @@ gp.getColumnConstraints().addAll( col1, col2 );</code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_anchorpane">4.7. AnchorPane</h3>
+<div class="paragraph">
+<p>Author: Carl Walker</p>
+</div>
+<div class="paragraph">
+<p><code>AnchorPane</code> is a container control that defines its layout in terms of edges.  When placed in a container, the <code>AnchorPane</code> stretches to fill the available space.  The children of <code>AnchorPane</code> express their positions and sizes as distances from the edges: Top, Left, Bottom, Right.  If one or two anchor settings are placed on an <code>AnchorPane</code> child, the child will be fixed to that corner of the window.  If more than two anchor settings are used, the child will be stretched to fill the available horizontal and vertical space.</p>
+</div>
+<div class="paragraph">
+<p>This mockup shows a <code>TextArea</code> surrounded by a set of controls: a <code>Hyperlink</code> and two status indicators.  Since the <code>TextArea</code> will contain all of the content, it should take up most of the space initially and should acquire any additional space from a resize.  On the periphery, there is a <code>Hyperlink</code> in the upper-right, a connection <code>Label</code> and <code>Circle</code> in the lower-right, and a status <code>Label</code> in the lower-left.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/anchorpaneapp_mockup.png" alt="anchorpaneapp mockup">
+</div>
+<div class="title">Figure 21. AnchorPane With TextArea</div>
+</div>
+<div class="sect3">
+<h4 id="_anchors">4.7.1. Anchors</h4>
+<div class="paragraph">
+<p>To begin the layout, create an <code>AnchorPane</code> object and add it to the <code>Scene</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">AnchorPane ap = new AnchorPane();
+Scene scene = new Scene(ap);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Anchors are set using static methods of the AnchorPane class.  The methods&#8201;&#8212;&#8201;one per edge&#8201;&#8212;&#8201;accept the <code>Node</code> and an offset.  For the <code>Hyperlink</code>, an anchor to the top edge and an anchor to the right edge will be set.  An offset of 10.0 is set for each edge so that the link is not compressed against the side.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Hyperlink signoutLink = new Hyperlink("Sign Out");
+
+ap.getChildren().add( signoutLink );
+
+AnchorPane.setTopAnchor( signoutLink, 10.0d );
+AnchorPane.setRightAnchor( signoutLink, 10.0d );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>When the screen is resized, the AnchorPane will resize and signoutLink will maintain its top-right position.  Because neither the left nor bottom anchors are specified, signoutLink will not be stretched.</p>
+</div>
+<div class="paragraph">
+<p>Next, the connection <code>Label</code> and <code>Circle</code> are added.  These controls are wrapped in an <code>HBox</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Circle circle = new Circle();
+circle.setFill(Color.GREEN );
+circle.setRadius(10);
+
+Label connLabel = new Label("Connection");
+
+HBox connHBox = new HBox();
+connHBox.setSpacing( 4.0d );
+connHBox.setAlignment(Pos.BOTTOM_RIGHT);
+connHBox.getChildren().addAll( connLabel, circle );
+
+AnchorPane.setBottomAnchor( connHBox, 10.0d );
+AnchorPane.setRightAnchor( connHBox, 10.0d );
+
+ap.getChildren().add( connHBox );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As with signoutLink, connHBox is fixed to a place on the screen.  connHBox is set to be 10 pixels from the bottom edge and 10 pixels from the right edge.</p>
+</div>
+<div class="paragraph">
+<p>The lower-left status <code>Label</code> is added.  The left and the bottom anchors are set.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Label statusLabel = new Label("Program status");
+ap.getChildren().add( statusLabel );
+
+AnchorPane.setBottomAnchor( statusLabel, 10.0d );
+AnchorPane.setLeftAnchor( statusLabel, 10.0d );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is a screenshot of the finished app.  The status and control labels are at the bottom of the screen, pinned to the left and right edges respectively.  The <code>Hyperlink</code> is pinned to the top-right.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/anchorpaneapp_default.png" alt="anchorpaneapp default">
+</div>
+<div class="title">Figure 22. "AnchorPane App</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_resizing">4.7.2. Resizing</h4>
+<div class="paragraph">
+<p>The controls on the periphery may vary in size. For example, a status message or a connection message may be longer.  However, the extra length can be accommodated in this layout by extending the bottom-left status <code>Label</code> to the right and by extending the bottom-right connection status <code>Label</code> to the left.  Resizing with this layout will move these controls in absolute terms, but they will adhere to their respective edges plus the offset.</p>
+</div>
+<div class="paragraph">
+<p>That is not the case with the <code>TextArea</code>.  Because the <code>TextArea</code> may contain a lot of content, it should receive any extra space that the user gives the window.  This control will be anchored to all four corners of the <code>AnchorPane</code>.  This will cause the <code>TextArea</code> to resize when the window resizes.  The <code>TextArea</code> is fixed on the top-left and as the user drags the window handles to the bottom-right, the bottom-right corner of the <code>TextArea</code> moves as well.</p>
+</div>
+<div class="paragraph">
+<p>This picture shows the result of two resize operations.  The top screenshot is a vertical resize from dragging the bottom edge of the window down.  The bottom screenshot is a horizontal resize from dragging the right edge of the window right.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/anchorpaneapp_resize.png" alt="anchorpaneapp resize">
+</div>
+<div class="title">Figure 23. "AnchorPane App Resized</div>
+</div>
+<div class="paragraph">
+<p>The highlighted boxes show that the controls bordering the <code>TextArea</code> retain their positions relative to the edges.  The <code>TextArea</code> itself is resized based on the Window resize.  The top and bottom offsets of the <code>TextArea</code> account for the other controls so that they are not hidden.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">TextArea ta = new TextArea();
+
+AnchorPane.setTopAnchor( ta, 40.0d );
+AnchorPane.setBottomAnchor( ta, 40.0d );
+AnchorPane.setRightAnchor( ta, 10.0d );
+AnchorPane.setLeftAnchor( ta, 10.0d );
+
+ap.getChildren().add( ta );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><code>AnchorPane</code> is a good choice when you have a mixture of resizable and fixed-position children.  Other controls like <code>VBox</code> and <code>HBox</code> with a <code>Priority</code> setting are preferred if there is only one child needing resizing.  Use these controls instead of <code>AnchorPane</code> with a single child that has all four anchors set.  Remember that to set an anchor on a child, you use a static method of the container class such as AnchorPane.setTopAnchor().</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_completed_code_5">4.7.3. Completed Code</h4>
+<div class="paragraph">
+<p>The following is the completed code for the <code>AnchorPane</code> example.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class AnchorPaneApp extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        AnchorPane ap = new AnchorPane();
+
+        // upper-right sign out control
+        Hyperlink signoutLink = new Hyperlink("Sign Out");
+
+        ap.getChildren().add( signoutLink );
+
+        AnchorPane.setTopAnchor( signoutLink, 10.0d );
+        AnchorPane.setRightAnchor( signoutLink, 10.0d );
+
+        // lower-left status label
+        Label statusLabel = new Label("Program status");
+        ap.getChildren().add( statusLabel );
+
+        AnchorPane.setBottomAnchor( statusLabel, 10.0d );
+        AnchorPane.setLeftAnchor( statusLabel, 10.0d );
+
+        // lower-right connection status control
+        Circle circle = new Circle();
+        circle.setFill(Color.GREEN );
+        circle.setRadius(10);
+
+        Label connLabel = new Label("Connection");
+
+        HBox connHBox = new HBox();
+        connHBox.setSpacing( 4.0d );
+        connHBox.setAlignment(Pos.BOTTOM_RIGHT);
+        connHBox.getChildren().addAll( connLabel, circle );
+
+        AnchorPane.setBottomAnchor( connHBox, 10.0d );
+        AnchorPane.setRightAnchor( connHBox, 10.0d );
+
+        ap.getChildren().add( connHBox );
+
+        // top-left content; takes up extra space
+        TextArea ta = new TextArea();
+        ap.getChildren().add( ta );
+
+        AnchorPane.setTopAnchor( ta, 40.0d );
+        AnchorPane.setBottomAnchor( ta, 40.0d );
+        AnchorPane.setRightAnchor( ta, 10.0d );
+        AnchorPane.setLeftAnchor( ta, 10.0d );
+
+        Scene scene = new Scene(ap);
+
+        primaryStage.setTitle("AnchorPaneApp");
+        primaryStage.setScene( scene );
+        primaryStage.setWidth(568);
+        primaryStage.setHeight(320);
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2301,7 +2501,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_pb.png" alt="tasks pb">
 </div>
-<div class="title">Figure 21. Screenshot of App Showing ProgressBar and Label</div>
+<div class="title">Figure 24. Screenshot of App Showing ProgressBar and Label</div>
 </div>
 <div class="paragraph">
 <p>When the retrieval is finished, a succeeded() callback is invoked and the UI is updated.  Note that the succeeded() callback takes place on the FX Thread, so it is safe to manipuplate controls.</p>
@@ -2310,7 +2510,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_contents.png" alt="tasks contents">
 </div>
-<div class="title">Figure 22. Screenshot of App Showing Successful Retrieval</div>
+<div class="title">Figure 25. Screenshot of App Showing Successful Retrieval</div>
 </div>
 <div class="paragraph">
 <p>If there was an error retrieving the HTML, a failed() callback is invoked and an error Alert is shown.  failed() also takes place on the FX Thread.  This screenshot shows invalid input. An "h" is used in the URL instead of the correct "http".</p>
@@ -2319,7 +2519,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_error.png" alt="tasks error">
 </div>
-<div class="title">Figure 23. Screenshot of App Showing Failure</div>
+<div class="title">Figure 26. Screenshot of App Showing Failure</div>
 </div>
 </div>
 <div class="sect3">
@@ -2576,7 +2776,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-11-06 21:52:41 UTC
+Last updated 2016-11-10 19:34:11 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
