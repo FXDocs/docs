@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Published 2016-11-10">
+<meta name="author" content="Published 2016-11-12">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2016-11-10</span><br>
+<span id="author" class="author">Published 2016-11-12</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -452,7 +452,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_css">5. CSS</a></li>
 <li><a href="#_performance">6. Performance</a></li>
-<li><a href="#_application_structure">7. Application Structure</a></li>
+<li><a href="#_application_structure">7. Application Structure</a>
+<ul class="sectlevel2">
+<li><a href="#_the_mvvm_pattern">7.1. The MVVM Pattern</a></li>
+</ul>
+</li>
 <li><a href="#_best_practices">8. Best Practices</a>
 <ul class="sectlevel2">
 <li><a href="#_1_styleable_properties">8.1. 1. Styleable Properties</a></li>
@@ -2404,8 +2408,385 @@ ap.getChildren().add( ta );</code></pre>
 <div class="sect1">
 <h2 id="_application_structure">7. Application Structure</h2>
 <div class="sectionbody">
+<div class="sect2">
+<h3 id="_the_mvvm_pattern">7.1. The MVVM Pattern</h3>
 <div class="paragraph">
-<p>Placeholder whilst things get built&#8230;&#8203;</p>
+<p>Author: Carl Walker</p>
+</div>
+<div class="paragraph">
+<p>Model-View-ViewModel (MVVM) is a software architecture that separates UI controls (the View) from data access and business logic (the Model).  The separation helps larger applications during the maintenance phase.  With MVVM, View changes&#8201;&#8212;&#8201;especially those that are purely cosmetic&#8201;&#8212;&#8201;can be made without fear of introducing side effects.   Changes to the Model (usually less volatile than the View) can be applied more easily throughout the application because MVVM promotes reuse.</p>
+</div>
+<div class="paragraph">
+<p>In between the View and the Model is the ViewModel.  The ViewModel mediates between the View and the Model, yet contains no references to the View.  This emables ViewModel sharing which is useful when two Views show similar data.</p>
+</div>
+<div class="paragraph">
+<p>This article presents a simplified MVVM example.  An Employment Request Form submits several data elements to a back-end service.  This screenshot shows the application with the name, position, and annual salary data elements set.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/app-structure/mvvmapp_screenshot.png" alt="mvvmapp screenshot">
+</div>
+<div class="title">Figure 24. Employment Request Form</div>
+</div>
+<div class="paragraph">
+<p>After entering the data and pressing Save, the Model object responds with a println().</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-shell" data-lang="shell">saving EmploymentRequest{name='Carl', position='Pizza Dough Thrower', annualSalary=30000.0}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the Reset button is pressed after filling in the TextFields, the form is restored to its original values: empty name and position and an annualSalary of 0.</p>
+</div>
+<div class="paragraph">
+<p>The Cancel button ends the application.</p>
+</div>
+<div class="sect3">
+<h4 id="_structure_2">7.1.1. Structure</h4>
+<div class="paragraph">
+<p>A simplified MVVM application is composed of the following types of classes</p>
+</div>
+<div class="dlist">
+<dl>
+<dt class="hdlist1">App</dt>
+<dd>
+<p>Main entry point</p>
+</dd>
+<dt class="hdlist1">View</dt>
+<dd>
+<p>UI controls</p>
+</dd>
+<dt class="hdlist1">Model</dt>
+<dd>
+<p>Function call to business logic and data access</p>
+</dd>
+<dt class="hdlist1">ViewModel</dt>
+<dd>
+<p>Mediator between View and Model</p>
+</dd>
+<dt class="hdlist1">Domain object</dt>
+<dd>
+<p>UI-neutral transfer object</p>
+</dd>
+<dt class="hdlist1">Converter</dt>
+<dd>
+<p>Helper class for ViewModel to Model communication</p>
+</dd>
+</dl>
+</div>
+<div class="paragraph">
+<p>This UML shows the structure of the Employment Request Form.  The View class is EmploymentRequestView which contains the UI control objects like the Name <code>TextField</code>.  The ViewModel class is EmploymentRequestViewModel and contains JavaFX properties.  The Model class is EmploymentRequestModel with a single method for persisting the form.  EmploymentRequestConverter is a helper class.  EmploymentRequest is a POJO containing data fields.  MVVMApp is the main entry point, a JavaFX Application subclass.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/app-structure/mvvmapp_uml.png" alt="mvvmapp uml">
+</div>
+<div class="title">Figure 25. UML Class Model of Application</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_view">7.1.2. View</h4>
+<div class="paragraph">
+<p>In MVVM, the View class is responsible for the UI controls and nothing else.  Event handlers attached to UI controls delegate immediately to the ViewModel.  JavaFX data binding updates the UI with Model changes.  In the Employment Request Form, three TextFields gather input from the user: tfName, tfPosition, tfAnnualSalary.  Three Buttons initiate operations on the application: btnSave, btnCancel, btnReset.  This is the beginning of the EmploymentRequestView class.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class EmploymentRequestView extends VBox {
+
+    private GridPane gp = new GridPane();
+
+    private TextField tfName = new TextField();
+    private TextField tfPosition = new TextField();
+    private TextField tfAnnualSalary = new TextField();
+
+    private Button btnSave = new Button("Save");
+    private Button btnCancel = new Button("Cancel");
+    private Button btnReset = new Button("Reset");
+
+    public EmploymentRequestView() {
+        createView();
+        bindViewModel();
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The View knows about the ViewModel and uses JavaFX binding to synchronize the UI with the ViewModel.  This demo treats the ViewModel as a prototype object, created when the View object is created.  Alternatively, the ViewModel can be a singleton or provided by CDI.  Each UI field is bound bi-directionally to the ViewModel.  As the UI changes&#8201;&#8212;&#8201;say through entering a value in tfName&#8201;&#8212;&#8201;the corresponding field in the ViewModel is updated.  The more complicated expression for the tfAnnualSalary field is needed to convert the String-based <code>TextField</code> into a DoubleProperty.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">    private final EmploymentRequestViewModel viewModel =
+            new EmploymentRequestViewModel();
+
+    private void bindViewModel() {
+
+        tfName.textProperty().bindBidirectional(viewModel.nameProperty());
+
+        tfPosition.textProperty().bindBidirectional(viewModel.positionProperty());
+
+        Bindings.bindBidirectional(
+                tfAnnualSalary.textProperty(),
+                viewModel.annualSalaryProperty(),
+                new NumberStringConverter()
+        );
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The UI in this demo is built in code.  The following createView() method handles the layout of the form and puts the core controls (such as tfName and btnSave) in containers.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">    private void createView() {
+        VBox gpwrap = new VBox();
+        gpwrap.setAlignment( Pos.CENTER );
+
+        gp.setPadding( new Insets(40) );
+        gp.setVgap( 4 );
+        gp.add(new Label("Name"), 0, 0);                  gp.add(tfName, 1, 0);
+        gp.add(new Label("Desired Position"), 0, 1);      gp.add(tfPosition, 1, 1);
+        gp.add(new Label("Current Annual Salary"), 0, 2); gp.add(tfAnnualSalary, 1, 2);
+
+        final ColumnConstraints col = new ColumnConstraints();
+        col.setPercentWidth( 50 );
+
+        gp.getColumnConstraints().addAll( col, col );
+
+        gpwrap.getChildren().add( gp );
+
+        VBox.setVgrow( gpwrap, Priority.ALWAYS );
+
+        btnSave.setOnAction( this::save );
+        btnCancel.setOnAction( this::cancel );
+        btnReset.setOnAction( this::reset );
+
+        btnSave.setDefaultButton(true);
+
+        ButtonBar buttonBar = new ButtonBar();
+        buttonBar.setPadding( new Insets(20.0d) );
+        ButtonBar.setButtonData(btnSave, ButtonBar.ButtonData.OK_DONE);
+        ButtonBar.setButtonData(btnCancel, ButtonBar.ButtonData.CANCEL_CLOSE);
+        ButtonBar.setButtonData(btnReset, ButtonBar.ButtonData.OTHER);
+
+        buttonBar.getButtons().addAll( btnSave, btnCancel, btnReset );
+
+        this.getChildren().addAll(
+                gpwrap,
+                new Separator(),
+                buttonBar);
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The class ends with handlers for the Buttons.  These handlers delegate their actions to the ViewModel.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">    private void save(ActionEvent evt) { viewModel.save(); }
+
+    private void cancel(ActionEvent evt) {
+        Platform.exit();
+    }
+
+    private void reset(ActionEvent evt) { viewModel.reset(); }
+}</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_fxml_and_scene_builder">FXML and Scene Builder</h5>
+<div class="paragraph">
+<p>In this example, the UI is built in code.  Scene Builder is a design-oriented alternative that can be more productive.  To convert this example to FXML, the product of Scene Builder, you would build the UI in the tool and annotate the fields and methods of the EmploymentRequestView class with @FXML.  See the following screenshot for how the demo looks in Scene Builder.  This is informational only and not part of the working demo.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/app-structure/mvvmapp_sb.png" alt="mvvmapp sb">
+</div>
+<div class="title">Figure 26. Scene Builder Could Also Implement the View</div>
+</div>
+<div class="paragraph">
+<p>Notice that the right "half" of the UML diagram would not be changed by switching the View implementation from code to Scene Builder.  A sign of a good design is when alternative presentations can be supported easily.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_viewmodel">7.1.3. ViewModel</h4>
+<div class="paragraph">
+<p>The ViewModel is a layer that interacts with both the View and the Model.  In this simple presentation, the value of such a layer is limited; one could just unpack the TextFields into the Model in the <code>Button</code> handler.  As the UI becomes more complex, it is useful to have a plainer, more business-oriented object to work with.  While there is a one-to-one correspondence between View, Model, and ViewModel, that may not always be the case.</p>
+</div>
+<div class="paragraph">
+<p>Handling a many-to-many relationship is key for the ViewModel.  There may be many Views that working with the same Model element.  Multiple models may contribute to a single View.</p>
+</div>
+<div class="paragraph">
+<p>This ViewModel looks like the domain object that will be presented later with one key difference: JavaFX Binding.  EmploymentRequestViewModel was bound to the EmploymentRequestView UI controls and the methods of EmploymentRequestViewModel will have access to all of the information within the save() method.  No extra marshaling of arguments is needed.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class EmploymentRequestViewModel {
+
+    private final StringProperty name = new SimpleStringProperty("");
+    private final StringProperty position = new SimpleStringProperty("");
+    private final DoubleProperty annualSalary = new SimpleDoubleProperty();
+
+    private final EmploymentRequestConverter converter =
+            new EmploymentRequestConverter();
+
+    private final EmploymentRequestModel model = new EmploymentRequestModel();
+
+    public String getName() {
+        return name.get();
+    }
+
+    public StringProperty nameProperty() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name.set(name);
+    }
+
+    public String getPosition() {
+        return position.get();
+    }
+
+    public StringProperty positionProperty() {
+        return position;
+    }
+
+    public void setPosition(String position) {
+        this.position.set(position);
+    }
+
+    public double getAnnualSalary() {
+        return annualSalary.get();
+    }
+
+    public DoubleProperty annualSalaryProperty() {
+        return annualSalary;
+    }
+
+    public void setAnnualSalary(double annualSalary) {
+        this.annualSalary.set(annualSalary);
+    }
+
+    public void save() {
+        EmploymentRequest data = converter.toEmploymentRequest( this );
+        model.save( data );
+    }
+
+    public void reset() {
+        this.name.set("");
+        this.position.set("");
+        this.annualSalary.set(0.0d);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Both the Converter and the Model have been added to this ViewModel as prototypes, meaning that they were created when the ViewModel was created.</p>
+</div>
+<div class="sect4">
+<h5 id="_converter">Converter</h5>
+<div class="paragraph">
+<p>The Converter is a class the translates between ViewModel and domain object.  In this app, there is a single toEmploymentRequest() method that creates an object from the ViewModel fields.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class EmploymentRequestConverter {
+
+    public EmploymentRequest toEmploymentRequest(EmploymentRequestViewModel viewModel) {
+        return new EmploymentRequest(
+                viewModel.getName(),
+                viewModel.getPosition(),
+                viewModel.getAnnualSalary()
+        );
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_model_2">7.1.4. Model</h4>
+<div class="paragraph">
+<p>Finally, the Model persists the information.  This Model example has a single mocked method which will verify that it receives the correct data for the save() operation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class EmploymentRequestModel {
+
+    public void save(EmploymentRequest req) {
+        System.out.println("saving " + req);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is the plain Java object used to transport data from the Model to the UI.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class EmploymentRequest {
+
+    private final String name;
+    private final String position;
+    private final Double annualSalary;
+
+    public EmploymentRequest(String name,
+                             String position,
+                             Double annualSalary) {
+        this.name = name;
+        this.position = position;
+        this.annualSalary = annualSalary;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getPosition() {
+        return position;
+    }
+
+    public Double getAnnualSalary() {
+        return annualSalary;
+    }
+
+    @Override
+    public String toString() {
+        return "EmploymentRequest{" +
+                "name='" + name + '\'' +
+                ", position='" + position + '\'' +
+                ", annualSalary=" + annualSalary +
+                '}';
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>JavaFX provides developers with a powerful toolkit to build applications.  However, a design is still needed for an effective program.  MVVM is an architectural pattern that separates pure UI classes called Views from pure data classes called Models.  In the middle sits the ViewModel which relies heavily on the data binding in JavaFX.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_further_work">7.1.5. Further Work</h4>
+<div class="paragraph">
+<p>Sometimes, the View needs to know of a Model change.  Because MVVM dictates a one-way control flow&#8201;&#8212;&#8201;View to ViewModel to Model and not the reverse&#8201;&#8212;&#8201;a different mechanism than data binding is needed to make the ViewModel aware of Model changes.  A publishing / subscribing library can be used for this requirement which would broker the Model/ViewModel interaction.  ViewModel would receive a notification from the Model and the Model would not require a reference to the ViewModel object.</p>
+</div>
+<div class="paragraph">
+<p>To read more about MVVM and JavaFX, check out the mvvmFX project.  The examples in that project provided the basis for this demonstration.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://github.com/sialcasa/mvvmFX">mvvmFX</a></p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_completed_code_6">7.1.6. Completed Code</h4>
+<div class="paragraph">
+<p>The completed code in this example is available as a Gradle project here.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://courses.bekwam.net/public_tutorials/source/bkcourse_mvvmapp_sources.zip">bkcourse_mvvmapp_sources.zip</a></p>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -2501,7 +2882,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_pb.png" alt="tasks pb">
 </div>
-<div class="title">Figure 24. Screenshot of App Showing ProgressBar and Label</div>
+<div class="title">Figure 27. Screenshot of App Showing ProgressBar and Label</div>
 </div>
 <div class="paragraph">
 <p>When the retrieval is finished, a succeeded() callback is invoked and the UI is updated.  Note that the succeeded() callback takes place on the FX Thread, so it is safe to manipuplate controls.</p>
@@ -2510,7 +2891,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_contents.png" alt="tasks contents">
 </div>
-<div class="title">Figure 25. Screenshot of App Showing Successful Retrieval</div>
+<div class="title">Figure 28. Screenshot of App Showing Successful Retrieval</div>
 </div>
 <div class="paragraph">
 <p>If there was an error retrieving the HTML, a failed() callback is invoked and an error Alert is shown.  failed() also takes place on the FX Thread.  This screenshot shows invalid input. An "h" is used in the URL instead of the correct "http".</p>
@@ -2519,7 +2900,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_error.png" alt="tasks error">
 </div>
-<div class="title">Figure 26. Screenshot of App Showing Failure</div>
+<div class="title">Figure 29. Screenshot of App Showing Failure</div>
 </div>
 </div>
 <div class="sect3">
@@ -2776,7 +3157,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-11-10 19:34:11 UTC
+Last updated 2016-11-12 06:55:42 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
