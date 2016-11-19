@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Published 2016-11-13">
+<meta name="author" content="Published 2016-11-19">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2016-11-13</span><br>
+<span id="author" class="author">Published 2016-11-19</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -455,6 +455,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_application_structure">7. Application Structure</a>
 <ul class="sectlevel2">
 <li><a href="#_the_mvvm_pattern">7.1. The MVVM Pattern</a></li>
+<li><a href="#_model_change_with_mvvm">7.2. Model Change with MVVM</a></li>
 </ul>
 </li>
 <li><a href="#_best_practices">8. Best Practices</a>
@@ -2432,6 +2433,7 @@ ap.getChildren().add( ta );</code></pre>
 <p>After entering the data and pressing Save, the Model object responds with a println().</p>
 </div>
 <div class="listingblock">
+<div class="title">Program Output</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-shell" data-lang="shell">saving EmploymentRequest{name='Carl', position='Pizza Dough Thrower', annualSalary=30000.0}</code></pre>
 </div>
@@ -2491,6 +2493,7 @@ ap.getChildren().add( ta );</code></pre>
 <p>In MVVM, the View class is responsible for the UI controls and nothing else.  Event handlers attached to UI controls delegate immediately to the ViewModel.  JavaFX data binding updates the UI with Model changes.  In the Employment Request Form, three TextFields gather input from the user: tfName, tfPosition, tfAnnualSalary.  Three Buttons initiate operations on the application: btnSave, btnCancel, btnReset.  This is the beginning of the EmploymentRequestView class.</p>
 </div>
 <div class="listingblock">
+<div class="title">EmploymentRequestView.class</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class EmploymentRequestView extends VBox {
 
@@ -2514,6 +2517,7 @@ ap.getChildren().add( ta );</code></pre>
 <p>The View knows about the ViewModel and uses JavaFX binding to synchronize the UI with the ViewModel.  This demo treats the ViewModel as a prototype object, created when the View object is created.  Alternatively, the ViewModel can be a singleton or provided by CDI.  Each UI field is bound bi-directionally to the ViewModel.  As the UI changes&#8201;&#8212;&#8201;say through entering a value in tfName&#8201;&#8212;&#8201;the corresponding field in the ViewModel is updated.  The more complicated expression for the tfAnnualSalary field is needed to convert the String-based <code>TextField</code> into a DoubleProperty.</p>
 </div>
 <div class="listingblock">
+<div class="title">EmploymentRequestView.class (cont.)</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-java" data-lang="java">    private final EmploymentRequestViewModel viewModel =
             new EmploymentRequestViewModel();
@@ -2536,6 +2540,7 @@ ap.getChildren().add( ta );</code></pre>
 <p>The UI in this demo is built in code.  The following createView() method handles the layout of the form and puts the core controls (such as tfName and btnSave) in containers.</p>
 </div>
 <div class="listingblock">
+<div class="title">EmploymentRequestView.class (cont.)</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-java" data-lang="java">    private void createView() {
         VBox gpwrap = new VBox();
@@ -2581,6 +2586,7 @@ ap.getChildren().add( ta );</code></pre>
 <p>The class ends with handlers for the Buttons.  These handlers delegate their actions to the ViewModel.</p>
 </div>
 <div class="listingblock">
+<div class="title">EmploymentRequestView.class (cont.)</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-java" data-lang="java">    private void save(ActionEvent evt) { viewModel.save(); }
 
@@ -2620,6 +2626,7 @@ ap.getChildren().add( ta );</code></pre>
 <p>This ViewModel looks like the domain object that will be presented later with one key difference: JavaFX Binding.  EmploymentRequestViewModel was bound to the EmploymentRequestView UI controls and the methods of EmploymentRequestViewModel will have access to all of the information within the save() method.  No extra marshaling of arguments is needed.</p>
 </div>
 <div class="listingblock">
+<div class="title">EmploymentRequestViewModel.class</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class EmploymentRequestViewModel {
 
@@ -2690,6 +2697,7 @@ ap.getChildren().add( ta );</code></pre>
 <p>The Converter is a class the translates between ViewModel and domain object.  In this app, there is a single toEmploymentRequest() method that creates an object from the ViewModel fields.</p>
 </div>
 <div class="listingblock">
+<div class="title">EmploymentRequestConverter.class</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class EmploymentRequestConverter {
 
@@ -2711,6 +2719,7 @@ ap.getChildren().add( ta );</code></pre>
 <p>Finally, the Model persists the information.  This Model example has a single mocked method which will verify that it receives the correct data for the save() operation.</p>
 </div>
 <div class="listingblock">
+<div class="title">EmploymentRequestModel.class</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class EmploymentRequestModel {
 
@@ -2724,6 +2733,7 @@ ap.getChildren().add( ta );</code></pre>
 <p>This is the plain Java object used to transport data from the Model to the UI.</p>
 </div>
 <div class="listingblock">
+<div class="title">EmploymentRequest.class</div>
 <div class="content">
 <pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class EmploymentRequest {
 
@@ -2781,7 +2791,557 @@ ap.getChildren().add( ta );</code></pre>
 <div class="sect3">
 <h4 id="_completed_code_6">7.1.6. Completed Code</h4>
 <div class="paragraph">
-<p>The completed code in this example is available as a Gradle project here.</p>
+<p>The completed code in this example is available as a Gradle project here.  There are two examples in the JAR.  Run the class net.bekwam.bkcourse.mvvmapp.MVVMApp.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://courses.bekwam.net/public_tutorials/source/bkcourse_mvvmapp_sources.zip">bkcourse_mvvmapp_sources.zip</a></p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_model_change_with_mvvm">7.2. Model Change with MVVM</h3>
+<div class="paragraph">
+<p>The previous article showed how to add a JavaFX binding-based ViewModel to an application architecture.  However, the Model presented was a simple service call.  This expands on the prior concepts and adds</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Asynchrony,</p>
+</li>
+<li>
+<p>A <code>ProgressBar</code> and status <code>Label</code>, and</p>
+</li>
+<li>
+<p>Event broadcasting.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>All operations taking more than a few milliseconds should be run on a separate <code>Thread</code>.  Something that runs quickly but involves IO or the network often turns into a performance problem as code moves to new computers and new network configurations.  A JavaFX <code>Task</code> is used to invoke the Model operation.  While this potentially long process is running, feedback is given to the user via a <code>ProgressBar</code> and <code>Label</code>.  The status <code>Label</code> conveys messages to the user from the JavaFX <code>Task</code>.</p>
+</div>
+<div class="paragraph">
+<p>It is important that the Model not hold a reference to the ViewModel, so an event notification scheme is introduced.  The ViewModel listens for an EVENT_MODEL_UPDATE message from the Model.  Although this example uses only one ViewModel, this scheme makes it possible for more than one ViewModel to be aware of data changes from a single Model component.</p>
+</div>
+<div class="sect3">
+<h4 id="_demo_program">7.2.1. Demo Program</h4>
+<div class="paragraph">
+<p>The demo program in this section is a URL tester.  The user enters a URL in the <code>TextField</code> and presses the Submit <code>Button</code>.  If the HTTP request to the specified URL returns successfully, the HTTP response status code is displayed alongside the number of milliseconds the request took.  This screenshot shows a successful usage.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/app-structure/modelchangeapp_screenshot_done.png" alt="modelchangeapp screenshot done">
+</div>
+<div class="title">Figure 27. A Successful Run</div>
+</div>
+<div class="paragraph">
+<p>The UI remains responsive throughout the request.  The responsiveness comes from the use of a JavaFX <code>Task</code> to run the URL retrieval on a background thread.  To make the user aware that processing is occurring, UI controls are tied to the properties of the <code>Task</code> through JavaFX binding.  This screenshot shows the feedback the user receives while the <code>Task</code> runs.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/app-structure/modelchangeapp_screenshot_inprogress.png" alt="modelchangeapp screenshot inprogress">
+</div>
+<div class="title">Figure 28. In-Progress View of a Retrieval</div>
+</div>
+<div class="paragraph">
+<p>When the Submit <code>Button</code> is pressed, a pair of controls are displayed: a <code>ProgressBar</code> and a <code>Label</code>.  Both controls are updated with information about the running background <code>Thread</code>.</p>
+</div>
+<div class="paragraph">
+<p>Errors in the URL retrieval are handled by passing an alternate response object out of the Model.  In the successful case, the Model returned the HTTP status code and elapsed time.  In the error case, the Model sets a flag and returns an error message.  This screenshot shows an error dialog produced by the View in response to an error in the Model.  The errorMessage is from the message property of the thrown Exception.  If needed, additional fields like the Exception class name can be added.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/app-structure/modelchangeapp_screenshot_err.png" alt="modelchangeapp screenshot err">
+</div>
+<div class="title">Figure 29. Error Produced by Model</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_design">7.2.2. Design</h4>
+<div class="paragraph">
+<p>The demo program consists of a single View / ViewModel / Model triple.  The View communicates with the ViewModel through JavaFX binding.  UI controls in the View are bound to JavaFX properties in the ViewModel.  Event handlers in the View delegate to methods in the ViewModel.  The ViewModel forms an asynchronous command which interacts with the Model.  The Model communicates indirectly with the ViewModel through a notification subsystem rather than an object reference.</p>
+</div>
+<div class="paragraph">
+<p>This is a UML class model of the program.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/app-structure/modelchangeapp_uml.png" alt="modelchangeapp uml">
+</div>
+<div class="title">Figure 30. Class Model of MVVM App</div>
+</div>
+<div class="paragraph">
+<p>URLTestView is the View component and contains the UI controls.  The ViewModel contains properties for the domain&#8201;&#8212;&#8201;url, last status code, last elapsed time&#8201;&#8212;&#8201;and for the screen state such as urlTestTaskRunning.  Model contains a service call and works with a UI-neutral POJO URLTestObject.  Communication between the Model and the ViewModel is brokered through a Notifications singleton which has methods for publishing (for the Model) and subscribing (for the ViewModel).</p>
+</div>
+<div class="paragraph">
+<p>This sequence diagram shows how the app wires itself up and the interactions that follow from a test operation.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/app-structure/modelchangeapp_uml_sd.png" alt="modelchangeapp uml sd">
+</div>
+<div class="title">Figure 31. Sequence Diagram of Successful Retrieval</div>
+</div>
+<div class="paragraph">
+<p>After all the objects are created, the user initiates a test operation.  This results in a TestURLCommand object being created which is a JavaFX <code>Service</code>.  The service invokes a Model method testURL().  When testURL() finishes, it publishes a notification.  This notification triggers a call to the ViewModel to refresh itself which uses a second call to the Model.  The ViewModel refresh sets ViewModel JavaFX properties which automatically update the View.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_view_2">7.2.3. View</h4>
+<div class="paragraph">
+<p>The View is a StackPane containing the <code>TextField</code> that will gather the URL input and a Submit <code>Button</code>.  A <code>StackPane</code> was used so that the temporary status display could be added without breaking the centering of the main UI controls.  The <code>HBox</code> containing the status <code>Label</code> and <code>ProgressBar</code> is always present in the lower-left, but hidden unless a <code>Task</code> is running.</p>
+</div>
+<div class="listingblock">
+<div class="title">URLTestView.class</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class URLTestView extends StackPane {
+
+    private final URLTestViewModel testViewModel =
+            new URLTestViewModel();
+
+    public URLTestView() {
+
+        Label lblURL = new Label("URL to Test");
+        TextField tfURL = new TextField();
+        Button btnTest = new Button("Test");
+        Label lblStatus = new Label("");
+        Label lblLoadTime = new Label("");
+        HBox resultHBox = new HBox(lblStatus, lblLoadTime);
+        resultHBox.setSpacing(10);
+
+        VBox vbox = new VBox( lblURL, tfURL, btnTest, resultHBox );
+        vbox.setPadding( new Insets(40) );
+        vbox.setSpacing( 10 );
+        vbox.setAlignment(Pos.CENTER_LEFT);
+
+        Label lblTaskStatus = new Label("");
+        ProgressBar pb = new ProgressBar();
+        HBox statusHBox = new HBox(pb, lblTaskStatus);
+        statusHBox.setSpacing(4);
+        statusHBox.setPadding(new Insets(4));
+        statusHBox.setMaxHeight( 20 );
+
+        StackPane.setAlignment(statusHBox, Pos.BOTTOM_LEFT );
+
+        this.getChildren().addAll( vbox, statusHBox );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The URLTestViewModel object is created in this class.  Alternatively, dependency injection can be used to distribute the same ViewModel object among other Views.</p>
+</div>
+<div class="paragraph">
+<p>The URLTestView constructor continues with several binding expressions.  These link the UI controls to the ViewModel properties.</p>
+</div>
+<div class="listingblock">
+<div class="title">URLTestView.class (cont.)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">        lblStatus.textProperty().bind( testViewModel.statusCodeProperty() );
+        lblLoadTime.textProperty().bind( testViewModel.loadTimeProperty() );
+        testViewModel.urlProperty().bind( tfURL.textProperty() );
+
+        statusHBox.visibleProperty().bind(testViewModel.urlTestTaskRunningProperty() );
+        pb.progressProperty().bind( testViewModel.urlTestTaskProgressProperty() );
+        lblTaskStatus.textProperty().bind( testViewModel.urlTestTaskMessageProperty());</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above statements register the UI controls for changes to the corresponding property in the ViewModel, except for tfURL.  tfURL uses a different binding direction since it is producing the value for the ViewModel.  In some cases, the binding may need to be bi-directional if a control can both be manipulated by the user and set from the ViewModel.</p>
+</div>
+<div class="paragraph">
+<p>The action which initiates the testURL() operation is mapped to the Submit <code>Button</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">URLTestView.class (cont.)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">        btnTest.setOnAction( (evt) -&gt; testViewModel.test() );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The URLTestView constructor finishes with a special ChangeListener binding to a ViewModel property. This is a notification that an error has occurred.  When the errorMessage property of the ViewModel is notified, the View displays a popup dialog.</p>
+</div>
+<div class="listingblock">
+<div class="title">URLTestView.class (cont.)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">        testViewModel.errorMessageProperty().addListener(
+                (obs,ov,nv) -&gt; {
+                    if( nv != null &amp;&amp; !nv.isEmpty() ) {
+                        Alert alert = new Alert(
+                                Alert.AlertType.ERROR, nv
+                        );
+                        alert.showAndWait();
+                    }
+                }
+        );</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_viewmodel_2">7.2.4. ViewModel</h4>
+<div class="paragraph">
+<p>URLTestView binds its UI controls to properties in URLTestViewModel.  This section of the class URLTestViewModel shows the properties used by the View and their corresponding access methods.  The test() method&#8201;&#8212;&#8201;which was mapped to the Submit <code>Button</code> press event&#8201;&#8212;&#8201;is also listed.  The object urlTestCommand will be presented later.</p>
+</div>
+<div class="listingblock">
+<div class="title">URLTestViewModel.class</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class URLTestViewModel {
+
+    // Data elements
+    private final StringProperty url = new SimpleStringProperty("");
+    private final StringProperty statusCode = new SimpleStringProperty("");
+    private final StringProperty loadTime = new SimpleStringProperty("");
+
+    // Status elements
+    private final BooleanProperty wasError = new SimpleBooleanProperty(false);
+    private final StringProperty errorMessage = new SimpleStringProperty("");
+
+    public StringProperty urlProperty() { return url; }
+
+    public StringProperty statusCodeProperty() { return statusCode; }
+
+    public StringProperty loadTimeProperty() { return loadTime; }
+
+    public StringProperty errorMessageProperty() { return errorMessage; }
+
+    public ReadOnlyBooleanProperty urlTestTaskRunningProperty() {
+        return urlTestCommand.runningProperty();  // presented later
+    }
+
+    public ReadOnlyStringProperty urlTestTaskMessageProperty() {
+        return urlTestCommand.messageProperty();  // presented later
+    }
+
+    public ReadOnlyDoubleProperty urlTestTaskProgressProperty() {
+        return urlTestCommand.progressProperty();  // presented later
+    }
+
+    public void test() {
+       urlTestCommand.restart();  // presented later
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>URLTestViewModel collaborates with two objects: URLTestModel and Notifications.  URLTestViewModel subscribes to a Notification in its constructor.  A URLTestViewModel method "update" will be called when the Notifications object posts an EVENT_MODEL_UPDATE.</p>
+</div>
+<div class="listingblock">
+<div class="title">URLTestViewModel.class (cont.)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">    private final URLTestModel urlTestModel = new URLTestModel();
+
+    private final Notifications notifications = new Notifications();
+
+    public URLTestViewModel() {
+        notifications.subscribe(Notifications.EVENT_MODEL_UPDATE,
+                                this,
+                                this::update);  // presented later
+    }</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_command">Command</h5>
+<div class="paragraph">
+<p>urlTestCommand is a JavaFX <code>Service</code> object.  As a part of the URLTestViewModel class, urlTestCommand has access to the url property which provides a parameter for the call to the Model object.  urlTestCommand also uses the URLTestModel member to initiate the call to test the URL.</p>
+</div>
+<div class="listingblock">
+<div class="title">URLTestViewModel.class (cont.)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">    private final Service&lt;Void&gt; urlTestCommand = new Service&lt;Void&gt;() {
+        @Override
+        protected Task&lt;Void&gt; createTask() {
+            return new Task&lt;Void&gt;() {
+                @Override
+                protected Void call() throws Exception {
+                    updateProgress(0.1d, 1.0d);
+                    updateMessage("Testing url " + url.get());
+                    urlTestModel.testURL( url.get() );
+                    return null;
+                }
+                protected void failed() {
+                    getException().printStackTrace();  // just in case
+                }
+            };
+        }
+    };</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A JavaFX <code>Service</code> was used since the <code>Service</code> objects needs to always exist for binding purposes.  URLTestView binds its <code>ProgressBar</code>, status <code>Label</code>, and container controls to the URLTestViewModel object which will be available for the life of the app.  Shown earlier, the URLTestViewModel properties delegate to the <code>Service</code> object.  A <code>Task</code> is a one-shot invocation and using that would not work for multiple test() invocations.</p>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Asynchrony</div>
+<div class="paragraph">
+<p>The design in this article puts the burden of asynchronous processing on the ViewModel.  This provides direct feedback to View controls using JavaFX binding.  An alternative approach is to use a general event emitting scheme to listen for task starting, task ending, progress, and message events.  This would support breaking out the urlTestCommand <code>Service</code> subclass into a separate code module.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The presentation of the URLTestViewModel class concludes with the update() method.  This method issues a call to the Model, unpacks the results, and updates the ViewModel properties.  Recall that the View has bound to these properties and will automatically be updated (there is no similar update() method in the View.</p>
+</div>
+<div class="listingblock">
+<div class="title">URLTestViewModel.class (cont.)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">    private void update(String event) {
+
+        urlTestModel.getUrlTestObject().ifPresent(
+
+            (testObject) -&gt; {
+
+                wasError.set( testObject.getWasError() );
+
+                if( !testObject.getWasError() ) {
+
+                    statusCode.set(
+                            "Status code: " +
+                            String.valueOf(testObject.getStatusCode())
+                    );
+
+                    loadTime.set(
+                            String.valueOf(testObject.getLoadTime()) +
+                                    " ms"
+                    );
+
+                    errorMessage.set(testObject.getErrorMessage());
+                } else {
+                    statusCode.set("");  // use empty TextField, not 0
+                    loadTime.set("");  // use empty TextField, not 0
+                    errorMessage.set( testObject.getErrorMessage() );
+                }
+            });
+    }</code></pre>
+</div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_model_3">7.2.5. Model</h4>
+<div class="paragraph">
+<p>URLTestModel is presented in its entirety below.  URLTestModel maintains a copy of a domain object.  Upon initialization, this object is empty so an <code>Optional</code> is used.  A getter is provided for ViewModels.  The testURL() method issues an HTTP GET call and records the results in the URLTestObject member.  If the HTTP GET call is successful, the URLTestObject will contain the status code (probably 200) and an elapsed time.  If unsuccessful, the URLTestObject will set a convenient wasError flag and an errorMessage.</p>
+</div>
+<div class="paragraph">
+<p>When the Model has retrieved the contents at the URL or generated an error, the publish() method of the Notifications object is invoked.  This prompts URLTestViewModel to update itself, but in a decoupled fashion.  It is important to note that URLTestModel does not hold a reference to a URLTestViewModel object.</p>
+</div>
+<div class="listingblock">
+<div class="title">URLTestModel.class</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class URLTestModel {
+
+    private final Notifications notifications =
+            new Notifications();
+
+    private Optional&lt;URLTestObject&gt; urlTestObject =
+            Optional.empty();
+
+    public Optional&lt;URLTestObject&gt; getUrlTestObject() {
+        return urlTestObject;
+    }
+
+    public Optional&lt;URLTestObject&gt; testURL(String url) {
+
+        try {
+            long startTimeMillis = System.currentTimeMillis();
+            HttpURLConnection urlConnection =
+                    (HttpURLConnection) new URL(url).openConnection();
+            try (
+                    InputStream is = urlConnection.getInputStream();
+            ) {
+                while (is.read() != -1) {
+                }
+            }
+            long endTimeMillis = System.currentTimeMillis();
+
+            URLTestObject uto = new URLTestObject(
+                    urlConnection.getResponseCode(),
+                    (int) (endTimeMillis - startTimeMillis)
+            );
+
+            urlTestObject = Optional.of(uto);
+
+        } catch(Exception exc) {
+            URLTestObject uto = new URLTestObject(exc.getMessage());
+            urlTestObject = Optional.of(uto);
+        }
+
+        notifications.publish(Notifications.EVENT_MODEL_UPDATE);
+
+        return urlTestObject;
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>URLTestModel also does not attempt to bind to URLTestViewModel using JavaFX.  Since the asynchrony is handled at the ViewModel layer, the Model is free to operate off of the JavaFX Thread.  Attempting to double-bind (View&#8594;ViewModel&#8594;Model) would result in an application threading error if binding were used.  Wrapped in a Platform.runLater(), a double-bind does not violate the prescribed dependency order&#8201;&#8212;&#8201;ViewModel already holds a reference to Model&#8201;&#8212;&#8201;but might result in an inconsistent update.</p>
+</div>
+<div class="paragraph">
+<p>This POJO is the domain object used by the Model.  As a POJO, this is can be maintained in a commons library and shared among non-UI components like a RESTful web services project.</p>
+</div>
+<div class="listingblock">
+<div class="title">URLTestObject.class</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class URLTestObject {
+
+    private final Integer statusCode;
+    private final Integer loadTime;
+    private final Boolean wasError;
+    private final String errorMessage;
+
+    public URLTestObject(Integer statusCode,
+                         Integer loadTime) {
+        this.statusCode = statusCode;
+        this.loadTime = loadTime;
+        wasError = false;
+        errorMessage = "";
+    }
+
+    public URLTestObject(String errorMessage) {
+        this.statusCode = null;
+        this.loadTime = null;
+        wasError = true;
+        this.errorMessage = errorMessage;
+    }
+
+    public Integer getLoadTime() {
+        return loadTime;
+    }
+
+    public Integer getStatusCode() {
+        return statusCode;
+    }
+
+    public Boolean getWasError() {
+        return wasError;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_notifications">7.2.6. Notifications</h4>
+<div class="paragraph">
+<p>This class is a lightweight pub/sub implementation.  Event types are registered as String constants at the top of the file.  Subscribers are identified by their class hashCode.  All the published events will run on the JavaFX Thread.</p>
+</div>
+<div class="listingblock">
+<div class="title">Notifications.class</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class Notifications {
+
+    public final static String EVENT_MODEL_UPDATE = "modelUpdate";
+
+    private final Map&lt;String, List&lt;SubscriberObject&gt;&gt; subscribers = new LinkedHashMap&lt;&gt;();
+
+    private static Notifications instance = new Notifications();
+
+    public void publish(String event) {
+
+        Platform.runLater( () -&gt; {
+            List&lt;SubscriberObject&gt; subscriberList = instance.subscribers.get(event);
+
+            if (subscriberList != null) {
+
+                subscriberList.forEach(
+                    subscriberObject -&gt; subscriberObject.getCb().accept(event)
+                    );
+
+                // event ends after last subscriber gets callback
+            }
+        } );
+    }
+
+    public void subscribe(String event, Object subscriber, Consumer&lt;String&gt; cb) {
+
+        if( !instance.subscribers.containsKey(event) ) {
+            List&lt;SubscriberObject&gt; slist = new ArrayList&lt;&gt;();
+            instance.subscribers.put( event, slist );
+        }
+
+        List&lt;SubscriberObject&gt; subscriberList = instance.subscribers.get( event );
+
+        subscriberList.add( new SubscriberObject(subscriber, cb) );
+    }
+
+    public void unsubscribe(String event, Object subscriber) {
+
+        List&lt;SubscriberObject&gt; subscriberList = instance.subscribers.get( event );
+
+        if (subscriberList == null) {
+            subscriberList.remove( subscriber );
+        }
+    }
+
+    static class SubscriberObject {
+
+        private final Object subscriber;
+        private final Consumer&lt;String&gt; cb;
+
+        public SubscriberObject(Object subscriber,
+                                Consumer&lt;String&gt; cb) {
+            this.subscriber = subscriber;
+            this.cb = cb;
+        }
+
+        public Object getSubscriber() {
+            return subscriber;
+        }
+
+        public Consumer&lt;String&gt; getCb() {
+            return cb;
+        }
+
+        @Override
+        public int hashCode() {
+            return subscriber.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object obj) {
+            return subscriber.equals(obj);
+        }
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Notifications is a singleton so that any class&#8201;&#8212;&#8201;both URLTestViewModel and URLTestModel in this case&#8201;&#8212;&#8201;will subscribe to and publish to the right instance.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_app">7.2.7. App</h4>
+<div class="paragraph">
+<p>For completeness, the Application subclass is listed below.</p>
+</div>
+<div class="listingblock">
+<div class="title">ModelChangeApp.class</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class ModelChangeApp extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        Scene scene = new Scene(new URLTestView());
+
+        primaryStage.setTitle("Model Change App");
+        primaryStage.setScene( scene );
+        primaryStage.setWidth(568);
+        primaryStage.setHeight(320);
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>MVVM is an architecture that separates the View from the Model.  Unlike other architectures, this separation includes a specific dependency graph: View depends on ViewModel depends on Model.  All three component types collaborate, but in cases where data moves in the opposite direction of the dependency graph, the communication is indirect.  In this example, the indirect communication was provided by JavaFX binding and a special Notifications class.  By keeping the Model and ViewModel free of View dependencies, the MVVM architecture fosters reuse.  URLTestModel can be used by other ViewModels and URLTestViewModel can be used by other Views.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_completed_code_7">7.2.8. Completed Code</h4>
+<div class="paragraph">
+<p>The completed code in this example is available as a Gradle project here.  There are two examples in the JAR.  Run the class nnet.bekwam.bkcourse.modelchangeapp.ModelChangeApp.</p>
 </div>
 <div class="paragraph">
 <p><a href="https://courses.bekwam.net/public_tutorials/source/bkcourse_mvvmapp_sources.zip">bkcourse_mvvmapp_sources.zip</a></p>
@@ -2882,7 +3442,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_pb.png" alt="tasks pb">
 </div>
-<div class="title">Figure 27. Screenshot of App Showing ProgressBar and Label</div>
+<div class="title">Figure 32. Screenshot of App Showing ProgressBar and Label</div>
 </div>
 <div class="paragraph">
 <p>When the retrieval is finished, a succeeded() callback is invoked and the UI is updated.  Note that the succeeded() callback takes place on the FX Thread, so it is safe to manipuplate controls.</p>
@@ -2891,7 +3451,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_contents.png" alt="tasks contents">
 </div>
-<div class="title">Figure 28. Screenshot of App Showing Successful Retrieval</div>
+<div class="title">Figure 33. Screenshot of App Showing Successful Retrieval</div>
 </div>
 <div class="paragraph">
 <p>If there was an error retrieving the HTML, a failed() callback is invoked and an error Alert is shown.  failed() also takes place on the FX Thread.  This screenshot shows invalid input. An "h" is used in the URL instead of the correct "http".</p>
@@ -2900,7 +3460,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_error.png" alt="tasks error">
 </div>
-<div class="title">Figure 29. Screenshot of App Showing Failure</div>
+<div class="title">Figure 34. Screenshot of App Showing Failure</div>
 </div>
 </div>
 <div class="sect3">
@@ -3157,7 +3717,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-11-13 22:32:26 UTC
+Last updated 2016-11-19 03:30:31 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
