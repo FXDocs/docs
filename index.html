@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Published 2016-11-19">
+<meta name="author" content="Published 2016-12-11">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2016-11-19</span><br>
+<span id="author" class="author">Published 2016-12-11</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -462,6 +462,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_1_styleable_properties">8.1. 1. Styleable Properties</a></li>
 <li><a href="#_2_tasks">8.2. 2. Tasks</a></li>
+<li><a href="#_2_avoid_nulls_in_comboboxes">8.3. 2. Avoid Nulls in ComboBoxes</a></li>
 </ul>
 </li>
 <li><a href="#_contributing_2">9. Contributing</a></li>
@@ -3691,6 +3692,267 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_2_avoid_nulls_in_comboboxes">8.3. 2. Avoid Nulls in ComboBoxes</h3>
+<div class="paragraph">
+<p>Author: Carl Walker</p>
+</div>
+<div class="paragraph">
+<p>To use a <code>ComboBox</code> in JavaFX, declare a List of items and set an initial value using setValue().  The <code>ComboBox</code> method getValue() retrieves the currently selected value.  If an initial value is not provided, the control defaults to a null value.</p>
+</div>
+<div class="paragraph">
+<p>The null value is a problem when the <code>ComboBox</code> drives other logic like an upper-case transformation or the lookup of a database record.  While a null check is usually used to prevent this type of error, an empty object is preferred in order to simplify the code.  ComboBoxes often appear in clusters and the empty object technique reduces null checks in the interaction of related ComboBoxes and on save and load operations.</p>
+</div>
+<div class="paragraph">
+<p>This article presents a pair of related ComboBoxes.  A country selection in one <code>ComboBox</code> modifies the list of available city items in a second <code>ComboBox</code>.  Neither selection is required.  The user can press the Save <code>Button</code> at any time and if no selection is made for either <code>ComboBox</code>, an empty object&#8201;&#8212;&#8201;in this case an empty String&#8201;&#8212;&#8201;will be returned.</p>
+</div>
+<div class="paragraph">
+<p>This is a screenshot of the app.  Selecting "Switzerland" from an empty initial value will fill the city <code>ComboBox</code> with Swiss cities.  Selecting the city "Zurich" and pressing Save will retrieve those values.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/best-practices/nonullcombo_screenshot.png" alt="nonullcombo screenshot">
+</div>
+<div class="title">Figure 35. Related ComboBoxes</div>
+</div>
+<div class="sect3">
+<h4 id="_data_structure">8.3.1. Data Structure</h4>
+<div class="paragraph">
+<p>The data structures supporting the app are a List of countries and a Map of cities.  The Map of cities uses country as a key.</p>
+</div>
+<div class="listingblock">
+<div class="title">NoNullComboApp.class</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class NoNullComboApp extends Application {
+
+    private List&lt;String&gt; countries = new ArrayList&lt;&gt;();
+
+    private Map&lt;String, List&lt;String&gt;&gt; citiesMap = new LinkedHashMap&lt;&gt;();
+
+    private void initData() {
+
+        String COUNTRY_FR = "France";
+        String COUNTRY_DE = "Germany";
+        String COUNTRY_CH = "Switzerland";
+
+        countries.add(COUNTRY_FR); countries.add(COUNTRY_DE); countries.add(COUNTRY_CH);
+
+        List&lt;String&gt; frenchCities = new ArrayList&lt;&gt;();
+        frenchCities.add("Paris");
+        frenchCities.add("Strasbourg");
+
+        List&lt;String&gt; germanCities = new ArrayList&lt;&gt;();
+        germanCities.add("Berlin");
+        germanCities.add("Cologne");
+        germanCities.add("Munich");
+
+        List&lt;String&gt; swissCities = new ArrayList&lt;&gt;();
+        swissCities.add("Zurich");
+
+        citiesMap.put(COUNTRY_FR, frenchCities );
+        citiesMap.put(COUNTRY_DE, germanCities );
+        citiesMap.put(COUNTRY_CH, swissCities );
+    }</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To retrieve the set of cities for a given country, use the get() method of the Map.  The containsKey() method can be used to determine whether or not the Map contains a value for the specified country.  In this example, containsKey() will be used to handle the empty object case.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ui">8.3.2. UI</h4>
+<div class="paragraph">
+<p>The UI is a pair of ComboBoxes with Labels and a Save Button.  The controls are put in a <code>VBox</code> and left-justified.  The <code>VBox</code> is wrapped in a <code>TilePane</code> and centered.  The <code>TilePane</code> was used since it does not stretch the <code>VBox</code> horizontally.</p>
+</div>
+<div class="listingblock">
+<div class="title">NoNullComboApp.class</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        Label countryLabel = new Label("Country:");
+        country.setPrefWidth(200.0d);
+        Label cityLabel = new Label("City:");
+        city.setPrefWidth(200.0d);
+        Button saveButton = new Button("Save");
+
+        VBox vbox = new VBox(
+                countryLabel,
+                country,
+                cityLabel,
+                city,
+                saveButton
+        );
+        vbox.setAlignment(Pos.CENTER_LEFT );
+        vbox.setSpacing( 10.0d );
+
+        TilePane outerBox = new TilePane(vbox);
+        outerBox.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(outerBox);
+
+        initData();</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_initial_values">8.3.3. Initial Values</h4>
+<div class="paragraph">
+<p>As mentioned earlier, if a value is not specified for a <code>ComboBox</code>, then null will be returned in a getValue() call.  Although there are several defensive techniques&#8201;&#8212;&#8201;if checks, Commons StringUtils methods&#8201;&#8212;&#8201;for fending off NullPointerExceptions, it is better to avoid them completely.  This is especially true as the interactions become complex or there are several ComboBoxes that allow empty selections.</p>
+</div>
+<div class="listingblock">
+<div class="title">NoNullComboApp.class</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">        country.getItems().add("");
+        country.getItems().addAll( countries );
+        country.setValue( "" );  // empty selection is object and not null
+
+        city.getItems().add("");
+        city.setValue( "" );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In this app, the Country <code>ComboBox</code> will not  be changed, so its items are added in the start() method.  Country starts with an initial empty selection as does city.  City&#8201;&#8212;&#8201;at this point&#8201;&#8212;&#8201;contains a single empty item.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_interaction">8.3.4. Interaction</h4>
+<div class="paragraph">
+<p>When the country value is changed, the contents of the city <code>ComboBox</code> should be replaced.  It is common to use clear() on the backing list; however, this will produce a null value in the <code>ComboBox</code> (no items, no value).  Instead, use removeIf() with a clause to keep a single empty item.  With the list cleared of all data (except the empty item), the newly-selected contents can be added with addAll().</p>
+</div>
+<div class="listingblock">
+<div class="title">NoNullComboApp.class</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">        country.setOnAction( (evt) -&gt; {
+
+            String cty = country.getValue();
+
+            city.getItems().removeIf( (c) -&gt; !c.isEmpty() );
+
+            if( citiesMap.containsKey(cty) ) {  // not an empty key
+                city.getItems().addAll( citiesMap.get(cty) );
+            }
+        });
+
+        saveButton.setOnAction( (evt) -&gt; {
+           System.out.println("saving country='" + country.getValue() +
+                                      "', city='" + city.getValue() + "'");
+        });</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Save Button action will print out the values.  In no case will a null value be returned from getValue().</p>
+</div>
+<div class="paragraph">
+<p>If you&#8217;re a Java developer, you&#8217;ve written "if not null" thousands of times.  Yet, project after project, I see NullPointerExceptions highlighting cases that were missed or new conditions that have arisen.  This article presented a technique for keeping empty objects in ComboBoxes by setting an initial value and using removeIf() rather than clear() when changing lists.  Although, this example used String objects, this can be expanded to work with domain objects that have an hashCode/equals implementation, an empty object representation, and a cellFactory or toString() to produce an empty view.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_complete_code_4">8.3.5. Complete Code</h4>
+<div class="paragraph">
+<p>The code can be tested in a single .java file.</p>
+</div>
+<div class="listingblock">
+<div class="title">NoNullComboApp.class</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class NoNullComboApp extends Application {
+
+    private final ComboBox&lt;String&gt; country = new ComboBox&lt;&gt;();
+    private final ComboBox&lt;String&gt; city = new ComboBox&lt;&gt;();
+
+    private List&lt;String&gt; countries = new ArrayList&lt;&gt;();
+
+    private Map&lt;String, List&lt;String&gt;&gt; citiesMap = new LinkedHashMap&lt;&gt;();
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        Label countryLabel = new Label("Country:");
+        country.setPrefWidth(200.0d);
+        Label cityLabel = new Label("City:");
+        city.setPrefWidth(200.0d);
+        Button saveButton = new Button("Save");
+
+        VBox vbox = new VBox(
+                countryLabel,
+                country,
+                cityLabel,
+                city,
+                saveButton
+        );
+        vbox.setAlignment(Pos.CENTER_LEFT );
+        vbox.setSpacing( 10.0d );
+
+        TilePane outerBox = new TilePane(vbox);
+        outerBox.setAlignment(Pos.CENTER);
+
+        Scene scene = new Scene(outerBox);
+
+        initData();
+
+        country.getItems().add("");
+        country.getItems().addAll( countries );
+        country.setValue( "" );  // empty selection is object and not null
+
+        city.getItems().add("");
+        city.setValue( "" );
+
+        country.setOnAction( (evt) -&gt; {
+
+            String cty = country.getValue();
+
+            city.getItems().removeIf( (c) -&gt; !c.isEmpty() );
+
+            if( citiesMap.containsKey(cty) ) {  // not an empty key
+                city.getItems().addAll( citiesMap.get(cty) );
+            }
+        });
+
+        saveButton.setOnAction( (evt) -&gt; {
+           System.out.println("saving country='" + country.getValue() +
+                                      "', city='" + city.getValue() + "'");
+        });
+
+        primaryStage.setTitle("NoNullComboApp");
+        primaryStage.setScene( scene );
+        primaryStage.setWidth( 320 );
+        primaryStage.setHeight( 480 );
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
+    private void initData() {
+
+        String COUNTRY_FR = "France";
+        String COUNTRY_DE = "Germany";
+        String COUNTRY_CH = "Switzerland";
+
+        countries.add(COUNTRY_FR); countries.add(COUNTRY_DE); countries.add(COUNTRY_CH);
+
+        List&lt;String&gt; frenchCities = new ArrayList&lt;&gt;();
+        frenchCities.add("Paris");
+        frenchCities.add("Strasbourg");
+
+        List&lt;String&gt; germanCities = new ArrayList&lt;&gt;();
+        germanCities.add("Berlin");
+        germanCities.add("Cologne");
+        germanCities.add("Munich");
+
+        List&lt;String&gt; swissCities = new ArrayList&lt;&gt;();
+        swissCities.add("Zurich");
+
+        citiesMap.put(COUNTRY_FR, frenchCities );
+        citiesMap.put(COUNTRY_DE, germanCities );
+        citiesMap.put(COUNTRY_CH, swissCities );
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -3717,7 +3979,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-11-19 03:33:17 UTC
+Last updated 2016-12-11 15:33:07 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
