@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Published 2016-12-12">
+<meta name="author" content="Published 2016-12-22">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2016-12-12</span><br>
+<span id="author" class="author">Published 2016-12-22</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -450,6 +450,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_gridpane_spanning">4.5. GridPane Spanning</a></li>
 <li><a href="#_gridpane_columnconstraints_and_rowconstraints">4.6. GridPane ColumnConstraints and RowConstraints</a></li>
 <li><a href="#_anchorpane">4.7. AnchorPane</a></li>
+<li><a href="#_tilepane">4.8. TilePane</a></li>
 </ul>
 </li>
 <li><a href="#_css">5. CSS</a></li>
@@ -2768,6 +2769,291 @@ ap.getChildren().add( ta );</code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_tilepane">4.8. TilePane</h3>
+<div class="paragraph">
+<p>Author: Carl Walker</p>
+</div>
+<div class="paragraph">
+<p>A <code>TilePane</code> is used for grid layout of equally sized cells.  The prefColumns and the prefRows properties define the number of rows and columns in the grid.  To add Nodes to <code>TilePane</code>, access the children property and call the add() or addAll() method.  This is easier to use than <code>GridPane</code> which requires explicit setting of the row / column position of Nodes.</p>
+</div>
+<div class="paragraph">
+<p>This screenshot shows a <code>TilePane</code> defined as a three-by-three grid.  The <code>TilePane</code> contains nine <code>Rectangle</code> objects.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/threebythreeapp_screenshot.png" alt="threebythreeapp screenshot">
+</div>
+<div class="title">Figure 26. A 3x3 TilePane</div>
+</div>
+<div class="paragraph">
+<p>The complete code for the three-by-three grid follows.  The children property of the <code>TilePane</code> provides the addAll() method to which <code>Rectangle</code> objects are added.  The tileAlignment property positions each of the <code>Rectangle</code> objects in the center of its corresponding tile.</p>
+</div>
+<div class="listingblock">
+<div class="title">ThreeByThreeApp.java</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class ThreeByThreeApp extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        TilePane tilePane = new TilePane();
+        tilePane.setPrefColumns(3);
+        tilePane.setPrefRows(3);
+        tilePane.setTileAlignment( Pos.CENTER );
+
+        tilePane.getChildren().addAll(
+                new Rectangle(50, 50, Color.RED),
+                new Rectangle( 50, 50, Color.GREEN ),
+                new Rectangle( 50, 50, Color.BLUE ),
+                new Rectangle( 50, 50, Color.YELLOW ),
+                new Rectangle( 50, 50, Color.CYAN ),
+                new Rectangle( 50, 50, Color.PURPLE ),
+                new Rectangle( 50, 50, Color.BROWN ),
+                new Rectangle( 50, 50, Color.PINK ),
+                new Rectangle( 50, 50, Color.ORANGE )
+        );
+
+        Scene scene = new Scene(tilePane);
+        scene.setFill(Color.LIGHTGRAY);
+
+        primaryStage.setTitle("3x3");
+        primaryStage.setScene( scene );
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {launch(args);}
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since all of the <code>Node</code> contents of the <code>TilePane</code> were equally-sized Rectangles, the layout is packed together and the tileAlignment setting is not noticeable.  When the tilePrefHeight and tilePrefWidth properties are set to be larger than the contents&#8201;&#8212;&#8201;say 100x100 tiles containing 50x50 Rectangles&#8201;&#8212;&#8201;tileAlignment will determine how the extra space will be used.</p>
+</div>
+<div class="paragraph">
+<p>See the following modified ThreeByThreeApp class that sets the tilePrefHeight and tilePrefWidth.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">        tilePane.setPrefTileHeight(100);
+        tilePane.setPrefTileWidth(100);</code></pre>
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/threebythreeapp_screenshot_space.png" alt="threebythreeapp screenshot space">
+</div>
+<div class="title">Figure 27. 3x3 TilePane (Modified)</div>
+</div>
+<div class="paragraph">
+<p>In the prior screenshots, nine Rectangle objects were provided to the three-by-three grid.  If the contents do not match up with the <code>TilePane</code> definition, those cells will collapse.  This modification adds only five Rectangles rather than nine.  The first row contains has content for all three tiles.  The second row has content for only the first two files.  The third row is missing entirely.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/threebythreeapp_screenshot_sparse.png" alt="threebythreeapp screenshot sparse">
+</div>
+<div class="title">Figure 28. 3x3 App - Sparse</div>
+</div>
+<div class="paragraph">
+<p>There is a property "orientation" that instructs <code>TilePane</code> to add items row-by-row (HORIZONTAL, the default) or column-by-column (VERTICAL).  If VERTICAL is used, then the first column will have three elements, the second column will have only the top two, and the third column will be missing.  This screenshot shows the five Rectangles being added to the three-by-three grid (nine tiles) using VERTICAL orientation.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/threebythreeapp_screenshot_vert.png" alt="threebythreeapp screenshot vert">
+</div>
+<div class="title">Figure 29. 3x3 App - VERTICAL</div>
+</div>
+<div class="sect3">
+<h4 id="_algorithms">4.8.1. Algorithms</h4>
+<div class="paragraph">
+<p>It is possible to create JavaFX grid layouts with other containers like <code>GridPane</code>, <code>VBox</code>, and <code>HBox</code>.  TilePane is an convenience that defines the grid layout in advance and makes adding items to the grid a simple add() or addAll() call.  Unlike a grid layout built with a combination of nested <code>VBox</code> and <code>HBox</code> containers, the <code>TilePane</code> contents are direct children.  This makes it easy to loop over the children during event processing which helps implement certain algorithms.</p>
+</div>
+<div class="paragraph">
+<p>This example app places four Circles in a <code>TilePane</code>.  An event handler is attached to the <code>TilePane</code> which looks for a selection of one of the Circles.  If a Circle is selected, it is dimmed through the opacity setting.  If the Circle is re-selected, its original color is restored.  This screenshot shows the app with the blue <code>Circle</code> appearing purple-ish because it has been selected.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/tileapp.png" alt="tileapp">
+</div>
+<div class="title">Figure 30. TileApp with Blue Circle Selected</div>
+</div>
+<div class="paragraph">
+<p>The program begins by adding the items and setting a custom property "selected" using the Java 8 Stream API.</p>
+</div>
+<div class="listingblock">
+<div class="title">TileApp.java</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">        TilePane tilePane = new TilePane();
+        tilePane.setPrefColumns(2);
+        tilePane.setPrefRows(2);
+        tilePane.setTileAlignment( Pos.CENTER );
+
+        Circle redCircle = new Circle(50, Color.RED);
+        Circle greenCircle = new Circle( 50, Color.GREEN );
+        Circle blueCircle = new Circle( 50, Color.BLUE );
+        Circle yellowCircle = new Circle( 50, Color.YELLOW );
+
+        List&lt;Circle&gt; circles = new ArrayList&lt;&gt;();
+        circles.add( redCircle );
+        circles.add( greenCircle );
+        circles.add( blueCircle );
+        circles.add( yellowCircle );
+
+        circles
+                .stream()
+                .forEach( (c) -&gt; c.getProperties().put( "selected", Boolean.FALSE ));
+
+        tilePane.getChildren().addAll(
+               circles
+        );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Next, the event handler is attached to the mouse event.  This is also using Java 8 Streams.  The filter() method is determining whether or not a <code>Circle</code> is selected using the Node.contains() method on converted coordinates.  If that expression passes, findFirst() is used to retrieve the first (and in this case, only) match.  The block of code in ifPresent() sets the "selected" flag for keeping track of the <code>Circle</code> state and tweaks the opacity.</p>
+</div>
+<div class="listingblock">
+<div class="title">TileApp.java</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">    tilePane.setOnMouseClicked(
+
+        (evt) -&gt; tilePane
+                    .getChildren()
+                    .stream()
+                    .filter( c -&gt;
+                        c.contains(
+                          c.sceneToLocal(evt.getSceneX(), evt.getSceneY(), true)
+                        )
+                     )
+                    .findFirst()
+                    .ifPresent(
+                            (c) -&gt; {
+                                Boolean selected = (Boolean) c.getProperties().get("selected");
+                                if( selected == null || selected == Boolean.FALSE ) {
+                                    c.setOpacity(0.3d);
+                                    c.getProperties().put("selected", Boolean.TRUE);
+                                } else {
+                                    c.setOpacity( 1.0d );
+                                    c.getProperties().put("selected", Boolean.FALSE);
+                                }
+                            }
+                    )
+    );</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_another_handler">4.8.2. Another Handler</h4>
+<div class="paragraph">
+<p>Since the program saves the Circles in a Java Collections <code>List</code>, the <code>TilePane</code> contents can be replaced with repeated allAll() calls.  This event handler is triggered by the user pressing an "S" in the <code>Scene</code>.  The contents of the backing <code>List</code> are shuffled and re-added to the <code>TilePane</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">TileApp.java</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">        scene.setOnKeyPressed(
+                (evt) -&gt; {
+                    if( evt.getCode().equals(KeyCode.S) ) {
+                        Collections.shuffle( circles );
+                        tilePane.getChildren().clear();
+                        tilePane.getChildren().addAll( circles );
+                    }
+                }
+        );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>While feasible, a grid built with VBoxes and HBoxes would be slightly more difficult because of the nested structures.  Also, <code>TilePane</code> will not stretch the contents to fill extra space, making it suitable for composite controls that need to be packed together for ergonomic reasons.</p>
+</div>
+<div class="paragraph">
+<p><code>TilePane</code> creates a grid based layout of equally sized cells.  Contents are added to the <code>TilePane</code> based on the prefRows, prefColumns, and orientation settings.  If the grid contains more tiles than added Nodes, there will be gaps in the layout and rows and columns may collapse if no content was provided whatsoever.  This post showed a pair of algorithms that were implemented easily because of TilePane&#8217;s simply interface.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_complete_code_5">4.8.3. Complete Code</h4>
+<div class="paragraph">
+<p>The complete code for TileApp follows.</p>
+</div>
+<div class="listingblock">
+<div class="title">TileApp.java (Complete)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class TileApp extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        TilePane tilePane = new TilePane();
+        tilePane.setPrefColumns(2);
+        tilePane.setPrefRows(2);
+        tilePane.setTileAlignment( Pos.CENTER );
+
+        Circle redCircle = new Circle(50, Color.RED);
+        Circle greenCircle = new Circle( 50, Color.GREEN );
+        Circle blueCircle = new Circle( 50, Color.BLUE );
+        Circle yellowCircle = new Circle( 50, Color.YELLOW );
+
+        List&lt;Circle&gt; circles = new ArrayList&lt;&gt;();
+        circles.add( redCircle );
+        circles.add( greenCircle );
+        circles.add( blueCircle );
+        circles.add( yellowCircle );
+
+        circles
+                .stream()
+                .forEach( (c) -&gt; c.getProperties().put( "selected", Boolean.FALSE ));
+
+        tilePane.getChildren().addAll(
+               circles
+        );
+
+        tilePane.setOnMouseClicked(
+
+            (evt) -&gt; tilePane
+                        .getChildren()
+                        .stream()
+                        .filter( c -&gt;
+                            c.contains(
+                              c.sceneToLocal(evt.getSceneX(), evt.getSceneY(), true)
+                            )
+                         )
+                        .findFirst()
+                        .ifPresent(
+                                (c) -&gt; {
+                                    Boolean selected = (Boolean) c.getProperties().get("selected");
+                                    if( selected == null || selected == Boolean.FALSE ) {
+                                        c.setOpacity(0.3d);
+                                        c.getProperties().put("selected", Boolean.TRUE);
+                                    } else {
+                                        c.setOpacity( 1.0d );
+                                        c.getProperties().put("selected", Boolean.FALSE);
+                                    }
+                                }
+                        )
+        );
+
+        Scene scene = new Scene(tilePane);
+
+        scene.setOnKeyPressed(
+                (evt) -&gt; {
+                    if( evt.getCode().equals(KeyCode.S) ) {
+                        Collections.shuffle( circles );
+                        tilePane.getChildren().clear();
+                        tilePane.getChildren().addAll( circles );
+                    }
+                }
+        );
+
+        primaryStage.setTitle("TileApp");
+        primaryStage.setScene( scene );
+        primaryStage.show();
+
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -2807,7 +3093,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/mvvmapp_screenshot.png" alt="mvvmapp screenshot">
 </div>
-<div class="title">Figure 26. Employment Request Form</div>
+<div class="title">Figure 31. Employment Request Form</div>
 </div>
 <div class="paragraph">
 <p>After entering the data and pressing Save, the Model object responds with a println().</p>
@@ -2864,7 +3150,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/mvvmapp_uml.png" alt="mvvmapp uml">
 </div>
-<div class="title">Figure 27. UML Class Model of Application</div>
+<div class="title">Figure 32. UML Class Model of Application</div>
 </div>
 </div>
 <div class="sect3">
@@ -2987,7 +3273,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/mvvmapp_sb.png" alt="mvvmapp sb">
 </div>
-<div class="title">Figure 28. Scene Builder Could Also Implement the View</div>
+<div class="title">Figure 33. Scene Builder Could Also Implement the View</div>
 </div>
 <div class="paragraph">
 <p>Notice that the right "half" of the UML diagram would not be changed by switching the View implementation from code to Scene Builder.  A sign of a good design is when alternative presentations can be supported easily.</p>
@@ -3211,7 +3497,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_screenshot_done.png" alt="modelchangeapp screenshot done">
 </div>
-<div class="title">Figure 29. A Successful Run</div>
+<div class="title">Figure 34. A Successful Run</div>
 </div>
 <div class="paragraph">
 <p>The UI remains responsive throughout the request.  The responsiveness comes from the use of a JavaFX <code>Task</code> to run the URL retrieval on a background thread.  To make the user aware that processing is occurring, UI controls are tied to the properties of the <code>Task</code> through JavaFX binding.  This screenshot shows the feedback the user receives while the <code>Task</code> runs.</p>
@@ -3220,7 +3506,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_screenshot_inprogress.png" alt="modelchangeapp screenshot inprogress">
 </div>
-<div class="title">Figure 30. In-Progress View of a Retrieval</div>
+<div class="title">Figure 35. In-Progress View of a Retrieval</div>
 </div>
 <div class="paragraph">
 <p>When the Submit <code>Button</code> is pressed, a pair of controls are displayed: a <code>ProgressBar</code> and a <code>Label</code>.  Both controls are updated with information about the running background <code>Thread</code>.</p>
@@ -3232,7 +3518,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_screenshot_err.png" alt="modelchangeapp screenshot err">
 </div>
-<div class="title">Figure 31. Error Produced by Model</div>
+<div class="title">Figure 36. Error Produced by Model</div>
 </div>
 </div>
 <div class="sect3">
@@ -3247,7 +3533,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_uml.png" alt="modelchangeapp uml">
 </div>
-<div class="title">Figure 32. Class Model of MVVM App</div>
+<div class="title">Figure 37. Class Model of MVVM App</div>
 </div>
 <div class="paragraph">
 <p>URLTestView is the View component and contains the UI controls.  The ViewModel contains properties for the domain&#8201;&#8212;&#8201;url, last status code, last elapsed time&#8201;&#8212;&#8201;and for the screen state such as urlTestTaskRunning.  Model contains a service call and works with a UI-neutral POJO URLTestObject.  Communication between the Model and the ViewModel is brokered through a Notifications singleton which has methods for publishing (for the Model) and subscribing (for the ViewModel).</p>
@@ -3259,7 +3545,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_uml_sd.png" alt="modelchangeapp uml sd">
 </div>
-<div class="title">Figure 33. Sequence Diagram of Successful Retrieval</div>
+<div class="title">Figure 38. Sequence Diagram of Successful Retrieval</div>
 </div>
 <div class="paragraph">
 <p>After all the objects are created, the user initiates a test operation.  This results in a TestURLCommand object being created which is a JavaFX <code>Service</code>.  The service invokes a Model method testURL().  When testURL() finishes, it publishes a notification.  This notification triggers a call to the ViewModel to refresh itself which uses a second call to the Model.  The ViewModel refresh sets ViewModel JavaFX properties which automatically update the View.</p>
@@ -3822,7 +4108,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_pb.png" alt="tasks pb">
 </div>
-<div class="title">Figure 34. Screenshot of App Showing ProgressBar and Label</div>
+<div class="title">Figure 39. Screenshot of App Showing ProgressBar and Label</div>
 </div>
 <div class="paragraph">
 <p>When the retrieval is finished, a succeeded() callback is invoked and the UI is updated.  Note that the succeeded() callback takes place on the FX Thread, so it is safe to manipuplate controls.</p>
@@ -3831,7 +4117,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_contents.png" alt="tasks contents">
 </div>
-<div class="title">Figure 35. Screenshot of App Showing Successful Retrieval</div>
+<div class="title">Figure 40. Screenshot of App Showing Successful Retrieval</div>
 </div>
 <div class="paragraph">
 <p>If there was an error retrieving the HTML, a failed() callback is invoked and an error Alert is shown.  failed() also takes place on the FX Thread.  This screenshot shows invalid input. An "h" is used in the URL instead of the correct "http".</p>
@@ -3840,7 +4126,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_error.png" alt="tasks error">
 </div>
-<div class="title">Figure 36. Screenshot of App Showing Failure</div>
+<div class="title">Figure 41. Screenshot of App Showing Failure</div>
 </div>
 </div>
 <div class="sect3">
@@ -3938,7 +4224,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_complete_code_5">8.2.3. Complete Code</h4>
+<h4 id="_complete_code_6">8.2.3. Complete Code</h4>
 <div class="paragraph">
 <p>The code can be tested in a single .java file.</p>
 </div>
@@ -4092,7 +4378,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 <div class="content">
 <img src="images/best-practices/nonullcombo_screenshot.png" alt="nonullcombo screenshot">
 </div>
-<div class="title">Figure 37. Related ComboBoxes</div>
+<div class="title">Figure 42. Related ComboBoxes</div>
 </div>
 <div class="sect3">
 <h4 id="_data_structure">8.3.1. Data Structure</h4>
@@ -4227,7 +4513,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_complete_code_6">8.3.5. Complete Code</h4>
+<h4 id="_complete_code_7">8.3.5. Complete Code</h4>
 <div class="paragraph">
 <p>The code can be tested in a single .java file.</p>
 </div>
@@ -4358,7 +4644,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-12-12 01:52:27 UTC
+Last updated 2016-12-22 14:29:29 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
