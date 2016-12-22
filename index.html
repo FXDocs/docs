@@ -2865,7 +2865,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="sect3">
 <h4 id="_algorithms">4.8.1. Algorithms</h4>
 <div class="paragraph">
-<p>It is possible to create JavaFX grid layouts with other containers like <code>GridPane</code>, <code>VBox</code>, and <code>HBox</code>.  TilePane is an convenience that defines the grid layout in advance and makes adding items to the grid a simple add() or addAll() call.  Unlike a grid layout built with a combination of nested <code>VBox</code> and <code>HBox</code> containers, the <code>TilePane</code> contents are direct children.  This makes it easy to loop over the children during event processing which helps implement certain algorithms.</p>
+<p>It is possible to create JavaFX grid layouts with other containers like <code>GridPane</code>, <code>VBox</code>, and <code>HBox</code>.  TilePane is a convenience that defines the grid layout in advance and makes adding items to the grid a simple add() or addAll() call.  Unlike a grid layout built with a combination of nested <code>VBox</code> and <code>HBox</code> containers, the <code>TilePane</code> contents are direct children.  This makes it easy to loop over the children during event processing which helps implement certain algorithms.</p>
 </div>
 <div class="paragraph">
 <p>This example app places four Circles in a <code>TilePane</code>.  An event handler is attached to the <code>TilePane</code> which looks for a selection of one of the Circles.  If a Circle is selected, it is dimmed through the opacity setting.  If the Circle is re-selected, its original color is restored.  This screenshot shows the app with the blue <code>Circle</code> appearing purple-ish because it has been selected.</p>
@@ -4644,7 +4644,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-12-22 14:29:29 UTC
+Last updated 2016-12-22 15:25:12 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
