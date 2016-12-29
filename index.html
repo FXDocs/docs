@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Published 2016-12-22">
+<meta name="author" content="Published 2016-12-29">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2016-12-22</span><br>
+<span id="author" class="author">Published 2016-12-29</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -451,6 +451,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_gridpane_columnconstraints_and_rowconstraints">4.6. GridPane ColumnConstraints and RowConstraints</a></li>
 <li><a href="#_anchorpane">4.7. AnchorPane</a></li>
 <li><a href="#_tilepane">4.8. TilePane</a></li>
+<li><a href="#_tiledpane">4.9. TiledPane</a></li>
 </ul>
 </li>
 <li><a href="#_css">5. CSS</a></li>
@@ -3054,6 +3055,149 @@ ap.getChildren().add( ta );</code></pre>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_tiledpane">4.9. TiledPane</h3>
+<div class="paragraph">
+<p>Author: Carl Walker</p>
+</div>
+<div class="paragraph">
+<p>A <code>TitledPane</code> is a <code>Node</code> container matched with a <code>Label</code> and an optional control for showing and hiding the container contents.  Since <code>TitledPane</code> is limited to a single <code>Node</code>, it is often paired with a container supporting multiple children like a <code>VBox</code>.  Functionally, it can hide non-essential details of a form or group related controls.</p>
+</div>
+<div class="paragraph">
+<p>This example is a web search app that accepts a set of keywords in a <code>TextField</code>.  The user presses the Search Button to run a search.  The Advanced <code>TitlePane</code> expands to provide additional search arguments.</p>
+</div>
+<div class="paragraph">
+<p>This screenshot shows the un-expanded state which is the view for a user executing a simple keyword search.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/titledpaneapp_unexpanded.png" alt="titledpaneapp unexpanded">
+</div>
+<div class="title">Figure 31. Unexpanded TitledPane</div>
+</div>
+<div class="paragraph">
+<p>This next screenshot shows the view for a user requiring advanced search parameters.  The Advanced TitledPane was expanded by pressing on the arrow in the <code>TitledPane</code> header.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/titledpaneapp_expanded.png" alt="titledpaneapp expanded">
+</div>
+<div class="title">Figure 32. Expanded TitledPane Shows More Controls</div>
+</div>
+<div class="paragraph">
+<p>To create a <code>TitledPane</code>, use the constructor to pass in a String title and a single <code>Node</code> child.  The default constructor can also be used and the title and <code>Node</code> set using setters.  This code uses the parameterized constructor.  A <code>VBox</code> is the single child of the <code>TitledPane</code>.  However, the <code>VBox</code> itself contains several controls.</p>
+</div>
+<div class="listingblock">
+<div class="title">TitledPaneApp.java</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">        VBox advancedVBox = new VBox(
+                new Label("All Keywords"),
+                new CheckBox(),
+                new Label("Domains"),
+                new TextField(),
+                new Label("Time"),
+                new ComboBox&lt;&gt;(
+                    FXCollections.observableArrayList( "Day", "Month", "Year" )
+                )
+        );
+
+        TitledPane titledPane = new TitledPane(
+                "Advanced",
+                advancedVBox
+        );
+        titledPane.setExpanded( false );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>By default, the <code>TitledPane</code> will be expanded.  This does not fit the use case of hiding non-essential information, so the expanded property is set after the object is created.</p>
+</div>
+<div class="sect3">
+<h4 id="_collapsible">4.9.1. Collapsible</h4>
+<div class="paragraph">
+<p>Another property of <code>TitledPane</code> is collapsible.  By default, the <code>TitledPane</code> collapsible property is set to true.  However, a quick grouping can be provided to controls that are not collapsible.  The following screenshot demonstrates this use case.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/layout/titledpaneapp_noncollapsible.png" alt="titledpaneapp noncollapsible">
+</div>
+<div class="title">Figure 33. Collapsible Set to False</div>
+</div>
+<div class="paragraph">
+<p>This code sets the collapsible flag after the constructor is called.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">            VBox securityVBox = new VBox(
+                    new Label("Owner"),
+                    new TextField(),
+                    new Label("Access Control"),
+                    new TextField()
+            );
+
+            TitledPane tp = new TitledPane("Security", securityVBox);
+            tp.setCollapsible( false );</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_complete_code_6">4.9.2. Complete Code</h4>
+<div class="paragraph">
+<p>The following is the complete code for the first demonstration involving the hidden search parameters "TitledPaneApp".</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class TitledPaneApp extends Application {
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        VBox vbox = new VBox(
+                new Label("Keywords" ),
+                new TextField()
+        );
+
+        vbox.setPadding( new Insets(10) );
+        vbox.setSpacing( 10 );
+
+        VBox advancedVBox = new VBox(
+                new Label("All Keywords"),
+                new CheckBox(),
+                new Label("Domains"),
+                new TextField(),
+                new Label("Time"),
+                new ComboBox&lt;&gt;(
+                    FXCollections.observableArrayList( "Day", "Month", "Year" )
+                )
+        );
+
+        TitledPane titledPane = new TitledPane(
+                "Advanced",
+                advancedVBox
+        );
+        titledPane.setExpanded( false );
+
+        vbox.getChildren().addAll(
+                titledPane,
+                new Button("Search")
+        );
+
+        Scene scene = new Scene( vbox );
+
+        primaryStage.setTitle( "TitledPaneApp" );
+        primaryStage.setScene( scene );
+        primaryStage.setWidth( 568 );
+        primaryStage.setHeight( 320 );
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}</code></pre>
+</div>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -3093,7 +3237,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/mvvmapp_screenshot.png" alt="mvvmapp screenshot">
 </div>
-<div class="title">Figure 31. Employment Request Form</div>
+<div class="title">Figure 34. Employment Request Form</div>
 </div>
 <div class="paragraph">
 <p>After entering the data and pressing Save, the Model object responds with a println().</p>
@@ -3150,7 +3294,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/mvvmapp_uml.png" alt="mvvmapp uml">
 </div>
-<div class="title">Figure 32. UML Class Model of Application</div>
+<div class="title">Figure 35. UML Class Model of Application</div>
 </div>
 </div>
 <div class="sect3">
@@ -3273,7 +3417,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/mvvmapp_sb.png" alt="mvvmapp sb">
 </div>
-<div class="title">Figure 33. Scene Builder Could Also Implement the View</div>
+<div class="title">Figure 36. Scene Builder Could Also Implement the View</div>
 </div>
 <div class="paragraph">
 <p>Notice that the right "half" of the UML diagram would not be changed by switching the View implementation from code to Scene Builder.  A sign of a good design is when alternative presentations can be supported easily.</p>
@@ -3497,7 +3641,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_screenshot_done.png" alt="modelchangeapp screenshot done">
 </div>
-<div class="title">Figure 34. A Successful Run</div>
+<div class="title">Figure 37. A Successful Run</div>
 </div>
 <div class="paragraph">
 <p>The UI remains responsive throughout the request.  The responsiveness comes from the use of a JavaFX <code>Task</code> to run the URL retrieval on a background thread.  To make the user aware that processing is occurring, UI controls are tied to the properties of the <code>Task</code> through JavaFX binding.  This screenshot shows the feedback the user receives while the <code>Task</code> runs.</p>
@@ -3506,7 +3650,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_screenshot_inprogress.png" alt="modelchangeapp screenshot inprogress">
 </div>
-<div class="title">Figure 35. In-Progress View of a Retrieval</div>
+<div class="title">Figure 38. In-Progress View of a Retrieval</div>
 </div>
 <div class="paragraph">
 <p>When the Submit <code>Button</code> is pressed, a pair of controls are displayed: a <code>ProgressBar</code> and a <code>Label</code>.  Both controls are updated with information about the running background <code>Thread</code>.</p>
@@ -3518,7 +3662,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_screenshot_err.png" alt="modelchangeapp screenshot err">
 </div>
-<div class="title">Figure 36. Error Produced by Model</div>
+<div class="title">Figure 39. Error Produced by Model</div>
 </div>
 </div>
 <div class="sect3">
@@ -3533,7 +3677,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_uml.png" alt="modelchangeapp uml">
 </div>
-<div class="title">Figure 37. Class Model of MVVM App</div>
+<div class="title">Figure 40. Class Model of MVVM App</div>
 </div>
 <div class="paragraph">
 <p>URLTestView is the View component and contains the UI controls.  The ViewModel contains properties for the domain&#8201;&#8212;&#8201;url, last status code, last elapsed time&#8201;&#8212;&#8201;and for the screen state such as urlTestTaskRunning.  Model contains a service call and works with a UI-neutral POJO URLTestObject.  Communication between the Model and the ViewModel is brokered through a Notifications singleton which has methods for publishing (for the Model) and subscribing (for the ViewModel).</p>
@@ -3545,7 +3689,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_uml_sd.png" alt="modelchangeapp uml sd">
 </div>
-<div class="title">Figure 38. Sequence Diagram of Successful Retrieval</div>
+<div class="title">Figure 41. Sequence Diagram of Successful Retrieval</div>
 </div>
 <div class="paragraph">
 <p>After all the objects are created, the user initiates a test operation.  This results in a TestURLCommand object being created which is a JavaFX <code>Service</code>.  The service invokes a Model method testURL().  When testURL() finishes, it publishes a notification.  This notification triggers a call to the ViewModel to refresh itself which uses a second call to the Model.  The ViewModel refresh sets ViewModel JavaFX properties which automatically update the View.</p>
@@ -4108,7 +4252,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_pb.png" alt="tasks pb">
 </div>
-<div class="title">Figure 39. Screenshot of App Showing ProgressBar and Label</div>
+<div class="title">Figure 42. Screenshot of App Showing ProgressBar and Label</div>
 </div>
 <div class="paragraph">
 <p>When the retrieval is finished, a succeeded() callback is invoked and the UI is updated.  Note that the succeeded() callback takes place on the FX Thread, so it is safe to manipuplate controls.</p>
@@ -4117,7 +4261,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_contents.png" alt="tasks contents">
 </div>
-<div class="title">Figure 40. Screenshot of App Showing Successful Retrieval</div>
+<div class="title">Figure 43. Screenshot of App Showing Successful Retrieval</div>
 </div>
 <div class="paragraph">
 <p>If there was an error retrieving the HTML, a failed() callback is invoked and an error Alert is shown.  failed() also takes place on the FX Thread.  This screenshot shows invalid input. An "h" is used in the URL instead of the correct "http".</p>
@@ -4126,7 +4270,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_error.png" alt="tasks error">
 </div>
-<div class="title">Figure 41. Screenshot of App Showing Failure</div>
+<div class="title">Figure 44. Screenshot of App Showing Failure</div>
 </div>
 </div>
 <div class="sect3">
@@ -4224,7 +4368,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_complete_code_6">8.2.3. Complete Code</h4>
+<h4 id="_complete_code_7">8.2.3. Complete Code</h4>
 <div class="paragraph">
 <p>The code can be tested in a single .java file.</p>
 </div>
@@ -4378,7 +4522,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 <div class="content">
 <img src="images/best-practices/nonullcombo_screenshot.png" alt="nonullcombo screenshot">
 </div>
-<div class="title">Figure 42. Related ComboBoxes</div>
+<div class="title">Figure 45. Related ComboBoxes</div>
 </div>
 <div class="sect3">
 <h4 id="_data_structure">8.3.1. Data Structure</h4>
@@ -4513,7 +4657,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_complete_code_7">8.3.5. Complete Code</h4>
+<h4 id="_complete_code_8">8.3.5. Complete Code</h4>
 <div class="paragraph">
 <p>The code can be tested in a single .java file.</p>
 </div>
@@ -4644,7 +4788,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2016-12-22 15:25:12 UTC
+Last updated 2016-12-29 01:47:59 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
