@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Published 2017-05-05">
+<meta name="author" content="Published 2017-05-14">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2017-05-05</span><br>
+<span id="author" class="author">Published 2017-05-14</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -471,6 +471,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_avoid_nulls_in_comboboxes">8.3. Avoid Nulls in ComboBoxes</a></li>
 <li><a href="#_writing_javadoc_for_javafx_properties">8.4. Writing Javadoc for JavaFX Properties</a></li>
 <li><a href="#_ignoring_warnings_for_null_select_binding_expressions">8.5. Ignoring Warnings for Null Select Binding Expressions</a></li>
+<li><a href="#_pojo_binding">8.6. POJO Binding</a></li>
 </ul>
 </li>
 <li><a href="#_contributing_2">9. Contributing</a></li>
@@ -5412,6 +5413,239 @@ WARNING: Exception while evaluating select-binding [taxable]</code></pre>
 <p>The JavaFX WARNING may be too strong for a common use case.  There is a ticket JDK-8162600 that may address this in a later JavaFX release.</p>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_pojo_binding">8.6. POJO Binding</h3>
+<div class="paragraph">
+<p>Author: Carl Walker</p>
+</div>
+<div class="paragraph">
+<p>In larger apps involving non-JavaFX technologies, sharing POJOs is a great way to help with maintenance.  Doing an impact analysis is quicker when an IDE can search for common accesses and extensions.  Moreover, POJO-based validation, logic, and utilities can also be reused.</p>
+</div>
+<div class="paragraph">
+<p>JavaFX has a collection of static methods in the <code>Bindings</code> class to work with both POJOs and JavaFX-enabled Properties.  This section demonstrates the use of the select() method which will link the core data types from a POJO to the JavaFX Property-based fields of a UI control.  Once the core data type is repackaged as a Property, additional functionality from JavaFX can be chained such as string concantenation.</p>
+</div>
+<div class="paragraph">
+<p>Because the data in this demonstration app is based on a POJO, an update needs to be made manually.  Bi-directional binding works only when the source and the target are both Properties.  This app uses a Track class with core data type fields like String: "album".  If the Track class were written using JavaFX properties&#8201;&#8212;&#8201;say StringProperty : album&#8201;&#8212;&#8201;then a model change would automatically update the UI.  A hybrid approach is presented whereby the core data type on one of the POJO fields initializes a separate JavaFX Property field and the update operation must change both fields.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/best-practices/bindings_select_screenshot.png" alt="bindings select screenshot">
+</div>
+<div class="title">Figure 52. UI Controls Bound to a POJO</div>
+</div>
+<div class="sect3">
+<h4 id="_the_pojos">8.6.1. The POJOs</h4>
+<div class="paragraph">
+<p>Two POJOs are used: Track and Rating.  Track contains information about a music clip being played: album, artist, track name.</p>
+</div>
+<div class="listingblock">
+<div class="title">Track.java (abbreviated)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class Track {
+
+    private String artist;
+    private String album;
+    private String track;
+    private Integer trackNo;
+    private Rating rating;
+    private Boolean downloaded;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Rating is a pairing of a value (ex, 3) and a scale (ex, max value of 5).  There is a Rating member in a Track which will show the Bindings.select() nesting syntax.</p>
+</div>
+<div class="listingblock">
+<div class="title">Rating.java (abbreviated)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class Rating {
+
+    private Float value;
+    private Float scale;</code></pre>
+</div>
+</div>
+<div class="sidebarblock">
+<div class="content">
+<div class="paragraph">
+<p>The construtor, getters, and setters have been left off for brevity and are included in the source download.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>In the Application subclass, the model is a single field "currentTrack".</p>
+</div>
+<div class="listingblock">
+<div class="title">BindingsSelectApp.java</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class BindingsSelectApp extends Application {
+
+    private final Track currentTrack = new Track(
+            "Jaco Pastorious",
+            "Jaco Pastorious",
+            "Come On, Come Over",
+            2,
+            new Rating(4.99f, 5.00f),
+            false
+    );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Referring to the previous screenshot, the currentTrack fields are displayed in the TextFields().  "rating" is supplemented with a formatted String.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ui_code">8.6.2. UI Code</h4>
+<div class="paragraph">
+<p>The <code>TextField</code> controls and the Download <code>Button</code> are also Application subclass fields so that they can be used in both the Application.start() method and a private initBindings() method.</p>
+</div>
+<div class="listingblock">
+<div class="title">BindingsSelectApp.java (cont.)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">    private final TextField tfArtist = new TextField();
+    private final TextField tfAlbum = new TextField();
+    private final TextField tfTrack = new TextField();
+    private final TextField tfTrackNo = new TextField();
+    private final TextField tfRating = new TextField();
+    private final TextField tfDownloaded = new TextField();
+
+    private final Button downloadButton = new Button("Download");
+
+    private final BooleanProperty downloaded = new SimpleBooleanProperty(currentTrack, "downloaded");</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>"downloaded" is a special JavaFX Property maintained alongside the field of the same name in the currentTrack object.  As mentioned earlier, the POJO will need to be updated manually.  The BooleanProperty "downloaded" is a convenience that keeps the app from having to modify the tfDownload TextField directly.</p>
+</div>
+<div class="paragraph">
+<p>The start() method begins by creating the top <code>GridPane</code> container and adding the TextField and <code>Label</code> controls.</p>
+</div>
+<div class="listingblock">
+<div class="title">BindingsSelectApp.java (cont.)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        GridPane gp = new GridPane();
+
+        gp.add(new Label("Artist"), 0, 0);
+        gp.add(tfArtist, 1, 0);
+        gp.add(new Label("Album"), 0, 1);
+        gp.add(tfAlbum, 1, 1);
+        gp.add(new Label("Track"), 0, 2);
+        gp.add(tfTrack, 1, 2);
+        gp.add(new Label("#"), 0, 3);
+        gp.add(tfTrackNo, 1, 3);
+        gp.add(new Label("Rating"), 0, 4);
+        gp.add(tfRating, 1, 4);
+        gp.add(new Label("Downloaded"), 0, 5);
+        gp.add(tfDownloaded, 1, 5);
+
+        gp.setHgap(4.0d);
+        gp.setVgap(8.0d);
+
+        VBox.setVgrow(gp, Priority.ALWAYS);
+        VBox.setMargin( gp, new Insets(40.0d) );</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A <code>ButtonBar</code> container is used to hold the Download Button.  The ButtonBar and GridPane are added to a <code>VBox</code> and separated via a <code>Separator</code>.</p>
+</div>
+<div class="listingblock">
+<div class="title">BindingsSelectApp.java (cont.)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">        ButtonBar buttons = new ButtonBar();
+
+        ButtonBar.setButtonData(downloadButton, ButtonBar.ButtonData.OTHER);
+
+        buttons.getButtons().add(downloadButton);
+        buttons.setPadding(new Insets(10.0d) );
+
+        VBox vbox = new VBox(
+                gp,
+                new Separator(),
+                buttons
+        );</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_bindings">8.6.3. Bindings</h4>
+<div class="paragraph">
+<p>The bindings statements are in a private method "initBindings" which is called from the Application.start() method.</p>
+</div>
+<div class="listingblock">
+<div class="title">BindingsSelectApp.java (cont.)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">    private void initBindings() {
+
+        tfArtist.textProperty().bind( Bindings.select(currentTrack, "artist"));
+        tfAlbum.textProperty().bind( Bindings.select(currentTrack, "album"));
+        tfTrack.textProperty().bind( Bindings.select(currentTrack, "track"));
+
+        tfTrackNo.textProperty().bind(
+                Bindings.select(currentTrack, "trackNo").asString()
+        );
+
+        tfRating.textProperty().bind(
+                Bindings.concat(
+                    Bindings.select(currentTrack, "rating", "value").asString(),
+                    " out of ",
+                    Bindings.select(currentTrack, "rating", "scale").asString()
+                )
+        );
+
+        tfDownloaded.textProperty().bind(downloaded.asString());
+        downloadButton.disableProperty().bind(downloaded);
+    }</code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_bindings_select">Bindings.select</h5>
+<div class="paragraph">
+<p>Bindings.select is a static method that creates a typed binding from a plain object or an ObservableValue.  In this example, a POJO is passed in along with either a field name or a set of field names that form an object path.  For the artist, album, and track fields, the value returned from select() is a StringBinding and is compatible with the textProperty() of the TextFields.  The trackNo select() call will return an IntegerBinding which is not compatible with textProperty() so a method asString() is added to convert the IntegerBinding into a StringBinding.  asString() is also used for the special "downloaded" member variable which returns a BooleanBinding that throws a ClassCastException.</p>
+</div>
+<div class="paragraph">
+<p>tfRating is bound to a complex expression.  The components of tfRating are the value (ex "4.99") and the scale ("5.0").  A string constant " out of " is set in the middle of the expression.  The joining of expressions is performed by the contact() method which returns the formatted string displayed in the UI.  Notice that this select() call uses a path which is a varargs collection of field names.  Passing "rating" then "value" is used for the object path currentTrack.rating.value.  currentTrack.rating.scale is accessed similarly.</p>
+</div>
+<div class="paragraph">
+<p>There is an additional binding disabling the Downloaded Button if the track has already been downloaded.  Like the binding to tfDownloaded, the Bindings.select() method is skipped for a direct bind() call since the member variable "downloaded" is a JavaFX Property.  This "downloaded" Property is initialized with the POJO value which is a field on the currentTrack object.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_model_update">Model Update</h5>
+<div class="paragraph">
+<p>Since the model is based on the POJO "currentTrack", the fields must be updated manually.  In some architectures, this is desired since the POJO represents record state (the state of the data from the app) and not the screen state (what the user is looking at).  This means that a deliberate setter must be made to update record state and that needs to trigger a screen state update.</p>
+</div>
+<div class="paragraph">
+<p>In this example, there is only one field that will be modified: downloaded.  Pressing the Download Button will call a setter on the special downloaded BooleanProperty of the Application.  When the value of the BooleanProperty changes, the UI is updated from the tfDownloaded binding.  A ChangeListener is attached to the downloaded BooleanProperty which triggers an update of the model state.</p>
+</div>
+<div class="listingblock">
+<div class="title">BindingsSelectApp.java (cont.)</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">        downloadButton.setOnAction( (evt) -&gt; {
+            downloaded.set(true);
+        });
+
+        downloaded.addListener( (obs,ov,nv) -&gt; currentTrack.setDownloaded(true));</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The Download Button serves as a commit.  While the user is limited in this app, they could edit the TextFields and use a Save Button to transfer the values on the screen to the model.  Additionally, a Reset Button could discard TextField changes.</p>
+</div>
+<div class="paragraph">
+<p>The declarative binding of JavaFX UI controls to Properties enforces a consistent style and behavior throughout the application.  Similar functionality can be accomplished by directly accessing the controls ("setText()") and retrieving updates from addListener().  However, listeners are often written inconsistently by different developers and do not take advantage of the extra binding functions like contact(), sum(), and when().  Bindings.select() provides a way to bring POJOs used elsewhere in the app into JavaFX.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_source_2">8.6.4. Source</h4>
+<div class="paragraph">
+<p>The complete source code and Gradle project can be found at the link below.</p>
+</div>
+<div class="paragraph">
+<p><a href="https://courses.bekwam.net/public_tutorials/source/bkcourse_bindingsapp_sources.zip">BindingsApp Source Zip</a></p>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -5438,7 +5672,7 @@ WARNING: Exception while evaluating select-binding [taxable]</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-05 13:26:17 UTC
+Last updated 2017-05-14 20:44:41 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
