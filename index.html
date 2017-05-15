@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.4">
-<meta name="author" content="Published 2017-05-14">
+<meta name="author" content="Published 2017-05-15">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -422,7 +422,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2017-05-14</span><br>
+<span id="author" class="author">Published 2017-05-15</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -5615,6 +5615,12 @@ WARNING: Exception while evaluating select-binding [taxable]</code></pre>
 <div class="paragraph">
 <p>Since the model is based on the POJO "currentTrack", the fields must be updated manually.  In some architectures, this is desired since the POJO represents record state (the state of the data from the app) and not the screen state (what the user is looking at).  This means that a deliberate setter must be made to update record state and that needs to trigger a screen state update.</p>
 </div>
+<div class="imageblock">
+<div class="content">
+<img src="images/best-practices/bindings_select_downloaded_screenshot.png" alt="bindings select downloaded screenshot">
+</div>
+<div class="title">Figure 53. A Model Change Disables the Download Button</div>
+</div>
 <div class="paragraph">
 <p>In this example, there is only one field that will be modified: downloaded.  Pressing the Download Button will call a setter on the special downloaded BooleanProperty of the Application.  When the value of the BooleanProperty changes, the UI is updated from the tfDownloaded binding.  A ChangeListener is attached to the downloaded BooleanProperty which triggers an update of the model state.</p>
 </div>
@@ -5672,7 +5678,7 @@ WARNING: Exception while evaluating select-binding [taxable]</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-05-14 20:44:41 UTC
+Last updated 2017-05-15 13:19:22 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
