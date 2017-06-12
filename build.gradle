@@ -16,7 +16,7 @@ apply plugin: 'org.ajoberstar.github-pages'
 apply plugin: 'com.github.ben-manes.versions'
 
 asciidoctorj {
-    version = '1.5.4.1'
+    version = '1.5.5'
 }
 
 asciidoctor {
@@ -33,9 +33,13 @@ asciidoctor {
         }
     }
     options doctype: 'book'
-    attributes 'source-highlighter': 'prettify',
+    attributes \
+            'source-highlighter': 'prettify',
             'toc': 'left',
-            'toc-title': 'Table of Contents'
+            'toc-title': 'Table of Contents',
+            'pdf-fontsdir': 'fonts',
+            'pdf-stylesdir': 'theme',
+            'pdf-style': 'fxdocs'
 }
 
 defaultTasks 'asciidoctor'
