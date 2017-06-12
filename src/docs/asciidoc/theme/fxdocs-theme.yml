@@ -1,0 +1,7 @@
+font:
+  catalog:
+    Consolas:
+      normal: Consolas.ttf
+code:
+  font_family: Consolas
+  background_color: #F6F8FA
