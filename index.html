@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5">
-<meta name="author" content="Published 2017-06-16">
+<meta name="author" content="Published 2017-06-28">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -423,7 +423,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2017-06-16</span><br>
+<span id="author" class="author">Published 2017-06-28</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -734,7 +734,136 @@ Let&#8217;s rotate the box by 30 degrees.</p>
 <div class="sect2">
 <h3 id="_event_handling">2.3. Event Handling</h3>
 <div class="paragraph">
-<p>Placeholder whilst things get built&#8230;&#8203;</p>
+<p>An event notifies that something important has taken place.
+Events are typically the "primitive" of an event system (aka event bus).
+Generally, an event system has the following 3 responsibilities:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>fire</code> (trigger) an event,</p>
+</li>
+<li>
+<p>notify <code>listeners</code> (interested parties) about the event and</p>
+</li>
+<li>
+<p><code>handle</code> (process) the event.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>The event notification mechanism is done by the JavaFX platform automatically.
+Hence, we will only consider how to fire events, listen for events and how to handle them.</p>
+</div>
+<div class="paragraph">
+<p>First, let&#8217;s create a custom event.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class UserEvent extends Event {
+
+    public static final EventType&lt;UserEvent&gt; ANY = new EventType&lt;&gt;(Event.ANY, "ANY");
+
+    public static final EventType&lt;UserEvent&gt; LOGIN_SUCCEEDED = new EventType&lt;&gt;(ANY, "LOGIN_SUCCEEDED");
+
+    public static final EventType&lt;UserEvent&gt; LOGIN_FAILED = new EventType&lt;&gt;(ANY, "LOGIN_FAILED");
+
+    public UserEvent(EventType&lt;? extends Event&gt; eventType) {
+        super(eventType);
+    }
+
+    // any other fields of importance, e.g. data, timestamp
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Since event types are fixed, they are usually created within the same source file as the event.
+We can see that there are 2 specific types of events: <code>LOGIN_SUCCEEDED</code> and <code>LOGIN_FAILED</code>.
+We can listen for such specific types of events:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Node node = ...
+node.addEventHandler(UserEvent.LOGIN_SUCCEEDED, event -&gt; {
+    // handle event
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Alternatively, we can handle any <code>UserEvent</code>:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Node node = ...
+node.addEventHandler(UserEvent.ANY, event -&gt; {
+    // handle event
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, we are able to contruct and fire our own events:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">UserEvent event = new UserEvent(UserEvent.LOGIN_SUCCEEDED);
+Node node = ...
+node.fireEvent(event);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For example, <code>LOGIN_SUCCEEDED</code> or <code>LOGIN_FAILED</code> could be fired when a user attempts to log in to an app.
+Depending on the login result we can allow the user access the app or lock him out of the app.
+Whilst the same functionality can be achieved with a simple <code>if</code> statement,
+there is one significant advantage of an event system.
+Event systems were designed to enable communication between various modules (sub-systems) in
+an application without tightly coupling them.
+As such, a sound might be played by an audio system when the user logs in.
+Thus, maintaining all audio related code in its own module.
+However, we will not delve deeper into architectural styles.</p>
+</div>
+<div class="sect3">
+<h4 id="_input_events">2.3.1. Input Events</h4>
+<div class="paragraph">
+<p>Key and mouse events are the most common types of events used in JavaFX.
+Each <code>Node</code> provides so-called "convenience methods" for handling these events.
+For instance, we can run some code when a button is pressed:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Button button = ...
+button.setOnAction(event -&gt; {
+    // button was pressed
+});</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>For more flexibility we can also use the following:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Button button = ...
+button.setOnMouseEntered(e -&gt; ...);
+button.setOnMouseExited(e -&gt; ...);
+button.setOnMousePressed(e -&gt; ...);
+button.setOnMouseReleased(e -&gt; ...);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The object <code>e</code> above is of type <code>MouseEvent</code> and can be queried to obtain various information about the event,
+e.g. <code>x</code> and <code>y</code> positions, number of clicks, etc.
+Finally, we can do the same with keys:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">Button button = ...
+button.setOnKeyPressed(e -&gt; ...);
+button.setOnKeyReleased(e -&gt; ...);</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The object <code>e</code> here is of type <code>KeyEvent</code> and it carries information about the key code, which can then be mapped
+to a real physical key on the keyboard.</p>
+</div>
 </div>
 </div>
 </div>
@@ -6101,7 +6230,7 @@ WARNING: Exception while evaluating select-binding [taxable]</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-06-16 19:57:53 UTC
+Last updated 2017-06-28 01:25:39 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
