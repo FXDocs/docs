@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5">
-<meta name="author" content="Published 2017-06-28">
+<meta name="author" content="Published 2017-07-23">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -423,7 +423,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2017-06-28</span><br>
+<span id="author" class="author">Published 2017-07-23</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -5239,49 +5239,106 @@ ap.getChildren().add( ta );</code></pre>
 <div class="sect1">
 <h2 id="_best_practices">8. Best Practices</h2>
 <div class="sectionbody">
-<div class="paragraph">
-<p>Placeholder whilst things get built&#8230;&#8203;</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>Styleable Properties</p>
-</li>
-</ol>
-</div>
 <div class="sect2">
 <h3 id="_styleable_properties">8.1. Styleable Properties</h3>
 <div class="paragraph">
-<p>Author: Gerrit Grunwald</p>
+<p>Author: Gerrit Grunwald, Abhinay Agarwal</p>
+</div>
+<div class="paragraph">
+<p>A JavaFX property can be styled via css by using a StyleableProperty. This is useful when controls need properties that can be set via css.</p>
+</div>
+<div class="paragraph">
+<p>In order to use a StyleableProperty on a Control, one needs to create a new CssMetaData using the StyleableProperty. CssMetaData created for a control
+needs to be added to the List&lt;CssMetaData&gt; obtained from the control&#8217;s ancestor. This new list is then returned from the <code>getControlCssMetaData()</code>.</p>
+</div>
+<div class="paragraph">
+<p>By convention, control classes that have CssMetaData will implement a static method getClassCssMetaData() and it is
+customary to have getControlCssMetaData() simply return getClassCssMetaData(). The purpose of getClassCssMetaData() is
+to allow sub-classes to easily include the CssMetaData of some ancestor.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="prettyprint highlight"><code class="language-java" data-lang="java">/* Member variables for StyleablePropertyFactory
- * and StyleableProperty
- */
-private static final StyleablePropertyFactory&lt;MY_CTRL&gt; FACTORY =
-    new StyleablePropertyFactory&lt;&gt;(Control.getClassCssMetaData());
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">// StyleableProperty
+private final StyleableProperty&lt;Color&gt; color =
+    new SimpleStyleableObjectProperty&lt;&gt;(COLOR, this, "color");
 
-private static final CssMetaData&lt;MY_CTRL, Color&gt; COLOR =
-    FACTORY.createColorCssMetaData("-color", s -&gt; s.color, Color.RED, false); 
-private final StyleableProperty&lt;Color&gt; color = new SimpleStyleableObjectProperty&lt;&gt;(COLOR, this, "color");
-
-
-// Getter, Setter and Property method
+// Typical JavaFX property implementation
 public Color getColor() {
     return this.color.getValue();
 }
-
 public void setColor(final Color color) {
-    this.color.setValue(COLOR);
+    this.color.setValue(color);
 }
-
 public ObjectProperty&lt;Color&gt; colorProperty() {
     return (ObjectProperty&lt;Color&gt;) this.color;
 }
 
+// CssMetaData
+private static final CssMetaData&lt;MY_CTRL, Paint&gt; COLOR =
+    new CssMetaData&lt;MY_CTRL, Paint&gt;("-color", PaintConverter.getInstance(), Color.RED) {
 
-// Return CSS Metadata
+    @Override
+    public boolean isSettable(MY_CTRL node) {
+        return node.color == null || !node.color.isBound();
+    }
+
+    @Override
+    public StyleableProperty&lt;Paint&gt; getStyleableProperty(MY_CTRL node) {
+        return node.color;
+    }
+};
+
+private static final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; STYLEABLES;
+static {
+    // Fetch CssMetaData from its ancestors
+    final List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; styleables =
+        new ArrayList&lt;&gt;(Control.getClassCssMetaData());
+    // Add new CssMetaData
+    styleables.add(COLOR);
+    STYLEABLES = Collections.unmodifiableList(styleables);
+}
+
+// Return all CssMetadata information
+public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssMetaData() {
+    return STYLEABLES;
+}
+
+@Override
+public List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getControlCssMetaData() {
+    return getClassCssMetaData();
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Creation of StyleableProperty and CssMetaData needs a lot of boiler-plate code and this can be reduced by using <a href="https://docs.oracle.com/javase/8/javafx/api/javafx/css/StyleablePropertyFactory.html">StyleablePropertyFactory</a>.
+StyleablePropertyFactory contains methods to create StyleableProperty with corresponding CssMetaData.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">// StyleableProperty
+private final StyleableProperty&lt;Color&gt; color =
+    new SimpleStyleableObjectProperty&lt;&gt;(COLOR, this, "color");
+
+// Typical JavaFX property implementation
+public Color getColor() {
+    return this.color.getValue();
+}
+public void setColor(final Color color) {
+    this.color.setValue(color);
+}
+public ObjectProperty&lt;Color&gt; colorProperty() {
+    return (ObjectProperty&lt;Color&gt;) this.color;
+}
+
+// StyleablePropertyFactory
+private static final StyleablePropertyFactory&lt;MY_CTRL&gt; FACTORY =
+    new StyleablePropertyFactory&lt;&gt;(Control.getClassCssMetaData());
+
+// CssMetaData from StyleablePropertyFactory
+private static final CssMetaData&lt;MY_CTRL, Color&gt; COLOR =
+    FACTORY.createColorCssMetaData("-color", s -&gt; s.color, Color.RED, false); 
+
+// Return all CssMetadata information from StyleablePropertyFactory
 public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssMetaData() {
     return FACTORY.getCssMetaData();
 }
@@ -6230,7 +6287,7 @@ WARNING: Exception while evaluating select-binding [taxable]</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-06-28 01:25:39 UTC
+Last updated 2017-07-23 22:25:49 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
