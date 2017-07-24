@@ -2,6 +2,35 @@ font:
   catalog:
     Consolas:
       normal: Consolas.ttf
+    Times-New-Roman:
+      normal: times-new-roman.ttf
+      italic: times-new-roman-italic.ttf
+      bold: times-new-roman-bold.ttf
+      bold_italic: times-new-roman-bold-italic.ttf
+base:
+  align: justify
+  font:
+    color: #333333
+    family: Times-New-Roman
+    size: 11
+image:
+  align: center
 code:
   font_family: Consolas
   background_color: #F6F8FA
+  size: 10
+page:
+  margin: [0.5in, 0.67in, 0.67in, 0.67in]
+  margin_inner: 0.75in
+  margin_outer: 0.59in
+footer:
+  height: 0.75in
+  line_height: 1.2
+  recto:
+    right:
+      content: |
+        {page-number}
+  verso:
+    left:
+      content: |
+        {page-number}
