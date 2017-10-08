@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.5">
-<meta name="author" content="Published 2017-09-24">
+<meta name="author" content="Published 2017-10-08">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -423,7 +423,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2017-09-24</span><br>
+<span id="author" class="author">Published 2017-10-08</span><br>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
@@ -440,6 +440,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_overview">2.1. Overview</a></li>
 <li><a href="#_transformations">2.2. Transformations</a></li>
 <li><a href="#_event_handling">2.3. Event Handling</a></li>
+<li><a href="#_timing">2.4. Timing</a></li>
 </ul>
 </li>
 <li><a href="#_ui_controls">3. UI Controls</a>
@@ -896,6 +897,92 @@ to a real physical key on the keyboard.</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_timing">2.4. Timing</h3>
+<div class="paragraph">
+<p>It is important to understand the timing difference between the creation of JavaFX UI controls and the display of the controls.  When creating the UI controls&#8201;&#8212;&#8201;either through direct API object creation or through FXML&#8201;&#8212;&#8201;you may be missing certain screen geometry values such as the dimensions of a window.  That is available later, at the instant when the screen is shown to the user.  That showing event, called OnShown, is the time at which a window has been allocated and the final layout computations completed.</p>
+</div>
+<div class="paragraph">
+<p>To demonstrate this, consider the following program which displays the screen dimensions while the UI controls are being created and the screen dimensions when the screen is shown.  The following screenshot shows the running of the program.  When the UI controls are being created (new VBox(), new Scene(), primaryStage.setScene()), there are no actual window height and width values available as evidenced by the undefined "NaN" values.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/scenegraph/scenegraph_startvshown.png" alt="scenegraph startvshown">
+</div>
+<div class="title">Figure 8. Screen Geometry Not Available Before OnShown</div>
+</div>
+<div class="paragraph">
+<p>However, the values for width and height are available once the window is shown.  The program registers an event handler for the OnShown event and prepares the same output.</p>
+</div>
+<div class="paragraph">
+<p>The following is the Java class of the demonstration program.</p>
+</div>
+<div class="listingblock">
+<div class="title">StartVsShownJavaFXApp</div>
+<div class="content">
+<pre class="prettyprint highlight"><code class="language-java" data-lang="java">public class StartVsShownJavaFXApp extends Application {
+
+    private DoubleProperty startX = new SimpleDoubleProperty();
+    private DoubleProperty startY = new SimpleDoubleProperty();
+    private DoubleProperty shownX = new SimpleDoubleProperty();
+    private DoubleProperty shownY = new SimpleDoubleProperty();
+
+    @Override
+    public void start(Stage primaryStage) throws Exception {
+
+        Label startLabel = new Label("Start Dimensions");
+        TextField startTF = new TextField();
+        startTF.textProperty().bind(
+                Bindings.format("(%.1f, %.1f)", startX, startY)
+        );
+
+        Label shownLabel = new Label("Shown Dimensions");
+        TextField shownTF = new TextField();
+        shownTF.textProperty().bind(
+                Bindings.format("(%.1f, %.1f)", shownX, shownY)
+        );
+
+        GridPane gp = new GridPane();
+        gp.add( startLabel, 0, 0 );
+        gp.add( startTF, 1, 0 );
+        gp.add( shownLabel, 0, 1 );
+        gp.add( shownTF, 1, 1 );
+        gp.setHgap(10);
+        gp.setVgap(10);
+
+        HBox hbox = new HBox(gp);
+        hbox.setAlignment(CENTER);
+
+        VBox vbox = new VBox(hbox);
+        vbox.setAlignment(CENTER);
+
+        Scene scene = new Scene( vbox, 480, 320 );
+
+        primaryStage.setScene( scene );
+
+        // before show()...I just set this to 480x320, right?
+        startX.set( primaryStage.getWidth() );
+        startY.set( primaryStage.getHeight() );
+
+        primaryStage.setOnShown( (evt) -&gt; {
+            shownX.set( primaryStage.getWidth() );
+            shownY.set( primaryStage.getHeight() );  // all available now
+        });
+
+        primaryStage.setTitle("Start Vs. Shown");
+        primaryStage.show();
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Sometimes, you&#8217;ll know the screen dimensions in advance and can use those values at any point in the JavaFX program.  This includes before the OnShown event.  However, if your initialization sequence contains logic that needs these values, you&#8217;ll need to work with the OnShown event.  A use case might be working with the last saved dimensions or dimensions based on program input.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -913,7 +1000,7 @@ to a real physical key on the keyboard.</p>
 <div class="content">
 <img src="images/ui-controls/choicebox.png" alt="choicebox">
 </div>
-<div class="title">Figure 8. ChoiceBox Printing Out Selection</div>
+<div class="title">Figure 9. ChoiceBox Printing Out Selection</div>
 </div>
 <div class="paragraph">
 <p>The program puts a <code>Label</code>, a <code>ChoiceBox</code>, and a <code>Button</code> into an HBox.  An action is set on the Save <code>Button</code> which prints out the value.</p>
@@ -1088,7 +1175,7 @@ to a real physical key on the keyboard.</p>
 <div class="content">
 <img src="images/ui-controls/combobox.png" alt="combobox">
 </div>
-<div class="title">Figure 9. ComboBox Application</div>
+<div class="title">Figure 10. ComboBox Application</div>
 </div>
 <div class="paragraph">
 <p>This code adds a Label, a ComboBox, and a Button to an HBox.  The ComboBox is instantiated as a field and initialized in a method presented later initCombo().  A handler is put on the Save Button which outputs a value if an item is selected or a special message if no item is selected.</p>
@@ -1289,7 +1376,7 @@ to a real physical key on the keyboard.</p>
 <div class="content">
 <img src="images/ui-controls/listview_filtering_screenshot.png" alt="listview filtering screenshot">
 </div>
-<div class="title">Figure 10. Screenshot of ListView Filtering App</div>
+<div class="title">Figure 11. Screenshot of ListView Filtering App</div>
 </div>
 <div class="paragraph">
 <p>The complete code&#8201;&#8212;&#8201;a single .java file&#8201;&#8212;&#8201;is listed at the end of the article.</p>
@@ -1627,7 +1714,7 @@ primaryStage.show();</code></pre>
 <div class="content">
 <img src="images/ui-controls/tableviewselectapp_screenshot.png" alt="tableviewselectapp screenshot">
 </div>
-<div class="title">Figure 11. Intial View of Demo App</div>
+<div class="title">Figure 12. Intial View of Demo App</div>
 </div>
 <div class="paragraph">
 <p>The disabled logic of the Buttons is based on the selections in the <code>TableView</code>.  Initially, no items are selected so both Buttons are disabled.  If any item is selected&#8201;&#8212;&#8201;the first item in the following screenshot&#8201;&#8212;&#8201;the Inventory <code>Button</code> is enabled.  The Tax <code>Button</code> is also enabled although that requires consulting the Tax value.</p>
@@ -1636,7 +1723,7 @@ primaryStage.show();</code></pre>
 <div class="content">
 <img src="images/ui-controls/tableviewselectapp_screenshot_selected_tax.png" alt="tableviewselectapp screenshot selected tax">
 </div>
-<div class="title">Figure 12. With Taxable Item Selected</div>
+<div class="title">Figure 13. With Taxable Item Selected</div>
 </div>
 <div class="paragraph">
 <p>If the Tax value for the selected item is false, then the Tax <code>Button</code> will be disabled.  This screenshot shows the second item selected.  The Inventory <code>Button</code> is enabled but the Tax <code>Button</code> is not.</p>
@@ -1645,7 +1732,7 @@ primaryStage.show();</code></pre>
 <div class="content">
 <img src="images/ui-controls/tableviewselectapp_screenshot_selected_notax.png" alt="tableviewselectapp screenshot selected notax">
 </div>
-<div class="title">Figure 13. A Non-Taxable Item Disables the Tax Button</div>
+<div class="title">Figure 14. A Non-Taxable Item Disables the Tax Button</div>
 </div>
 <div class="sect3">
 <h4 id="_model_and_declarations">3.4.1. Model and Declarations</h4>
@@ -1887,7 +1974,7 @@ primaryStage.show();</code></pre>
 <div class="content">
 <img src="images/ui-controls/imageapp_screenshot.png" alt="imageapp screenshot">
 </div>
-<div class="title">Figure 14. Different Image and ImageView Settings</div>
+<div class="title">Figure 15. Different Image and ImageView Settings</div>
 </div>
 <div class="paragraph">
 <p>The top-left image is displayed using the original image size of 320x240.  The top-right image is scaled proportionally.  Since the top-right image is a rectangle and the containing tile is a square, there are gaps on the top and bottom to maintain the correct ratio when stretching the width.</p>
@@ -1981,7 +2068,7 @@ primaryStage.show();</code></pre>
 <div class="content">
 <img src="images/ui-controls/linechartapp_screenshot.png" alt="linechartapp screenshot">
 </div>
-<div class="title">Figure 15. LineChartApp Screenshot</div>
+<div class="title">Figure 16. LineChartApp Screenshot</div>
 </div>
 <div class="sect3">
 <h4 id="_data">3.6.1. Data</h4>
@@ -2074,7 +2161,7 @@ primaryStage.show();</code></pre>
 <div class="content">
 <img src="images/ui-controls/pagination_screenshot.png" alt="pagination screenshot">
 </div>
-<div class="title">Figure 16. Pagination on First of Three Pages</div>
+<div class="title">Figure 17. Pagination on First of Three Pages</div>
 </div>
 <div class="paragraph">
 <p>The program begins by defining a array of three JavaFX Images: imageURLs.  In the start() method, a Pagination object is created that references the size of the array.  A PageFactory is provided which creates a Node based on the pageIndex parameter.  For this example, the pageIndex is an index into the imageURLs array.</p>
@@ -2153,7 +2240,7 @@ primaryStage.show();</code></pre>
 <div class="content">
 <img src="images/layout/vboxandhboxapp_mockup.png" alt="vboxandhboxapp mockup">
 </div>
-<div class="title">Figure 17. Mockup</div>
+<div class="title">Figure 18. Mockup</div>
 </div>
 <div class="sect3">
 <h4 id="_structure">4.1.1. Structure</h4>
@@ -2195,7 +2282,7 @@ vbox.getChildren().addAll(
 <div class="content">
 <img src="images/layout/vboxandhboxapp_brokendown.png" alt="vboxandhboxapp brokendown">
 </div>
-<div class="title">Figure 18. Mockup Broken Down</div>
+<div class="title">Figure 19. Mockup Broken Down</div>
 </div>
 </div>
 <div class="sect3">
@@ -2265,7 +2352,7 @@ VBox.setMargin( bottomControls, new Insets(10.0d) );</code></pre>
 <div class="content">
 <img src="images/layout/vboxandhboxapp_screenshot.png" alt="vboxandhboxapp screenshot">
 </div>
-<div class="title">Figure 19. Screenshot</div>
+<div class="title">Figure 20. Screenshot</div>
 </div>
 <div class="paragraph">
 <p>This image shows the application resized to a smaller height and width.</p>
@@ -2274,7 +2361,7 @@ VBox.setMargin( bottomControls, new Insets(10.0d) );</code></pre>
 <div class="content">
 <img src="images/layout/vboxandhboxapp_screenshot_sm.png" alt="vboxandhboxapp screenshot sm">
 </div>
-<div class="title">Figure 20. Screenshot (Small)</div>
+<div class="title">Figure 21. Screenshot (Small)</div>
 </div>
 </div>
 <div class="sect3">
@@ -2410,7 +2497,7 @@ VBox.setMargin( bottomControls, new Insets(10.0d) );</code></pre>
 <div class="content">
 <img src="images/layout/paneapp_about_view.png" alt="paneapp about view">
 </div>
-<div class="title">Figure 21. Screenshot of About View in PaneApp</div>
+<div class="title">Figure 22. Screenshot of About View in PaneApp</div>
 </div>
 <div class="sect3">
 <h4 id="_pane_size">4.2.1. Pane Size</h4>
@@ -2421,7 +2508,7 @@ VBox.setMargin( bottomControls, new Insets(10.0d) );</code></pre>
 <div class="content">
 <img src="images/layout/paneapp_pane_size_scenicview.png" alt="paneapp pane size scenicview">
 </div>
-<div class="title">Figure 22. Scenic View Highlighting Partially Built Screen</div>
+<div class="title">Figure 23. Scenic View Highlighting Partially Built Screen</div>
 </div>
 <div class="paragraph">
 <p>This is a screenshot taken after the lower-right <code>Arc</code> was added.  This <code>Arc</code> was placed closer to the bottom-right edge of the <code>Stage</code>.  This forces the Pane to stretch to accommodate the expanded contents.</p>
@@ -2430,7 +2517,7 @@ VBox.setMargin( bottomControls, new Insets(10.0d) );</code></pre>
 <div class="content">
 <img src="images/layout/paneapp_scenicview_full_stage.png" alt="paneapp scenicview full stage">
 </div>
-<div class="title">Figure 23. Scenic View Highlighting Expanded Pane</div>
+<div class="title">Figure 24. Scenic View Highlighting Expanded Pane</div>
 </div>
 </div>
 <div class="sect3">
@@ -2514,7 +2601,7 @@ primaryStage.setOnShown( (evt) -&gt; {
 <div class="content">
 <img src="images/layout/paneapp_zorder.png" alt="paneapp zorder">
 </div>
-<div class="title">Figure 24. About View Showing Depth</div>
+<div class="title">Figure 25. About View Showing Depth</div>
 </div>
 <div class="paragraph">
 <p>The z-order in this example is determined by the order in which the children are added to the <code>Pane</code>.  backgroundArc is obscured by items added later, most notably largeArc.  To rearrange the children, use the toFront() and toBack() methods after the items have been added to the <code>Pane</code>.</p>
@@ -2635,7 +2722,7 @@ Pane does not clip its content by default, so it is possible that children’s b
 <div class="content">
 <img src="images/layout/clipping_extends.png" alt="clipping extends">
 </div>
-<div class="title">Figure 25. Child Extending Outside Pane Bounds</div>
+<div class="title">Figure 26. Child Extending Outside Pane Bounds</div>
 </div>
 <div class="paragraph">
 <p>As you can see, the <code>Ellipse</code> overwrites its parent’s <code>Border</code> and protrudes well beyond it. The following code is used to generate the default view. It’s split into several smaller methods, and a constant for the <code>Border</code> corner radius, because they will be referenced in the next steps.</p>
@@ -2717,7 +2804,7 @@ static Region createClipped() {
 <div class="content">
 <img src="images/layout/clipping_clipped.png" alt="clipping clipped">
 </div>
-<div class="title">Figure 26. Pane with Clip Applied</div>
+<div class="title">Figure 27. Pane with Clip Applied</div>
 </div>
 <div class="paragraph">
 <p>That’s better. The <code>Ellipse</code> no longer protrudes beyond the <code>Pane</code> – but still overwrites its Border. Also note that we had to manually specify an estimated corner rounding for the clipping <code>Rectangle</code> in order to reflect the rounded <code>Border</code> corners. This estimate is 3 * BORDER_RADIUS because the corner radius specified on <code>Border</code> actually defines its inner radius, and the outer radius (which we need here) will be greater depending on the <code>Border</code> thickness. (You could compute the outer radius exactly if you really wanted to, but I skipped that for the demo application.)</p>
@@ -2750,7 +2837,7 @@ static Region createClipped() {
 <div class="content">
 <img src="images/layout/clipping_nested.png" alt="clipping nested">
 </div>
-<div class="title">Figure 27. Nesting Pane in StackPane</div>
+<div class="title">Figure 28. Nesting Pane in StackPane</div>
 </div>
 <div class="paragraph">
 <p>As an added bonus, we no longer need to guesstimate a correct corner radius for the clipping <code>Rectangle</code>. We now clip to the inner rather than outer circumference of our visible <code>Border</code>, so we can directly reuse its inner corner radius. Should you specify multiple different corner radii or an otherwise more complex <code>Border</code> you’d have to define a correspondingly more complex clipping <code>Shape</code>.</p>
@@ -2772,7 +2859,7 @@ static Region createClipped() {
 <div class="content">
 <img src="images/layout/gridpaneapp.png" alt="gridpaneapp">
 </div>
-<div class="title">Figure 28. Field Name / Value Pairs in a GridPane</div>
+<div class="title">Figure 29. Field Name / Value Pairs in a GridPane</div>
 </div>
 <div class="paragraph">
 <p>The following code shows the objects created for the form. "vbox" is the root of the <code>Scene</code> and will also contain the <code>ButtonBar</code> at the base of the form.</p>
@@ -2806,7 +2893,7 @@ TextArea taDescription = new TextArea();</code></pre>
 <div class="content">
 <img src="images/layout/gridpaneapp_lines.png" alt="gridpaneapp lines">
 </div>
-<div class="title">Figure 29. Grid Structure and Gutters</div>
+<div class="title">Figure 30. Grid Structure and Gutters</div>
 </div>
 <div class="sect3">
 <h4 id="_spacing">4.4.1. Spacing</h4>
@@ -2941,7 +3028,7 @@ gp.add( lblDescription, 0, 5); gp.add( taDescription, 1, 5);</code></pre>
 <div class="content">
 <img src="images/layout/complexgridpaneapp.png" alt="complexgridpaneapp">
 </div>
-<div class="title">Figure 30. Spanning Columns</div>
+<div class="title">Figure 31. Spanning Columns</div>
 </div>
 <div class="paragraph">
 <p>Turing the grid lines on, notice that the former two column grid is replaced with a six column grid.  The third row containing six items&#8201;&#8212;&#8201;3 field name / value pairs&#8201;&#8212;&#8201;dictates the structure.  The rest of the form will use spanning in order to fill in the whitespace.</p>
@@ -2950,7 +3037,7 @@ gp.add( lblDescription, 0, 5); gp.add( taDescription, 1, 5);</code></pre>
 <div class="content">
 <img src="images/layout/complexgridpaneapp_lines.png" alt="complexgridpaneapp lines">
 </div>
-<div class="title">Figure 31. Lines Highlighting Spanning</div>
+<div class="title">Figure 32. Lines Highlighting Spanning</div>
 </div>
 <div class="paragraph">
 <p>The <code>VBox</code> and <code>GridPane</code> container objects used in this update follow.  There is a little more Vgap to help the user select the <code>ComboBox</code> controls.</p>
@@ -3155,7 +3242,7 @@ GridPane.setColumnSpan( taDescription, 5 );</code></pre>
 <div class="content">
 <img src="images/layout/constraintsgridpaneapp_1_annotated.png" alt="constraintsgridpaneapp 1 annotated">
 </div>
-<div class="title">Figure 32. Example App Using Row and Column Spanning</div>
+<div class="title">Figure 33. Example App Using Row and Column Spanning</div>
 </div>
 <div class="paragraph">
 <p>The red rectangles and text are not part of the UI.  They are identifying sections of the screen that will be addressed later with ColumnConstraints and RowConstaints.</p>
@@ -3242,7 +3329,7 @@ GridPane.setColumnSpan( taDescription, 2 );</code></pre>
 <div class="content">
 <img src="images/layout/constraintsgridpaneapp_description.png" alt="constraintsgridpaneapp description">
 </div>
-<div class="title">Figure 33. TextArea Grows to Fill Extra Space</div>
+<div class="title">Figure 34. TextArea Grows to Fill Extra Space</div>
 </div>
 <div class="paragraph">
 <p>This code is a <code>RowConstraints</code> object to the <code>GridPane</code> for the <code>TextArea</code>.  Prior to the setter, <code>RowConstraints</code> objects are allocated for all of the other rows.  The set method of <code>getRowConstraints()</code> will throw an index exception when you specify row 12 without first allocating an object.</p>
@@ -3284,7 +3371,7 @@ gp.getRowConstraints().set( 12, taDescriptionRowConstraints );</code></pre>
 <div class="content">
 <img src="images/layout/constraintsgridpaneapp_wireframe.png" alt="constraintsgridpaneapp wireframe">
 </div>
-<div class="title">Figure 34. Wireframe of the Demo App</div>
+<div class="title">Figure 35. Wireframe of the Demo App</div>
 </div>
 <div class="paragraph">
 <p>To make the column widths equal, define two <code>ColumnConstraint</code> objects and use a percentage specifier.</p>
@@ -3305,7 +3392,7 @@ gp.getColumnConstraints().addAll( col1, col2 );</code></pre>
 <div class="content">
 <img src="images/layout/constraintsgridpaneapp_finished.png" alt="constraintsgridpaneapp finished">
 </div>
-<div class="title">Figure 35. App With Extra Space Properly Allocated</div>
+<div class="title">Figure 36. App With Extra Space Properly Allocated</div>
 </div>
 <div class="paragraph">
 <p><code>GridPane</code> is an important control in developing JavaFX business applications.  When working on a requirement involving name / value pairs and a single record view, use <code>GridPane</code>.  While <code>GridPane</code> is easier to use than the <code>GridBagLayout</code> from Swing, I still find that the API is a little inconvenient (assigning own indexes, disassociated constraints).  Fortunately, there is Scene Builder which simplifies the construction of this form greatly.</p>
@@ -3447,7 +3534,7 @@ gp.getColumnConstraints().addAll( col1, col2 );</code></pre>
 <div class="content">
 <img src="images/layout/anchorpaneapp_mockup.png" alt="anchorpaneapp mockup">
 </div>
-<div class="title">Figure 36. AnchorPane With TextArea</div>
+<div class="title">Figure 37. AnchorPane With TextArea</div>
 </div>
 <div class="sect3">
 <h4 id="_anchors">4.7.1. Anchors</h4>
@@ -3520,7 +3607,7 @@ AnchorPane.setLeftAnchor( statusLabel, 10.0d );</code></pre>
 <div class="content">
 <img src="images/layout/anchorpaneapp_default.png" alt="anchorpaneapp default">
 </div>
-<div class="title">Figure 37. "AnchorPane App</div>
+<div class="title">Figure 38. "AnchorPane App</div>
 </div>
 </div>
 <div class="sect3">
@@ -3538,7 +3625,7 @@ AnchorPane.setLeftAnchor( statusLabel, 10.0d );</code></pre>
 <div class="content">
 <img src="images/layout/anchorpaneapp_resize.png" alt="anchorpaneapp resize">
 </div>
-<div class="title">Figure 38. "AnchorPane App Resized</div>
+<div class="title">Figure 39. "AnchorPane App Resized</div>
 </div>
 <div class="paragraph">
 <p>The highlighted boxes show that the controls bordering the <code>TextArea</code> retain their positions relative to the edges.  The <code>TextArea</code> itself is resized based on the Window resize.  The top and bottom offsets of the <code>TextArea</code> account for the other controls so that they are not hidden.</p>
@@ -3643,7 +3730,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/layout/threebythreeapp_screenshot.png" alt="threebythreeapp screenshot">
 </div>
-<div class="title">Figure 39. A 3x3 TilePane</div>
+<div class="title">Figure 40. A 3x3 TilePane</div>
 </div>
 <div class="paragraph">
 <p>The complete code for the three-by-three grid follows.  The children property of the <code>TilePane</code> provides the addAll() method to which <code>Rectangle</code> objects are added.  The tileAlignment property positions each of the <code>Rectangle</code> objects in the center of its corresponding tile.</p>
@@ -3701,7 +3788,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/layout/threebythreeapp_screenshot_space.png" alt="threebythreeapp screenshot space">
 </div>
-<div class="title">Figure 40. 3x3 TilePane (Modified)</div>
+<div class="title">Figure 41. 3x3 TilePane (Modified)</div>
 </div>
 <div class="paragraph">
 <p>In the prior screenshots, nine Rectangle objects were provided to the three-by-three grid.  If the contents do not match up with the <code>TilePane</code> definition, those cells will collapse.  This modification adds only five Rectangles rather than nine.  The first row contains has content for all three tiles.  The second row has content for only the first two files.  The third row is missing entirely.</p>
@@ -3710,7 +3797,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/layout/threebythreeapp_screenshot_sparse.png" alt="threebythreeapp screenshot sparse">
 </div>
-<div class="title">Figure 41. 3x3 App - Sparse</div>
+<div class="title">Figure 42. 3x3 App - Sparse</div>
 </div>
 <div class="paragraph">
 <p>There is a property "orientation" that instructs <code>TilePane</code> to add items row-by-row (HORIZONTAL, the default) or column-by-column (VERTICAL).  If VERTICAL is used, then the first column will have three elements, the second column will have only the top two, and the third column will be missing.  This screenshot shows the five Rectangles being added to the three-by-three grid (nine tiles) using VERTICAL orientation.</p>
@@ -3719,7 +3806,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/layout/threebythreeapp_screenshot_vert.png" alt="threebythreeapp screenshot vert">
 </div>
-<div class="title">Figure 42. 3x3 App - VERTICAL</div>
+<div class="title">Figure 43. 3x3 App - VERTICAL</div>
 </div>
 <div class="sect3">
 <h4 id="_algorithms">4.8.1. Algorithms</h4>
@@ -3733,7 +3820,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/layout/tileapp.png" alt="tileapp">
 </div>
-<div class="title">Figure 43. TileApp with Blue Circle Selected</div>
+<div class="title">Figure 44. TileApp with Blue Circle Selected</div>
 </div>
 <div class="paragraph">
 <p>The program begins by adding the items and setting a custom property "selected" using the Java 8 Stream API.</p>
@@ -3928,7 +4015,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/layout/titledpaneapp_unexpanded.png" alt="titledpaneapp unexpanded">
 </div>
-<div class="title">Figure 44. Unexpanded TitledPane</div>
+<div class="title">Figure 45. Unexpanded TitledPane</div>
 </div>
 <div class="paragraph">
 <p>This next screenshot shows the view for a user requiring advanced search parameters.  The Advanced TitledPane was expanded by pressing on the arrow in the <code>TitledPane</code> header.</p>
@@ -3937,7 +4024,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/layout/titledpaneapp_expanded.png" alt="titledpaneapp expanded">
 </div>
-<div class="title">Figure 45. Expanded TitledPane Shows More Controls</div>
+<div class="title">Figure 46. Expanded TitledPane Shows More Controls</div>
 </div>
 <div class="paragraph">
 <p>To create a <code>TitledPane</code>, use the constructor to pass in a String title and a single <code>Node</code> child.  The default constructor can also be used and the title and <code>Node</code> set using setters.  This code uses the parameterized constructor.  A <code>VBox</code> is the single child of the <code>TitledPane</code>.  However, the <code>VBox</code> itself contains several controls.</p>
@@ -3975,7 +4062,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/layout/titledpaneapp_noncollapsible.png" alt="titledpaneapp noncollapsible">
 </div>
-<div class="title">Figure 46. Collapsible Set to False</div>
+<div class="title">Figure 47. Collapsible Set to False</div>
 </div>
 <div class="paragraph">
 <p>This code sets the collapsible flag after the constructor is called.</p>
@@ -4089,7 +4176,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/mvvmapp_screenshot.png" alt="mvvmapp screenshot">
 </div>
-<div class="title">Figure 47. Employment Request Form</div>
+<div class="title">Figure 48. Employment Request Form</div>
 </div>
 <div class="paragraph">
 <p>After entering the data and pressing Save, the Model object responds with a println().</p>
@@ -4146,7 +4233,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/mvvmapp_uml.png" alt="mvvmapp uml">
 </div>
-<div class="title">Figure 48. UML Class Model of Application</div>
+<div class="title">Figure 49. UML Class Model of Application</div>
 </div>
 </div>
 <div class="sect3">
@@ -4269,7 +4356,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/mvvmapp_sb.png" alt="mvvmapp sb">
 </div>
-<div class="title">Figure 49. Scene Builder Could Also Implement the View</div>
+<div class="title">Figure 50. Scene Builder Could Also Implement the View</div>
 </div>
 <div class="paragraph">
 <p>Notice that the right "half" of the UML diagram would not be changed by switching the View implementation from code to Scene Builder.  A sign of a good design is when alternative presentations can be supported easily.</p>
@@ -4493,7 +4580,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_screenshot_done.png" alt="modelchangeapp screenshot done">
 </div>
-<div class="title">Figure 50. A Successful Run</div>
+<div class="title">Figure 51. A Successful Run</div>
 </div>
 <div class="paragraph">
 <p>The UI remains responsive throughout the request.  The responsiveness comes from the use of a JavaFX <code>Task</code> to run the URL retrieval on a background thread.  To make the user aware that processing is occurring, UI controls are tied to the properties of the <code>Task</code> through JavaFX binding.  This screenshot shows the feedback the user receives while the <code>Task</code> runs.</p>
@@ -4502,7 +4589,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_screenshot_inprogress.png" alt="modelchangeapp screenshot inprogress">
 </div>
-<div class="title">Figure 51. In-Progress View of a Retrieval</div>
+<div class="title">Figure 52. In-Progress View of a Retrieval</div>
 </div>
 <div class="paragraph">
 <p>When the Submit <code>Button</code> is pressed, a pair of controls are displayed: a <code>ProgressBar</code> and a <code>Label</code>.  Both controls are updated with information about the running background <code>Thread</code>.</p>
@@ -4514,7 +4601,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_screenshot_err.png" alt="modelchangeapp screenshot err">
 </div>
-<div class="title">Figure 52. Error Produced by Model</div>
+<div class="title">Figure 53. Error Produced by Model</div>
 </div>
 </div>
 <div class="sect3">
@@ -4529,7 +4616,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_uml.png" alt="modelchangeapp uml">
 </div>
-<div class="title">Figure 53. Class Model of MVVM App</div>
+<div class="title">Figure 54. Class Model of MVVM App</div>
 </div>
 <div class="paragraph">
 <p>URLTestView is the View component and contains the UI controls.  The ViewModel contains properties for the domain&#8201;&#8212;&#8201;url, last status code, last elapsed time&#8201;&#8212;&#8201;and for the screen state such as urlTestTaskRunning.  Model contains a service call and works with a UI-neutral POJO URLTestObject.  Communication between the Model and the ViewModel is brokered through a Notifications singleton which has methods for publishing (for the Model) and subscribing (for the ViewModel).</p>
@@ -4541,7 +4628,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/modelchangeapp_uml_sd.png" alt="modelchangeapp uml sd">
 </div>
-<div class="title">Figure 54. Sequence Diagram of Successful Retrieval</div>
+<div class="title">Figure 55. Sequence Diagram of Successful Retrieval</div>
 </div>
 <div class="paragraph">
 <p>After all the objects are created, the user initiates a test operation.  This results in a TestURLCommand object being created which is a JavaFX <code>Service</code>.  The service invokes a Model method testURL().  When testURL() finishes, it publishes a notification.  This notification triggers a call to the ViewModel to refresh itself which uses a second call to the Model.  The ViewModel refresh sets ViewModel JavaFX properties which automatically update the View.</p>
@@ -5025,7 +5112,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/dialogapp_main_empty.png" alt="dialogapp main empty">
 </div>
-<div class="title">Figure 55. DialogApp At Startup</div>
+<div class="title">Figure 56. DialogApp At Startup</div>
 </div>
 <div class="paragraph">
 <p>Pressing the Set Button displays the Dialog.  The user has filled in values for host, username, and password.</p>
@@ -5034,7 +5121,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/dialogapp_dialog_filledin.png" alt="dialogapp dialog filledin">
 </div>
-<div class="title">Figure 56. Gathering Values</div>
+<div class="title">Figure 57. Gathering Values</div>
 </div>
 <div class="paragraph">
 <p>Closing the Dialog via the Save Button forms a ConnectionInfo object that is returned to the caller.  This value is formed into a <code>String</code> and put into the TextField.</p>
@@ -5043,7 +5130,7 @@ ap.getChildren().add( ta );</code></pre>
 <div class="content">
 <img src="images/app-structure/dialogapp_main_filledin.png" alt="dialogapp main filledin">
 </div>
-<div class="title">Figure 57. Values Retrieved</div>
+<div class="title">Figure 58. Values Retrieved</div>
 </div>
 <div class="paragraph">
 <p>The reverse interaction is also supported in this example.  If the user types in a well-formed URL, that URL will be parsed and displayed in the Dialog.  URL String validation has been left off.  An invalid URL String will result in an empty Dialog.</p>
@@ -5418,7 +5505,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_pb.png" alt="tasks pb">
 </div>
-<div class="title">Figure 58. Screenshot of App Showing ProgressBar and Label</div>
+<div class="title">Figure 59. Screenshot of App Showing ProgressBar and Label</div>
 </div>
 <div class="paragraph">
 <p>When the retrieval is finished, a succeeded() callback is invoked and the UI is updated.  Note that the succeeded() callback takes place on the FX Thread, so it is safe to manipuplate controls.</p>
@@ -5427,7 +5514,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_contents.png" alt="tasks contents">
 </div>
-<div class="title">Figure 59. Screenshot of App Showing Successful Retrieval</div>
+<div class="title">Figure 60. Screenshot of App Showing Successful Retrieval</div>
 </div>
 <div class="paragraph">
 <p>If there was an error retrieving the HTML, a failed() callback is invoked and an error Alert is shown.  failed() also takes place on the FX Thread.  This screenshot shows invalid input. An "h" is used in the URL instead of the correct "http".</p>
@@ -5436,7 +5523,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="content">
 <img src="images/best-practices/tasks_error.png" alt="tasks error">
 </div>
-<div class="title">Figure 60. Screenshot of App Showing Failure</div>
+<div class="title">Figure 61. Screenshot of App Showing Failure</div>
 </div>
 </div>
 <div class="sect3">
@@ -5685,7 +5772,7 @@ messageLabel.textProperty().bind( task.messageProperty() );</code></pre>
 <div class="content">
 <img src="images/best-practices/nonullcombo_screenshot.png" alt="nonullcombo screenshot">
 </div>
-<div class="title">Figure 61. Related ComboBoxes</div>
+<div class="title">Figure 62. Related ComboBoxes</div>
 </div>
 <div class="sect3">
 <h4 id="_data_structure">8.3.1. Data Structure</h4>
@@ -6061,7 +6148,7 @@ WARNING: Exception while evaluating select-binding [taxable]</code></pre>
 <div class="content">
 <img src="images/best-practices/bindings_select_screenshot.png" alt="bindings select screenshot">
 </div>
-<div class="title">Figure 62. UI Controls Bound to a POJO</div>
+<div class="title">Figure 63. UI Controls Bound to a POJO</div>
 </div>
 <div class="sect3">
 <h4 id="_the_pojos">8.6.1. The POJOs</h4>
@@ -6249,7 +6336,7 @@ WARNING: Exception while evaluating select-binding [taxable]</code></pre>
 <div class="content">
 <img src="images/best-practices/bindings_select_downloaded_screenshot.png" alt="bindings select downloaded screenshot">
 </div>
-<div class="title">Figure 63. A Model Change Disables the Download Button</div>
+<div class="title">Figure 64. A Model Change Disables the Download Button</div>
 </div>
 <div class="paragraph">
 <p>In this example, there is only one field that will be modified: downloaded.  Pressing the Download Button will call a setter on the special downloaded BooleanProperty of the Application.  When the value of the BooleanProperty changes, the UI is updated from the tfDownloaded binding.  A ChangeListener is attached to the downloaded BooleanProperty which triggers an update of the model state.</p>
@@ -6287,7 +6374,7 @@ WARNING: Exception while evaluating select-binding [taxable]</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2017-09-24 20:12:43 UTC
+Last updated 2017-10-08 14:33:06 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
