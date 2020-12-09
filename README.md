@@ -7,8 +7,8 @@ This project was initiated by <a href="http://www.jonathangiles.net">Jonathan Gi
 Documentation is available for reading online, and will always reflect the very latest edits. It is currently available in two forms:
  
 <ul>
-  <li>As a <a href="https://fxdocs.github.io/docs/index.html">single-page website</a>.</li>
-  <li>As a <a href="https://fxdocs.github.io/docs/book.pdf">single PDF</a>.</li>
+  <li>As a <a href="https://fxdocs.github.io/docs/html5/index.html">single-page website</a>.</li>
+  <li>As a <a href="https://fxdocs.github.io/docs/pdf/index.pdf">single PDF</a>.</li>
 </ul>
 
 ## Build Process
