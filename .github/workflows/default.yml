@@ -27,4 +27,4 @@ jobs:
         env:
           EMAIL: jonathan@jonathangiles.net
           GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BUILD_DIR: build
+          BUILD_DIR: build/docs
