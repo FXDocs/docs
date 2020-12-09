@@ -15,3 +15,11 @@ Documentation is available for reading online, and will always reflect the very 
 The documentation is written in AsciiDoc. On every commit to this GitHub repo a build process is run, resulting in newly-built content available in <a href="https://fxdocs.github.io/docs/index.html">HTML</a> and as a <a href="https://fxdocs.github.io/docs/book.pdf">single PDF file</a>. The JavaFX Documentation Project uses Travis CI to perform continuous builds of the AsciiDoc source. The current status of the build is:
 
 [![Build Status](https://travis-ci.org/FXDocs/docs.svg?branch=master)](https://travis-ci.org/FXDocs/docs)
+
+To build manually:
+
+```
+./gradlew run
+```
+
+This will produce `html5` and `pdf` directories with the appropriate files inside `build/docs/`.
