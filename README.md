@@ -7,14 +7,14 @@ This project was initiated by <a href="http://www.jonathangiles.net">Jonathan Gi
 Documentation is available for reading online, and will always reflect the very latest edits. It is currently available in two forms:
  
 <ul>
-  <li>As a <a href="https://fxdocs.github.io/docs/index.html">single-page website</a>.</li>
-  <li>As a <a href="https://fxdocs.github.io/docs/book.pdf">single PDF</a>.</li>
+  <li>As a <a href="https://fxdocs.github.io/docs/html5/index.html">single-page website</a>.</li>
+  <li>As a <a href="https://fxdocs.github.io/docs/pdf/index.pdf">single PDF</a>.</li>
 </ul>
 
 ## Build Process
-The documentation is written in AsciiDoc. On every commit to this GitHub repo a build process is run, resulting in newly-built content available in <a href="https://fxdocs.github.io/docs/index.html">HTML</a> and as a <a href="https://fxdocs.github.io/docs/book.pdf">single PDF file</a>. The JavaFX Documentation Project uses Travis CI to perform continuous builds of the AsciiDoc source. The current status of the build is:
+The documentation is written in AsciiDoc. On every commit to this GitHub repo a build process is run, resulting in newly-built content available in <a href="https://fxdocs.github.io/docs/html5/index.html">HTML</a> and as a <a href="https://fxdocs.github.io/docs/pdf/index.pdf">single PDF file</a>. The JavaFX Documentation Project uses GitHub Actions to perform continuous builds of the AsciiDoc source. The current status of the build is:
 
-[![Build Status](https://travis-ci.org/FXDocs/docs.svg?branch=master)](https://travis-ci.org/FXDocs/docs)
+![Build Docs](https://github.com/FXDocs/docs/workflows/Build%20Docs/badge.svg)
 
 To build manually:
 
