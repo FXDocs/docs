@@ -23,8 +23,9 @@ jobs:
         run: ./gradlew run
 
       - name: Deploy to GitHub Pages
-        uses: Cecilapp/GitHub-Pages-deploy@master
+        uses: Cecilapp/GitHub-Pages-deploy@v3
         env:
-          EMAIL: jonathan@jonathangiles.net
-          GH_TOKEN: ${{ secrets.ACCESS_TOKEN }}
-          BUILD_DIR: build/docs
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        with:
+          email: jonathan@jonathangiles.net
+          build_dir: build/docs
