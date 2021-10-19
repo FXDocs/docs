@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<meta name="author" content="Published 2020-12-09">
+<meta name="author" content="Published 2021-10-19">
 <title>JavaFX Documentation Project</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
@@ -435,7 +435,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 <h1>JavaFX Documentation Project</h1>
 <div class="details">
-<span id="author" class="author">Published 2020-12-09</span><br>
+<span id="author" class="author">Published 2021-10-19</span><br>
 <span id="revnumber">version unspecified</span>
 </div>
 <div id="toc" class="toc2">
@@ -1972,7 +1972,7 @@ primaryStage.show();</code></pre>
 <p>JavaFX provides the <code>Image</code> and <code>ImageView</code> classes to display BMP, GIF, JPEG, and PNG graphical images.  Image is a class that holds the bytes of the image and optionally scaling information.  The Image object is loaded by a background thread, and the Image class provides methods for interacting with the load operation.  The Image object is used independently of ImageView to create cursors and app icons.</p>
 </div>
 <div class="paragraph">
-<p>ImageView is a JavaFX <code>Node</code> that holds and Image object.  ImageView makes an image available throughout the framework.  An ImageView can be added to a container by itself or alongside other UI controls.  For example an image can be added to a <code>Label</code> by setting the graphic property of the Label.</p>
+<p>ImageView is a JavaFX <code>Node</code> that holds an Image object.  ImageView makes an image available throughout the framework.  An ImageView can be added to a container by itself or alongside other UI controls.  For example an image can be added to a <code>Label</code> by setting the graphic property of the Label.</p>
 </div>
 <div class="sidebarblock">
 <div class="content">
@@ -2002,7 +2002,7 @@ primaryStage.show();</code></pre>
 <div class="sect3">
 <h4 id="_image">3.5.1. Image</h4>
 <div class="paragraph">
-<p>The Image class provides constructors to build an Image object from the image file dimensions or from a transformed object.  These three constructor calls create the Image objects used in the top-right, bottom-left, and bottom-left tiles, respectively.</p>
+<p>The Image class provides constructors to build an Image object from the image file dimensions or from a transformed object.  These three constructor calls create the Image objects used in the top-right, bottom-left and bottom-right tiles, respectively.</p>
 </div>
 <div class="listingblock">
 <div class="title">ImageApp.java</div>
@@ -2054,7 +2054,7 @@ primaryStage.show();</code></pre>
 <p>iv4 is also based on a transformed Image object, but in the case of iv4, the transformation is done through the ImageView object rather than the Image.  ImageView.setFitHeight is called rather than Image.setFitHeight.</p>
 </div>
 <div class="paragraph">
-<p>Additionally, the Viewport of iv4 is adjusted.  The Viewport controls the visible part of the ImageView.  In this case, the Viewport is defined as a 100x100 section of the Image shifted left 50 pixels and up 100 pixels.</p>
+<p>Additionally, the Viewport of iv4 is adjusted.  The Viewport controls the visible part of the ImageView.  In this case, the Viewport is defined as a 100x100 section of the Image shifted left 20 pixels and up 50 pixels.</p>
 </div>
 <div class="paragraph">
 <p>This section demonstrated the Image and ImageView classes which are used to display an image in a container or other UI control.  These classes define the scaling behavior of the image and can be used with a Rectangle2D Viewport to give additional image display customization.</p>
@@ -5567,7 +5567,7 @@ public static List&lt;CssMetaData&lt;? extends Styleable, ?&gt;&gt; getClassCssM
 <div class="title">Figure 61. Screenshot of App Showing ProgressBar and Label</div>
 </div>
 <div class="paragraph">
-<p>When the retrieval is finished, a succeeded() callback is invoked and the UI is updated.  Note that the succeeded() callback takes place on the FX Thread, so it is safe to manipuplate controls.</p>
+<p>When the retrieval is finished, a succeeded() callback is invoked and the UI is updated.  Note that the succeeded() callback takes place on the FX Thread, so it is safe to manipulate controls.</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -6434,7 +6434,7 @@ WARNING: Exception while evaluating select-binding [taxable]</code></pre>
 <div id="footer">
 <div id="footer-text">
 Version unspecified<br>
-Last updated 2020-12-09 23:46:25 UTC
+Last updated 2021-10-19 00:51:52 UTC
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prettify/r298/prettify.min.css">
