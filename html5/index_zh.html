@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh">
 <head>
 <meta charset="utf-8">
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<meta name="author" content="Published 2022-06-26">
-<title>JavaFX Documentation Project</title>
+<meta name="author" content="发布于 2022-06-26">
+<title>JavaFX 文档项目</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -433,27 +433,27 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </head>
 <body class="book toc2 toc-left">
 <div id="header">
-<h1>JavaFX Documentation Project</h1>
+<h1>JavaFX 文档项目</h1>
 <div class="details">
-<span id="author" class="author">Published 2022-06-26</span><br>
+<span id="author" class="author">发布于 2022-06-26</span><br>
 <span id="revnumber">version unspecified</span>
 </div>
 <div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_introduction">1. Introduction</a>
+<li><a href="#_介绍">1. 介绍</a>
 <ul class="sectlevel2">
-<li><a href="#_contributors">1.1. Contributors</a></li>
-<li><a href="#_contributing">1.2. Contributing</a></li>
-<li><a href="#_license">1.3. License</a></li>
+<li><a href="#_贡献者">1.1. 贡献者</a></li>
+<li><a href="#_贡献">1.2. 贡献</a></li>
+<li><a href="#_许可证">1.3. 许可证</a></li>
 </ul>
 </li>
 <li><a href="#_scene_graph">2. Scene Graph</a>
 <ul class="sectlevel2">
-<li><a href="#_overview">2.1. Overview</a></li>
-<li><a href="#_transformations">2.2. Transformations</a></li>
-<li><a href="#_event_handling">2.3. Event Handling</a></li>
-<li><a href="#_timing">2.4. Timing</a></li>
+<li><a href="#_概述">2.1. 概述</a></li>
+<li><a href="#_变换">2.2. 变换</a></li>
+<li><a href="#_事件处理">2.3. 事件处理</a></li>
+<li><a href="#_时间安排">2.4. 时间安排</a></li>
 </ul>
 </li>
 <li><a href="#_ui_controls">3. UI Controls</a>
@@ -505,18 +505,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 <div id="content">
 <div class="sect1">
-<h2 id="_introduction">1. Introduction</h2>
+<h2 id="_介绍">1. 介绍</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The JavaFX Documentation Project aims to pull together useful information for JavaFX developers from all over the web. The project is <a href="http://www.github.com/FXDocs/docs">open source</a> and encourages community participation to ensure that the documentation is as highly polished and useful as possible.</p>
+<p>JavaFX 文档项目旨在为来自 Web 上的 JavaFX 开发人员收集有用的信息。该项目是 <a href="http://www.github.com/FXDocs/docs">开源的</a> 并且鼓励社区参与去确保该文档尽可能的精炼和有用。</p>
 </div>
 <div class="sect2">
-<h3 id="_contributors">1.1. Contributors</h3>
+<h3 id="_贡献者">1.1. 贡献者</h3>
 <div class="paragraph">
-<p>This project was initiated by <a href="http://jonathangiles.net">Jonathan Giles</a>, but anyone can contribute. Any questions, concerns, or feedback should be in the first instance be directed to <a href="mailto:jonathan@jonathangiles.net">Jonathan via email</a>.</p>
+<p>这个项目由 <a href="http://jonathangiles.net">Jonathan Giles</a> 启动，但任何人都可以贡献。任何问题，疑虑，或反馈首先应该通过电子邮件将其定向给 <a href="mailto:jonathan@jonathangiles.net">Jonathan via email</a> 。</p>
 </div>
 <div class="paragraph">
-<p>This project would not be possible without the contributors who work hard on the content contained within this documentation. The authors of this document are:</p>
+<p>如果没有为本文档中包含的内容努力工作的贡献者，这个项目是不可能的。该文档的作者有：</p>
 </div>
 <div class="ulist">
 <ul>
@@ -542,26 +542,26 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </div>
 </div>
 <div class="sect2">
-<h3 id="_contributing">1.2. Contributing</h3>
+<h3 id="_贡献">1.2. 贡献</h3>
 <div class="paragraph">
-<p>Contributing to this project is easy - fork the <a href="http://www.github.com/FXDocs/docs">GitHub</a> repo, edit the relevant files, and create a pull request! Once merged, your content will form a part of the documentation and you&#8217;ll have the unending appreciation of the entire community!</p>
+<p>贡献这个项目是简单的——fork <a href="http://www.github.com/FXDocs/docs">GitHub</a> 仓库，编辑相关文件，然后创建一个 pull request！一旦合并，您的内容将构成文档的一部分并且你将得到整个社区的无限欣赏！</p>
 </div>
 <div class="paragraph">
-<p>The JavaFX Documentation Project uses AsciiDoc as the syntax of choice for writing the documentation. The <a href="http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/">AsciiDoc Syntax Quick Reference</a> guide is a great resource for those learning how to write AsciiDoc.</p>
+<p>JavaFX 文档项目使用 AsciiDoc 作为编写文档的语法。这份 <a href="http://asciidoctor.org/docs/asciidoc-syntax-quick-reference/">AsciiDoc Syntax Quick Reference</a> 指南对那些学习如何书写 AsciiDoc 的人来说是一个很好的资源。</p>
 </div>
 <div class="paragraph">
-<p>Authors are encouraged to add their name to the contributors list in the previous section.</p>
+<p>鼓励作者将他们的名字添加到上一部分的贡献者列表中。</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_license">1.3. License</h3>
+<h3 id="_许可证">1.3. 许可证</h3>
 <div class="imageblock">
 <div class="content">
 <img src="images/license/cc-by-nc-nd.png" alt="cc by nc nd">
 </div>
 </div>
 <div class="paragraph">
-<p>This work is licensed under a <a href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a>.</p>
+<p>这份工作在 <a href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License</a> 下获得许可。</p>
 </div>
 </div>
 </div>
@@ -570,12 +570,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <h2 id="_scene_graph">2. Scene Graph</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_overview">2.1. Overview</h3>
+<h3 id="_概述">2.1. 概述</h3>
 <div class="paragraph">
-<p>A scene graph is a tree data structure that arranges (and groups) graphical objects for easier logical representation.
-It also allows the graphics engine to render the objects in the most efficient way by
-fully or partially skipping objects which will not be seen in the final image.
-The following figure shows an example of the JavaFX scene graph architecture.</p>
+<p>一个 scene graph 就是一种树形数据结构，用于排列（和分组）图形对象以便于逻辑表示。 它还允许图形引擎通过完全或部分跳过在最终图像中看不到的对象，以最有效的方式渲染对象。
+下图展示了 JavaFX scene graph 的体系结构。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -584,26 +582,28 @@ The following figure shows an example of the JavaFX scene graph architecture.</p
 <div class="title">Figure 1. JavaFX Scene Graph</div>
 </div>
 <div class="paragraph">
-<p>At the very top of the architecture there is a <code>Stage</code>.
-A stage is a JavaFX representation of a native OS window.
-At any given time a stage can have a single <code>Scene</code> attached to it.
-A scene is a container for the JavaFX scene graph.</p>
+<p>在体系结构的最上层有一个 <code>Stage</code>。
+一个 stage 就是一个本机操作系统窗口的 JavaFX 表示。
+在任意给定时刻，stage 都可以附带一个单独的 <code>Scene</code>。
+一个 scene 就是一个 JavaFX scene graph 的容器。</p>
 </div>
 <div class="paragraph">
-<p>All elements in the JavaFX scene graph are represented as <code>Node</code> objects.
-There are three types of nodes: root, branch and leaf.
-The root node is the only node that does not have a parent
-and is directly contained by a scene, which can be seen in the figure above.
-The difference between a branch and a leaf is that a leaf node does not have children.</p>
+<p>以下将直译 <code>scene graph</code> 为“场景图”。</p>
 </div>
 <div class="paragraph">
-<p>In the scene graph, many properties of a parent node are shared by children nodes.
-For instance, a transformation or an event applied to a parent node will also be applied recursively to its children.
-As such, a complex hierarchy of nodes can be viewed as a single node to simplify the programming model.
-We will explore transformations and events in later sections.</p>
+<p>在 JavaFX 场景图中所有元素都作为 <code>Node</code> 对象展示。
+有三种类型的结点（Node）：root，branch 和 leaf。
+如上图所示，root 是唯一没有父结点的结点并直接被 scene 所包含。
+branch 和 leaf 之间的不同主要是 leaf 节点没有孩子节点（children）。</p>
 </div>
 <div class="paragraph">
-<p>An example of a "Hello World" scene graph can be seen in the figure below.</p>
+<p>在场景图中，父结点的许多属性都会共享给子结点。
+比如，一个应用于父结点上的变换或事件也会递归的应用于它的子结点。
+因此，可以将复杂的节点层次结构视为单个节点以简化编程模型。
+在稍后的部分我们将探索变换（transformation）和事件（event）。</p>
+</div>
+<div class="paragraph">
+<p>下图是一个“Hello World”的场景图示例。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -612,8 +612,7 @@ We will explore transformations and events in later sections.</p>
 <div class="title">Figure 2. Hello World Scene Graph</div>
 </div>
 <div class="paragraph">
-<p>One possible implementation that will produce a scene graph matching the figure above
-is as follows.</p>
+<p>产生与上图匹配的场景图的一种可能实现如下。</p>
 </div>
 <div class="listingblock">
 <div class="title">HelloApp.class</div>
@@ -637,7 +636,7 @@ is as follows.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The result of running the code is seen in the next figure.</p>
+<p>下面这张图就是运行代码的结果。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -646,23 +645,23 @@ is as follows.</p>
 <div class="title">Figure 3. Hello World</div>
 </div>
 <div class="paragraph">
-<p>Important notes:</p>
+<p>重要的注意事项：</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>A node can have the maximum of 1 parent.</p>
+<p>一个节点最多有一个父节点</p>
 </li>
 <li>
-<p>A node in the "active" (attached to a currently visible scene) scene graph can only be modified from the JavaFX Application Thread.</p>
+<p>”active“（附加到一个当前可见的 scene）场景图中的节点只能从 JavaFX 应用程序线程中修改。</p>
 </li>
 </ul>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_transformations">2.2. Transformations</h3>
+<h3 id="_变换">2.2. 变换</h3>
 <div class="paragraph">
-<p>We will use the following app as an example to demonstrate the 3 most common transformations.</p>
+<p>我们将使用下面的应用程序作为一个示例去演示3种最常见的变换。</p>
 </div>
 <div class="listingblock">
 <div class="title">TransformApp.class</div>
@@ -694,7 +693,7 @@ is as follows.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Running the application will result in the following image.</p>
+<p>运行应用程序将导致下面图片中的结果。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -703,14 +702,14 @@ is as follows.</p>
 <div class="title">Figure 4. Blue Box</div>
 </div>
 <div class="paragraph">
-<p>In JavaFX, a simple transformation can happen in one of the 3 axes: X, Y or Z.
-The example application is in 2D, so we will only consider X and Y axes.</p>
+<p>在 JavaFX中，一个简单的变换可以发生在 3 个轴（X、Y 或 Z）之一。
+示例是个2D应用程序，所以我们将仅考虑 X 轴和 Y 轴。</p>
 </div>
 <div class="sect3">
-<h4 id="_translate">2.2.1. Translate</h4>
+<h4 id="_移动">2.2.1. 移动</h4>
 <div class="paragraph">
-<p>In JavaFX and computer graphics, <code>translate</code> means move.
-We can translate our box by 100 pixels in X axis and 200 pixels in Y axis.</p>
+<p>在 JavaFX 和计算机图形学中，<code>translate</code> 意味着移动。
+我们可以把我们的 box 在 X 轴移动100像素，在 Y 轴移动200像素。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -728,12 +727,12 @@ We can translate our box by 100 pixels in X axis and 200 pixels in Y axis.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_scale">2.2.2. Scale</h4>
+<h4 id="_缩放">2.2.2. 缩放</h4>
 <div class="paragraph">
-<p>You can apply scaling to make a node larger or smaller.
-Scaling value is a ratio.
-By default, a node has a scaling value of 1 (100%) in each axis.
-We can enlarge our box by applying scaling of 1.5 in X and Y axes.</p>
+<p>你可以使用缩放去使得一个节点变大或缩小。
+缩放值是一个比率。
+默认情况下，一个节点在每个轴上的缩放值为1。
+我们可以通过在 X 轴 和 Y 轴上应用 1.5 倍缩放来放大我们的 box 。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -753,11 +752,11 @@ We can enlarge our box by applying scaling of 1.5 in X and Y axes.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_rotate">2.2.3. Rotate</h4>
+<h4 id="_旋转">2.2.3. 旋转</h4>
 <div class="paragraph">
-<p>A node&#8217;s rotation determines the angle at which the node is rendered.
-In 2D the only sensible rotation axis is the Z axis.
-Let&#8217;s rotate the box by 30 degrees.</p>
+<p>一个节点的旋转决定了渲染节点的角度。
+在2D中，唯一有意义的的旋转轴是 Z 轴。
+我们来让这个 box 旋转 30 度。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -777,31 +776,31 @@ Let&#8217;s rotate the box by 30 degrees.</p>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_event_handling">2.3. Event Handling</h3>
+<h3 id="_事件处理">2.3. 事件处理</h3>
 <div class="paragraph">
-<p>An event notifies that something important has taken place.
-Events are typically the "primitive" of an event system (aka event bus).
-Generally, an event system has the following 3 responsibilities:</p>
+<p>一个事件通知某些重要的事情发生了。
+事件通常是一个事件系统中的“primitive”（又称事件总线）。
+一般地，事件系统有下面3项责任：</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><code>fire</code> (trigger) an event,</p>
+<p><code>fire</code> (触发)一个事件。</p>
 </li>
 <li>
-<p>notify <code>listeners</code> (interested parties) about the event and</p>
+<p>通知 <code>listeners</code> （利益相关方）事件相关</p>
 </li>
 <li>
-<p><code>handle</code> (process) the event.</p>
+<p><code>handle</code> (处理)事件</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The event notification mechanism is done by the JavaFX platform automatically.
-Hence, we will only consider how to fire events, listen for events and how to handle them.</p>
+<p>事件通知机制由 JavaFX 平台自动完成。
+因此，我们将仅考虑如何触发事件，监听事件和如何处理他们。</p>
 </div>
 <div class="paragraph">
-<p>First, let&#8217;s create a custom event.</p>
+<p>首先，让我们来创建一个自定义的事件。</p>
 </div>
 <div class="listingblock">
 <div class="title">UserEvent.class</div>
@@ -823,9 +822,9 @@ Hence, we will only consider how to fire events, listen for events and how to ha
 </div>
 </div>
 <div class="paragraph">
-<p>Since event types are fixed, they are usually created within the same source file as the event.
-We can see that there are 2 specific types of events: <code>LOGIN_SUCCEEDED</code> and <code>LOGIN_FAILED</code>.
-We can listen for such specific types of events:</p>
+<p>因为事件类型是固定的，它们通常在相同的源文件中作为事件创建。
+我们可以看到有两个具体的事件类型：<code>LOGIN_SUCCEEDED</code> 和 <code>LOGIN_FAILED</code>。
+我们可以监听此类特定类型的事件。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -836,7 +835,7 @@ node.addEventHandler(UserEvent.LOGIN_SUCCEEDED, event -&gt; {
 </div>
 </div>
 <div class="paragraph">
-<p>Alternatively, we can handle any <code>UserEvent</code>:</p>
+<p>或者，我们可以处理任何 <code>UserEvent</code>：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -847,7 +846,7 @@ node.addEventHandler(UserEvent.ANY, event -&gt; {
 </div>
 </div>
 <div class="paragraph">
-<p>Finally, we are able to construct and fire our own events:</p>
+<p>最后，我们能够构造和触发我们自己的事件：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -857,22 +856,21 @@ node.fireEvent(event);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>For example, <code>LOGIN_SUCCEEDED</code> or <code>LOGIN_FAILED</code> could be fired when a user attempts to log in to an app.
-Depending on the login result we can allow the user access the app or lock him out of the app.
-Whilst the same functionality can be achieved with a simple <code>if</code> statement,
-there is one significant advantage of an event system.
-Event systems were designed to enable communication between various modules (sub-systems) in
-an application without tightly coupling them.
-As such, a sound might be played by an audio system when the user logs in.
-Thus, maintaining all audio related code in its own module.
-However, we will not delve deeper into architectural styles.</p>
+<p>例如，当一个用户尝试去登录一个 app ，<code>LOGIN_SUCCEEDED</code> 或 <code>LOGIN_FAILED</code> 可能被触发。
+根据登录结果我们可以允许用户访问应用程序或将他锁定在应用程序之外。
+同时，相同的功能可以用一条简单的 <code>if</code> 语句实现。
+事件系统有一个重要的优势。
+在一个没有紧密耦合的应用程序中，事件系统被设计为能够在不同的模块（子系统）之间进行通信。
+像这样，当用户登录时声音可能通过音响系统播放。
+因此，可以在它自己的模块中维护所有的声音相关代码。
+然而，我们不会去深入研究架构风格。</p>
 </div>
 <div class="sect3">
-<h4 id="_input_events">2.3.1. Input Events</h4>
+<h4 id="_输入事件">2.3.1. 输入事件</h4>
 <div class="paragraph">
-<p>Key and mouse events are the most common types of events used in JavaFX.
-Each <code>Node</code> provides so-called "convenience methods" for handling these events.
-For instance, we can run some code when a button is pressed:</p>
+<p>按键和鼠标事件是 JavaFX 中的最常用的事件类型。
+每个 <code>Node</code> 为处理这些事件提供了所谓的“convenience methods”（方便方法）。
+比如，当一个按钮被按下时我们可以运行一些代码。</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -883,7 +881,7 @@ button.setOnAction(event -&gt; {
 </div>
 </div>
 <div class="paragraph">
-<p>For more flexibility we can also use the following:</p>
+<p>为了得到更大的灵活性，我们也可以使用下面的代码：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -895,9 +893,9 @@ button.setOnMouseReleased(e -&gt; ...);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The object <code>e</code> above is of type <code>MouseEvent</code> and can be queried to obtain various information about the event,
-e.g. <code>x</code> and <code>y</code> positions, number of clicks, etc.
-Finally, we can do the same with keys:</p>
+<p>上面的对象 <code>e</code> 是一种 <code>MouseEvent</code> 类型并可以被查询以获得有关事件的各种信息。
+比如，<code>x</code> 和 <code>y</code> 的坐标，点击次数等等。
+最后，我们可以用按键做相同的事情：</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -907,18 +905,17 @@ button.setOnKeyReleased(e -&gt; ...);</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The object <code>e</code> here is of type <code>KeyEvent</code> and it carries information about the key code, which can then be mapped
-to a real physical key on the keyboard.</p>
+<p>这里的对象 <code>e</code> 是一种 <code>KeyEvent</code> 类型，它携带有键码的相关信息，这些信息可以被映射到键盘上的真实物理按键。</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_timing">2.4. Timing</h3>
+<h3 id="_时间安排">2.4. 时间安排</h3>
 <div class="paragraph">
-<p>It is important to understand the timing difference between the creation of JavaFX UI controls and the display of the controls.  When creating the UI controls&#8201;&#8212;&#8201;either through direct API object creation or through FXML&#8201;&#8212;&#8201;you may be missing certain screen geometry values such as the dimensions of a window.  That is available later, at the instant when the screen is shown to the user.  That showing event, called OnShown, is the time at which a window has been allocated and the final layout computations completed.</p>
+<p>理解 JavaFX UI 控件的创建和控件的展示之间的时间差异性是很重要的。当创建 UI 控件时——既可以直接通过 API 对象创建也可以通过 FXML 创建——你可能会缺少某些屏幕的几何值比如窗口尺寸。稍后，当屏幕显示给用户时，它就可以使用。该显示事件称为 OnShown，是分配窗口并完成最终布局计算的时间。</p>
 </div>
 <div class="paragraph">
-<p>To demonstrate this, consider the following program which displays the screen dimensions while the UI controls are being created and the screen dimensions when the screen is shown.  The following screenshot shows the running of the program.  When the UI controls are being created (new VBox(), new Scene(), primaryStage.setScene()), there are no actual window height and width values available as evidenced by the undefined "NaN" values.</p>
+<p>为了证明这些，考虑以下程序，它在创建 UI 控件和显示屏幕时分别显示屏幕尺寸。下面的截图展示了正在运行的程序。当 UI 控件被创建时（new VBox(), new Scene(), primaryStage.setScene()），正如未定义的“NaN”值所证明的那样，没有可用的实际窗口高度和宽度值。</p>
 </div>
 <div class="imageblock">
 <div class="content">
@@ -927,10 +924,10 @@ to a real physical key on the keyboard.</p>
 <div class="title">Figure 8. Screen Geometry Not Available Before OnShown</div>
 </div>
 <div class="paragraph">
-<p>However, the values for width and height are available once the window is shown.  The program registers an event handler for the OnShown event and prepares the same output.</p>
+<p>然而，一旦窗口被显示出来宽度和高度值就是可用的。程序为 OnShown 事件注册了一个事件处理器并准备了相同的输出。</p>
 </div>
 <div class="paragraph">
-<p>The following is the Java class of the demonstration program.</p>
+<p>下面是论证程序的 Java 类。</p>
 </div>
 <div class="listingblock">
 <div class="title">StartVsShownJavaFXApp.class</div>
@@ -995,7 +992,7 @@ to a real physical key on the keyboard.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>Sometimes, you&#8217;ll know the screen dimensions in advance and can use those values at any point in the JavaFX program.  This includes before the OnShown event.  However, if your initialization sequence contains logic that needs these values, you&#8217;ll need to work with the OnShown event.  A use case might be working with the last saved dimensions or dimensions based on program input.</p>
+<p>有时，你会提前知道屏幕的尺寸，然后在 JavaFX 程序中的任何时候使用这些值。这包括 OnShown 事件之前。然而，如果你的初始化序列包含了需要这些值的逻辑，你将需要处理 OnShown 事件。一个用例可能正在使用最后保存的尺寸或基于程序输入的尺寸。</p>
 </div>
 </div>
 </div>
