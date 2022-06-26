@@ -24,6 +24,7 @@ asciidoctor {
     outputDir = file("$buildDir/docs")
     sources {
         include 'index.asc'
+        include 'index_zh.asc'
     }
     resources {
         from ('src/docs/asciidoc') {
